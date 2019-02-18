@@ -14,6 +14,9 @@ SingleLeg FLr(Rear, Left, -BASE_X, 0);
 ParallelLeg FL(-200, 200);
 
 
+void initLegs();
+
+
 /******************
  * 		main	  *
  ******************/
@@ -24,7 +27,25 @@ int main(){
 	pc.baud(921600);
 
 	initParts();
+	initLegs();
 
+	while(1){
+		AdjustCycle(5000);
+
+		FRf.state_update();
+		FRr.state_update();
+		FLf.state_update();
+		FLr.state_update();
+		
+		FRf.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
+		FRr.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
+		FLf.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
+		FLr.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
+	}
+}
+
+
+void initLegs(){
 	FRf.unitize(&motor_FRf, &enc_FRf, &sw_FRf);
 	FRr.unitize(&motor_FRr, &enc_FRr, &sw_FRr);
 	FLf.unitize(&motor_FLf, &enc_FLf, &sw_FLf);
@@ -37,18 +58,4 @@ int main(){
 	FRr.set_PID_from_file("/local/PID_FRr.txt");
 	FLf.set_PID_from_file("/local/PID_FLf.txt");
 	FLr.set_PID_from_file("/local/PID_FLr.txt");
-
-	while(1){
-		AdjustCycle(5000);
-
-		FRf.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
-		FRr.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
-		FLf.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
-		FLr.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
-
-		FRf.state_update();
-		FRr.state_update();
-		FLf.state_update();
-		FLr.state_update();
-	}
 }
