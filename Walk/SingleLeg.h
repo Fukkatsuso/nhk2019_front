@@ -33,6 +33,8 @@ public:
 
 	//x反転する
 	void move_to(float arg_x, float arg_y);
+	void move_to(float arg_x, float arg_y, float duty_max, float duty_min);
+	void state_update();
 	//void lim_angle(float);
 
 	//後の計算に使用(しない)
@@ -41,10 +43,11 @@ public:
 	float get_duty();
 	float get_x();
 	float get_y();
-	float get_angle();//degree
+	float get_angle();//目標角度[degree]
 	float get_P();
 	float get_I();
 	float get_D();
+	//センサーから
 	float get_enc();
 	int get_sw();
 
@@ -58,10 +61,12 @@ private:
 	const short fr;
 	const short rl;
 
-	float angle_prev;
-	float duty;
+	struct{
+		int sw;
+		float enc;
+		float duty;
+	}status;
 
-	float angle_now;
 	PwmOut *motor;
 	SingleLegQEI *enc;
 	InitSwitch *sw;

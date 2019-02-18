@@ -8,15 +8,16 @@ LocalFileSystem local("local");
 
 SingleLeg FRf(Front, Right, BASE_X, 0);
 SingleLeg FRr(Rear, Right, -BASE_X, 0);
+ParallelLeg FR(200, 200);
 SingleLeg FLf(Front, Left, BASE_X, 0);
 SingleLeg FLr(Rear, Left, -BASE_X, 0);
+ParallelLeg FL(-200, 200);
 
 
 /******************
  * 		main	  *
  ******************/
 int main(){
-	float gain[3] = {0, 0, 0};
 	can.frequency(1000000);
 	//can.attach(, CAN::RxIrq);
 	wait_ms(300); //全ての基板の電源が入るまで待つ
@@ -39,5 +40,15 @@ int main(){
 
 	while(1){
 		AdjustCycle(5000);
+
+		FRf.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
+		FRr.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
+		FLf.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
+		FLr.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
+
+		FRf.state_update();
+		FRr.state_update();
+		FLf.state_update();
+		FLr.state_update();
 	}
 }

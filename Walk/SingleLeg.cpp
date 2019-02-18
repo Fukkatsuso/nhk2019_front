@@ -22,6 +22,7 @@ SingleLeg::SingleLeg(LegPosition arg_fr, LegPosition arg_rl, float hrz_base, flo
 {
 	set_angle_limit(ANGLE_MAX, ANGLE_MIN);
 	legPID.param_set_limit(DUTY_MAX-0.5, DUTY_MIN-0.5);
+	status.duty = 0.5;
 }
 
 
@@ -53,7 +54,22 @@ void SingleLeg::move_to(float arg_x, float arg_y)
 	float angle = InverseKinematics::move_to(arg_y, fr*arg_x);//xy反転
 	angle = rad_to_degree(angle);//degree
 
-	duty = 0.5 + (fr*rl)*legPID.calc_duty(angle);
+	status.duty = 0.5 + (fr*rl)*legPID.calc_duty(angle);
+}
+
+void SingleLeg::move_to(float arg_x, float arg_y, float duty_max, float duty_min)
+{
+	legPID.param_set_limit(duty_max-0.5, duty_min-0.5);
+	SingleLeg::move_to(arg_x, arg_y);
+}
+
+//センサー更新・モーター駆動
+void SingleLeg::state_update()
+{
+	status.sw = sw->read();
+	if(status.sw)enc->reset();
+	status.enc = enc->getAngle();
+	motor->write(status.duty);
 }
 
 
@@ -64,7 +80,7 @@ short SingleLeg::get_rl()
 
 float SingleLeg::get_duty()
 {
-	return duty;
+	return status.duty;
 }
 
 float SingleLeg::get_x()
@@ -137,5 +153,5 @@ void SingleLeg::reset_duty()
 void SingleLeg::reset_duty(float reset)
 {
 	legPID.reset_duty();
-	duty = reset;
+	status.duty = reset;
 }
