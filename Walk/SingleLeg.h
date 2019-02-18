@@ -48,6 +48,7 @@ public:
 	float get_enc();
 	int get_sw();
 
+	void set_PID_from_file(const char *fileName);
 	void set_PID(float Kp, float Ki, float Kd);
 	void set_limit(int d_max, int d_min);
 	void reset_duty();

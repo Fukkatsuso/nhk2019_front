@@ -104,7 +104,20 @@ int SingleLeg::get_sw(){
 }
 
 
-//エンコーダーの値を格納する変数のアドレス, PID係数
+void SingleLeg::set_PID_from_file(const char *fileName)
+{
+	float gain[3] = {0, 0, 0};
+	FILE *fp = fopen(fileName, "r");
+	if(fp){
+		for(int i=0; i<3; i++){
+			fscanf(fp, "%f", &gain[i]);
+		}
+		fclose(fp);
+	}
+	set_PID(gain[0], gain[1], gain[2]);
+}
+
+//PID係数
 void SingleLeg::set_PID(float Kp, float Ki, float Kd)
 {
 	legPID.set_PID(enc, Kp, Ki, Kd);

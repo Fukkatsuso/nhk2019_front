@@ -11,8 +11,6 @@ SingleLeg FRr(Rear, Right, -BASE_X, 0);
 SingleLeg FLf(Front, Left, BASE_X, 0);
 SingleLeg FLr(Rear, Left, -BASE_X, 0);
 
-void read_PIDgain(float gain[], const char *fileName);
-
 
 /******************
  * 		main	  *
@@ -34,31 +32,12 @@ int main(){
 	FRr.lengths(LEG_UPPER, LEG_FORE);
 	FLf.lengths(LEG_UPPER, LEG_FORE);
 	FLr.lengths(LEG_UPPER, LEG_FORE);
-	read_PIDgain(gain, "/local/PID_FRf.txt");
-	FRf.set_PID(gain[0], gain[1], gain[2]);
-	read_PIDgain(gain, "/local/PID_FRr.txt");
-	FRr.set_PID(gain[0], gain[1], gain[2]);
-	read_PIDgain(gain, "/local/PID_FLf.txt");
-	FLf.set_PID(gain[0], gain[1], gain[2]);
-	read_PIDgain(gain, "/local/PID_FLr.txt");
-	FLr.set_PID(gain[0], gain[1], gain[2]);
+	FRf.set_PID_from_file("/local/PID_FRf.txt");
+	FRr.set_PID_from_file("/local/PID_FRr.txt");
+	FLf.set_PID_from_file("/local/PID_FLf.txt");
+	FLr.set_PID_from_file("/local/PID_FLr.txt");
 
 	while(1){
 		AdjustCycle(5000);
 	}
-}
-
-
-void read_PIDgain(float gain[], const char *fileName){
-	FILE *fp = fopen(fileName, "r");
-	pc.printf("\r\n");
-	if(!fp){
-		pc.printf("file open error!!\r\n");
-		return;
-	}
-	for(int i=0; i<3; i++){
-		fscanf(fp, "%f", &gain[i]);
-		pc.printf("%f  ", gain[i]);
-	}
-	fclose(fp);
 }
