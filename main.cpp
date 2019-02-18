@@ -2,9 +2,15 @@
 #include "Pins.h"
 #include "Walk/SingleLeg.h"
 #include "Walk/ParallelLeg.h"
+#include "Walk/MRMode.h"
+#include "Walk/CANCommand.h"
 #include "Walk/ForwardKinematics.h"
 
 LocalFileSystem local("local");
+
+CANMessage rcvMsg;
+CANCommand CANcmd(&can);
+MRMode MRmode(&CANcmd);
 
 SingleLeg FRf(Front, Right, BASE_X, 0);
 SingleLeg FRr(Rear, Right, -BASE_X, 0);
@@ -58,4 +64,7 @@ void initLegs(){
 	FRr.set_PID_from_file("/local/PID_FRr.txt");
 	FLf.set_PID_from_file("/local/PID_FLf.txt");
 	FLr.set_PID_from_file("/local/PID_FLr.txt");
+
+	FR.set_dependencies(&MRmode, &CANcmd);
+	FL.set_dependencies(&MRmode, &CANcmd);
 }

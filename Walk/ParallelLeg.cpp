@@ -6,7 +6,6 @@
  */
 
 #include "ParallelLeg.h"
-#include "MRMode.h"
 #include "functions.h"
 
 #define FACTOR_Y (4.0*M_PI*(high-y.pos.init)/(Ty*(4.0+M_PI)))//坂道の傾斜はまだ考慮していない
@@ -25,6 +24,12 @@ ParallelLeg::ParallelLeg(float pos_x, float pos_y)
 	flag.stay_command = true;
 	flag.stay = true;
 	flag.first_cycle = true;
+}
+
+void ParallelLeg::set_dependencies(MRMode *mode, CANCommand *command)
+{
+	this->MRmode = mode;
+	this->CANcmd = command;
 }
 
 

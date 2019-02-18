@@ -4,23 +4,29 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../Walk/CANCommand.cpp \
 ../Walk/ForwardKinematics.cpp \
 ../Walk/InverseKinematics.cpp \
 ../Walk/LegPID.cpp \
+../Walk/MRMode.cpp \
 ../Walk/ParallelLeg.cpp \
 ../Walk/SingleLeg.cpp 
 
 OBJS += \
+./Walk/CANCommand.o \
 ./Walk/ForwardKinematics.o \
 ./Walk/InverseKinematics.o \
 ./Walk/LegPID.o \
+./Walk/MRMode.o \
 ./Walk/ParallelLeg.o \
 ./Walk/SingleLeg.o 
 
 CPP_DEPS += \
+./Walk/CANCommand.d \
 ./Walk/ForwardKinematics.d \
 ./Walk/InverseKinematics.d \
 ./Walk/LegPID.d \
+./Walk/MRMode.d \
 ./Walk/ParallelLeg.d \
 ./Walk/SingleLeg.d 
 

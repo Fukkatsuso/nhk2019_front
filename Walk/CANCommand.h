@@ -11,5 +11,18 @@
 #include "mbed.h"
 
 
+/*
+ * 中央制御用マイコンとCAN通信
+ */
+class CANCommand
+{
+public:
+	CANCommand(CAN *can);
+	int get_area();
+
+private:
+	CAN *can;
+};
+
 
 #endif /* WALK_CANCOMMAND_H_ */

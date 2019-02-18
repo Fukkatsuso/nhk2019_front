@@ -1,4 +1,5 @@
-main.o main.d: ../main.cpp \
+Walk/CANCommand.o Walk/CANCommand.d: ../Walk/CANCommand.cpp \
+ ../Walk/CANCommand.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/mbed.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/platform.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\targets\hal\TARGET_NXP\TARGET_LPC176X/device.h \
@@ -68,16 +69,9 @@ main.o main.d: ../main.cpp \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\hal/gpio_irq_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/wait_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\hal/sleep_api.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/rtc_time.h \
- ../Pins.h ../QEI/SingleLegQEI.h ../QEI/QEI_freePin.h ../QEI/QEI.h \
- ../InitSwitch.h ../Walk/SingleLeg.h ../Walk/InverseKinematics.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\QEI/SingleLegQEI.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/InitSwitch.h \
- ../Walk/LegPID.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/PID.h \
- ../Walk/MRMode.h ../Walk/CANCommand.h ../Walk/ParallelLeg.h \
- ../Walk/MRMode.h ../Walk/CANCommand.h ../Walk/ForwardKinematics.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/QEI/SingleLegQEI.h
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/rtc_time.h
+
+../Walk/CANCommand.h:
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/mbed.h:
 
@@ -218,39 +212,3 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\hal/sleep_api.h:
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/rtc_time.h:
-
-../Pins.h:
-
-../QEI/SingleLegQEI.h:
-
-../QEI/QEI_freePin.h:
-
-../QEI/QEI.h:
-
-../InitSwitch.h:
-
-../Walk/SingleLeg.h:
-
-../Walk/InverseKinematics.h:
-
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\QEI/SingleLegQEI.h:
-
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/InitSwitch.h:
-
-../Walk/LegPID.h:
-
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/PID.h:
-
-../Walk/MRMode.h:
-
-../Walk/CANCommand.h:
-
-../Walk/ParallelLeg.h:
-
-../Walk/MRMode.h:
-
-../Walk/CANCommand.h:
-
-../Walk/ForwardKinematics.h:
-
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/QEI/SingleLegQEI.h:

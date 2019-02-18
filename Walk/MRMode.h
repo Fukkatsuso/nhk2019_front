@@ -42,7 +42,7 @@ enum LegMode{
 	Down = 3
 };
 
-enum Mode{
+enum Area{
 	WaitGobiUrtuu = 0,//待機
 	GetGerege,//ゲルゲ受け取り検知
 	PrepareWalking,
@@ -63,12 +63,30 @@ enum Mode{
 	Operate//PSコン操作
 };
 
+//:CANで受け取るデータ
+struct WalkParams{
+	int area;//
+	struct{
+		struct{
+			float max;
+			float min;
+		}x, y, duty, angle;
+	}lim;
+};
+
 
 class MRMode
 {
 public:
-	MRMode();
+	MRMode(CANCommand *command);
+	void update();
+
 private:
+	int now;//=WalkParams.area
+	int prv;//=WalkParams.areaの1つ前のデータ
+	WalkParams params;
+
+	CANCommand *CANcmd;
 };
 
 

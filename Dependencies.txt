@@ -1,0 +1,13 @@
+
+ParallelLeg
+	-CANCommand
+	-MRMode
+		-CANCommand
+		
+		
+SingleLeg
+	-InverseKinematics
+	-LegPID
+		-PID
+	-MRMode
+		-CANCommand

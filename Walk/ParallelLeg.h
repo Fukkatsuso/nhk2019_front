@@ -9,6 +9,8 @@
 #define WALK_PARALLELLEG_H_
 
 #include "mbed.h"
+#include "MRMode.h"
+#include "CANCommand.h"
 
 //絶対固定
 #define BASE_X 20
@@ -20,6 +22,7 @@ class ParallelLeg
 {
 public:
 	ParallelLeg(float pos_x, float pos_y);
+	void set_dependencies(MRMode *mode, CANCommand *command);
 
 	void set_x_lim(float xmax, float xmin);
 	void set_y_lim(float ymax, float ymin);
@@ -60,6 +63,9 @@ protected:
 private:
 	short fr;
 	short rl;
+
+	MRMode *MRmode;
+	CANCommand *CANcmd;
 
 	float gradient;
 	float period;
