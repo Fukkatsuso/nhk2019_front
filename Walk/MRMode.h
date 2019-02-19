@@ -42,49 +42,48 @@ enum LegMode{
 	Down = 3
 };
 
-enum Area{
-	WaitGobiUrtuu = 0,//待機
-	GetGerege,//ゲルゲ受け取り検知
-	PrepareWalking,
-	Start1,//歩行開始
-	GobiArea,//直進
-	SandDune,//段差
-	Tussock1,//紐1
-	Tussock2,//紐2
-	Finish1,//到着
-	WaitMountainUrtuu,//待機
-	GetSign,//非接触の合図
-	Start2,//歩行開始
-	MountainArea,//登山
-	UukhaiZone,//ウーハイゾーン
-	Uukhai,//ウーハイ
-	Finish2,//終了
-/////////////////////////////
-	Operate//PSコン操作
-};
-
-//:CANで受け取るデータ
-struct WalkParams{
-	int area;//
-	struct{
-		struct{
-			float max;
-			float min;
-		}x, y, duty, angle;
-	}lim;
-};
-
 
 class MRMode
 {
 public:
+	enum Area{
+		WaitGobiUrtuu = 0,//待機
+		GetGerege,//ゲルゲ受け取り検知
+		PrepareWalking,
+		Start1,//歩行開始
+		GobiArea,//直進
+		SandDune,//段差
+		Tussock1,//紐1
+		Tussock2,//紐2
+		Finish1,//到着
+		WaitMountainUrtuu,//待機
+		GetSign,//非接触の合図
+		Start2,//歩行開始
+		MountainArea,//登山
+		UukhaiZone,//ウーハイゾーン
+		Uukhai,//ウーハイ
+		Finish2,//終了
+	/////////////////////////////
+		Operate//PSコン操作
+	};
+
 	MRMode(CANCommand *command);
 	void update();
 
+	int get_area();
+
 private:
-	int now;//=WalkParams.area
-	int prv;//=WalkParams.areaの1つ前のデータ
-	WalkParams params;
+	struct WalkParams{
+		Area area;//CANで受け取るデータ
+		struct{
+			struct{
+				float max;
+				float min;
+			}x, y, duty, angle;
+		}lim;
+	};
+	Area now, prv;
+	WalkParams params[(MRMode::Finish2)+1];
 
 	CANCommand *CANcmd;
 };

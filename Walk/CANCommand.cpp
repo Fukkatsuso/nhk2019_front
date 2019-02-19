@@ -8,16 +8,15 @@
 #include "CANCommand.h"
 
 
-short CANformats[DataType_end][FormatType_end] =
+short CANReceiveFormats[CANCommand::ReceiveDataType_end][CANCommand::ReceiveFormatType_end] =
 {		//ID,	Len_integer,	Len_fraction
-		{Period,	1,	4},	//Period
-		{Duty,		1,	4},	//Duty
-		{Speed,		3,	4},	//Speed
-		{Direction,	2,	4},	//Direction
-		{Time,		2,	4},	//Time
-		{Area,		2,	0}	//Area
+		{CANCommand::Period,	1,	4},	//Period
+		{CANCommand::Duty,		1,	4},	//Duty
+		{CANCommand::Speed,		3,	4},	//Speed
+		{CANCommand::Direction,	2,	4},	//Direction
+		{CANCommand::Time,		2,	4},	//Time
+		{CANCommand::Area,		2,	0}	//Area
 };
-
 
 CANCommand::CANCommand(CAN *can)
 {
@@ -39,12 +38,12 @@ CANCommand::CANCommand(CAN *can)
 void CANCommand::receive(unsigned int id, unsigned char data[])
 {
 	id = (id)&(0x00f);//下一桁のみ取り出す
-	if(0<=id && id<DataType_end)
-		rcvData[id] = decode_from_array(data, CANformats[id][Len_integer], CANformats[id][Len_fraction]);
+	if(0<=id && id<ReceiveDataType_end)
+		rcvData[id] = decode_from_array(data, CANReceiveFormats[id][Len_integer], CANReceiveFormats[id][Len_fraction]);
 }
 
 
-float CANCommand::get(enum DataType type){
+float CANCommand::get(ReceiveDataType type){
 	return rcvData[type];
 }
 
