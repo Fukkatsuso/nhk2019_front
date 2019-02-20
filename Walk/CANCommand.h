@@ -6,8 +6,8 @@
  */
 
 //新たに受信する変数を追加するときには
-//ReceiveDataType の末尾(_endの前)に変数名を追加すること
-//CANReceiveFormats[][]の末尾に要素を追加すること
+//DataType の末尾(_endの前)に変数名を追加すること
+//CANFormats[][]の末尾に要素を追加すること
 
 
 #ifndef WALK_CANCOMMAND_H_
@@ -16,13 +16,28 @@
 #include "mbed.h"
 
 
-/*
- * 中央制御用マイコンとCAN通信
- */
-class CANCommand
-{
-public:
-	enum ReceiveDataType{
+struct CANID{
+	enum From{
+		FromMaster = 0x000,
+		FromSlave = 0x100,
+		FromFront = 0x200,
+		FromRear = 0x300,
+		FromFR = 0x400,
+		FromFL = 0x500,
+		FromRR = 0x600,
+		FromRL = 0x700
+	};
+	enum To{
+		ToMaster = 0x000,
+		ToSlaveAll = 0x010,
+		ToFront = 0x020,
+		ToRear = 0x030,
+		ToFR = 0x040,
+		ToFL = 0x050,
+		ToRR = 0x060,
+		ToRL = 0x070
+	};
+	enum DataType{
 		Period=0,
 		Duty,
 		Speed,
@@ -30,35 +45,44 @@ public:
 		Time,
 		Area,
 		Gait,
-		ReceiveDataType_end//<=0x00f=15 に制限（仕様上）
+		DataType_end//<=0x00f=15 に制限（仕様上）
 	};
+};
 
-	enum ReceiveFormatType{
-		ID=0, //ID
-		Len_integer, //整数部分長
-		Len_fraction, //小数部分長
-		ReceiveFormatType_end
+/*
+ * 中央制御用マイコンとCAN通信
+ */
+class CANCommand
+{
+public:
+	struct FormatType{
+		enum{
+			ID=0, //ID
+			Len_integer, //整数部分長
+			Len_fraction, //小数部分長
+			FormatType_end
+		};
 	};
 
 	CANCommand(CAN *can);
+	void send(int id, float data);
 	void receive(unsigned int id, unsigned char data[]);
-	//void send(int id, float data);後回し
 
-	float get(enum ReceiveDataType type);
+	float get(CANID::DataType type);
 	int get_area();
 	int get_gait();
 
 protected:
-	float decode_from_array(unsigned char array[], int len_i, int len_f);
+	//send()にて
 	void store_in_data(float f, int len_i, int len_f);
 	void copy_data(CANMessage *msg, int len);
+	//receive()にて
+	float decode_from_array(unsigned char array[], int len_i, int len_f);
 
 private:
 	CAN *can;
-	float rcvData[CANCommand::ReceiveDataType_end];
+	float rcvData[CANID::DataType_end];
+	unsigned int sndData[8];
 };
-
-//extern short CANReceiveFormats[CANCommand::ReceiveDataType_end][CANCommand::ReceiveFormatType_end];
-
 
 #endif /* WALK_CANCOMMAND_H_ */

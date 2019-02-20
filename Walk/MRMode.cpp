@@ -71,7 +71,7 @@ void MRMode::update()
 }
 
 
-int MRMode::get_area(enum Reference ref){
+MRMode::Area MRMode::get_area(enum Reference ref){
 	return area[ref];
 }
 

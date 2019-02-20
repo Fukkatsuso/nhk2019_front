@@ -78,7 +78,7 @@ public:
 		Uukhai,//ウーハイ
 		Finish2,//終了
 		Area_end,
-		};
+	};
 	enum Reference{
 		Initial,
 		Prev,
@@ -90,7 +90,7 @@ public:
 	MRMode(CANCommand *command, enum Area init_area, bool operate);
 	void update();
 
-	int get_area(enum Reference ref);
+	Area get_area(enum Reference ref);
 //	float get_lim_x_max(enum Reference ref);
 //	float get_lim_x_min(enum Reference ref);
 //	float get_lim_y_max(enum Reference ref);
@@ -119,7 +119,7 @@ private:
 /*
  * example:
  * MRMode mode(&cancommand, MRMode::WaitGobiUrtuu, false);
- * FR.set_x_lim(mode.get_limits->x.max, mode.get_lim_x_min(get_area(Now)));
+ * FR.set_x_lim(mode.get_limits(mode.get_area(Now))->x.max, mode.get_limits(mode.get_area(Now))->x.min);
  */
 
 
