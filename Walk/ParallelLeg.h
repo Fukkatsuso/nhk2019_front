@@ -50,6 +50,7 @@ public:
 	bool is_climb();
 
 protected:
+	void mrmode_update(); //まだ書いてない。MRModeの更新を反映させる
 	float curve_adjust(float value);
 	void calc_dt(float tm);
 	void set_timing();
@@ -65,21 +66,21 @@ private:
 	short rl;
 
 	MRMode *MRmode;
-	CANCommand *CANcmd;
+	float gradient; //フィールド勾配
+	float high;	//振り上げ高さ
 
-	float gradient;
+	CANCommand *CANcmd;
 	float period;
 	float duty;
 	float speed;
 	float direction;
 
 	float step;	//着地点
-	float high;	//振り上げ高さ
 
 	struct{
 		float vel;
 		struct{
-			float init;
+			float init; //MRModeで設定しておく
 			float now;
 			float dif;
 			float next;

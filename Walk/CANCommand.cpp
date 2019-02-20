@@ -15,7 +15,8 @@ short CANReceiveFormats[CANCommand::ReceiveDataType_end][CANCommand::ReceiveForm
 		{CANCommand::Speed,		3,	4},	//Speed
 		{CANCommand::Direction,	2,	4},	//Direction
 		{CANCommand::Time,		2,	4},	//Time
-		{CANCommand::Area,		2,	0}	//Area
+		{CANCommand::Area,		2,	0},	//Area
+		{CANCommand::Gait,		1,	0}	//Gait
 };
 
 CANCommand::CANCommand(CAN *can)
@@ -43,8 +44,16 @@ void CANCommand::receive(unsigned int id, unsigned char data[])
 }
 
 
-float CANCommand::get(ReceiveDataType type){
+float CANCommand::get(enum ReceiveDataType type){
 	return rcvData[type];
+}
+
+int CANCommand::get_area(){
+	return (int)rcvData[CANCommand::Area];
+}
+
+int CANCommand::get_gait(){
+	return (int)rcvData[CANCommand::Gait];
 }
 
 

@@ -42,6 +42,19 @@ enum LegMode{
 	Down = 3
 };
 
+struct Limits{
+	struct{
+		float max;
+		float min;
+	}x, y, angle, duty;
+};
+
+struct ToesInfo{
+	float gradient; //フィールド勾配
+	float init; //足先の初期位置
+	float high; //足先を上げるときの最大高さ
+};
+
 
 class MRMode
 {
@@ -53,6 +66,7 @@ public:
 		Start1,//歩行開始
 		GobiArea,//直進
 		SandDune,//段差
+		ReadyForTussock,//ここに何か入れるべき
 		Tussock1,//紐1
 		Tussock2,//紐2
 		Finish1,//到着
@@ -63,30 +77,50 @@ public:
 		UukhaiZone,//ウーハイゾーン
 		Uukhai,//ウーハイ
 		Finish2,//終了
-	/////////////////////////////
-		Operate//PSコン操作
+		Area_end,
+		};
+	enum Reference{
+		Initial,
+		Prev,
+		Now,
+		Next,
+		Reference_end
 	};
 
-	MRMode(CANCommand *command);
+	MRMode(CANCommand *command, enum Area init_area, bool operate);
 	void update();
 
-	int get_area();
+	int get_area(enum Reference ref);
+//	float get_lim_x_max(enum Reference ref);
+//	float get_lim_x_min(enum Reference ref);
+//	float get_lim_y_max(enum Reference ref);
+//	float get_lim_y_min(enum Reference ref);
+//	float get_lim_angle_max(enum Reference ref);
+//	float get_lim_angle_min(enum Reference ref);
+//	float get_lim_duty_max(enum Reference ref);
+//	float get_lim_duty_min(enum Reference ref);
+	Limits *get_limits(enum Area area);
+
+	float get_gradient(enum Reference ref);
+	float get_init(enum Reference ref);
+	float get_high(enum Reference ref);
+	ToesInfo *get_toesInfo(enum Area area);
 
 private:
-	struct WalkParams{
-		Area area;//CANで受け取るデータ
-		struct{
-			struct{
-				float max;
-				float min;
-			}x, y, duty, angle;
-		}lim;
-	};
-	Area now, prv;
-	WalkParams params[(MRMode::Finish2)+1];
-
 	CANCommand *CANcmd;
+	Area area[MRMode::Reference_end];
+//	Limits *limit[MRMode::Reference_end];
+//	ToesInfo *toeinfo[MRMode::Reference_end];
+	struct{
+		bool operate;//手動
+	}flag;
 };
+
+/*
+ * example:
+ * MRMode mode(&cancommand, MRMode::WaitGobiUrtuu, false);
+ * FR.set_x_lim(mode.get_limits->x.max, mode.get_lim_x_min(get_area(Now)));
+ */
 
 
 #endif /* WALK_MRMODE_H_ */

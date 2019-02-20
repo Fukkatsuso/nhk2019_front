@@ -10,7 +10,7 @@ LocalFileSystem local("local");
 
 CANMessage rcvMsg;
 CANCommand CANcmd(&can);
-MRMode MRmode(&CANcmd);
+MRMode MRmode(&CANcmd, MRMode::GobiArea, true);//実行の度に要確認
 
 SingleLeg FRf(Front, Right, BASE_X, 0);
 SingleLeg FRr(Rear, Right, -BASE_X, 0);
@@ -43,6 +43,8 @@ int main(){
 		FLf.state_update();
 		FLr.state_update();
 		
+		//.walk()が入る
+
 		FRf.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
 		FRr.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
 		FLf.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);

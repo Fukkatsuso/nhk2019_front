@@ -29,13 +29,14 @@ public:
 		Direction,
 		Time,
 		Area,
+		Gait,
 		ReceiveDataType_end//<=0x00f=15 に制限（仕様上）
 	};
 
 	enum ReceiveFormatType{
-		ID=0,
-		Len_integer,
-		Len_fraction,
+		ID=0, //ID
+		Len_integer, //整数部分長
+		Len_fraction, //小数部分長
 		ReceiveFormatType_end
 	};
 
@@ -43,7 +44,9 @@ public:
 	void receive(unsigned int id, unsigned char data[]);
 	//void send(int id, float data);後回し
 
-	float get(ReceiveDataType type);
+	float get(enum ReceiveDataType type);
+	int get_area();
+	int get_gait();
 
 protected:
 	float decode_from_array(unsigned char array[], int len_i, int len_f);
