@@ -19,6 +19,26 @@ short CANFormats[CANID::DataType_end][CANCommand::FormatType::FormatType_end] =
 		{CANID::Gait,		1,	0}	//Gait
 };
 
+int CANID_generate(CANID::From from, CANID::To to)
+{
+	return ((from&0x100) | (to&0x010));
+}
+
+int CANID_generate(CANID::From from, CANID::To to, CANID::DataType type)
+{
+	return ((from&0x100) | (to&0x010) | (type&0x001));
+}
+
+bool CANID_is_from(int id, CANID::From from)
+{
+	return ((id&0x100) == (from&0x100));
+}
+
+bool CANID_is_to(int id, CANID::To to)
+{
+	return ((id&0x010) == (to&0x010));
+}
+
 CANCommand::CANCommand(CAN *can)
 {
 	this->can = can;

@@ -49,6 +49,12 @@ struct CANID{
 	};
 };
 
+int CANID_generate(CANID::From from, CANID::To to);
+int CANID_generate(CANID::From from, CANID::To to, CANID::DataType type);
+bool CANID_is_from(int id, CANID::From from);
+bool CANID_is_to(int id, CANID::To to);
+
+
 /*
  * 中央制御用マイコンとCAN通信
  */

@@ -11,13 +11,9 @@
 #define FACTOR_Y (4.0*M_PI*(high-y.pos.init)/(Ty*(4.0+M_PI)))//坂道の傾斜はまだ考慮していない
 
 
-ParallelLeg::ParallelLeg(float pos_x, float pos_y)
+ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
+	fr(fr), rl(rl)
 {
-	if(pos_x>=0)rl = Right;
-	else rl = Left;
-	if(pos_y>=0)fr = Front;
-	else fr = Rear;
-
 	speed = 0;
 
 	flag.recovery = true;

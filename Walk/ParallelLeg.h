@@ -21,7 +21,7 @@
 class ParallelLeg
 {
 public:
-	ParallelLeg(float pos_x, float pos_y);
+	ParallelLeg(int fr, int rl, float pos_x, float pos_y);
 	void set_dependencies(MRMode *mode, CANCommand *command);
 
 	void set_x_lim(float xmax, float xmin);
@@ -62,8 +62,8 @@ protected:
 	void calc_position();
 
 private:
-	short fr;
-	short rl;
+	const short fr;
+	const short rl;
 
 	MRMode *MRmode;
 	float gradient; //フィールド勾配

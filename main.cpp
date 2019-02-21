@@ -14,13 +14,14 @@ MRMode MRmode(&CANcmd, MRMode::GobiArea, true);//実行の度に要確認
 
 SingleLeg FRf(Front, Right, BASE_X, 0);
 SingleLeg FRr(Rear, Right, -BASE_X, 0);
-ParallelLeg FR(200, 200);
+ParallelLeg FR(Front, Right, 200, 200);
 SingleLeg FLf(Front, Left, BASE_X, 0);
 SingleLeg FLr(Rear, Left, -BASE_X, 0);
-ParallelLeg FL(-200, 200);
+ParallelLeg FL(Front, Left, -200, 200);
 
 
 void initLegs();
+void CANrcv();
 
 
 /******************
@@ -28,7 +29,7 @@ void initLegs();
  ******************/
 int main(){
 	can.frequency(1000000);
-	//can.attach(, CAN::RxIrq);
+	can.attach(&CANrcv, CAN::RxIrq);
 	wait_ms(300); //全ての基板の電源が入るまで待つ
 	pc.baud(921600);
 
@@ -69,4 +70,14 @@ void initLegs(){
 
 	FR.set_dependencies(&MRmode, &CANcmd);
 	FL.set_dependencies(&MRmode, &CANcmd);
+}
+
+
+void CANrcv(){
+	if(can.read(rcvMsg)){
+		if(CANID_is_from(rcvMsg.id, CANID::FromMaster) && CANID_is_to(rcvMsg.id, CANID::ToSlaveAll)){
+			//歩行パラメータ取得
+			CANcmd.receive(rcvMsg.id, rcvMsg.data);
+		}
+	}
 }
