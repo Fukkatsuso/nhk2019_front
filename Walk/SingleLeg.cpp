@@ -33,6 +33,12 @@ void SingleLeg::unitize(PwmOut *motor, SingleLegQEI *enc, InitSwitch *sw)
 	this->sw = sw;
 }
 
+void SingleLeg::set_dependencies(MRMode *mode)
+{
+	MRmode = mode;
+	set_limits();
+}
+
 
 //目標x,y->PIDでduty計算
 /* rotation(angle+に対するブラシレスモータの回転方向)
@@ -68,7 +74,7 @@ void SingleLeg::state_update()
 {
 	status.sw = sw->read();
 	if(status.sw)enc->reset();
-	status.enc = enc->getAngle();
+	status.enc = enc->getAngle();//[degree]
 	motor->write(status.duty);
 }
 
@@ -140,7 +146,15 @@ void SingleLeg::set_PID(float Kp, float Ki, float Kd)
 }
 
 
-void SingleLeg::set_limit(int d_max, int d_min)
+void SingleLeg::set_limits()
+{
+	MRMode::Area mode = MRmode->get_area(MRMode::Now);
+	Limits *limits = MRmode->get_limits(mode);
+	set_angle_limit(limits->angle.max, limits->angle.min);
+	set_duty_limit(limits->duty.max, limits->duty.min);
+}
+
+void SingleLeg::set_duty_limit(int d_max, int d_min)
 {
 	legPID.param_set_limit(d_max, d_min);
 }

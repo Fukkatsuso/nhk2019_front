@@ -26,6 +26,7 @@ public:
 
 	void set_x_lim(float xmax, float xmin);
 	void set_y_lim(float ymax, float ymin);
+	void set_limits();
 	void set_x_initial(float x_initial);
 	void set_y_initial(float y_initial);
 	void set_initial(float x_initial, float y_initial);
@@ -36,6 +37,7 @@ public:
 
 	//速度, 方向 -> 次の着地点（歩幅）
 	void walk(float spd, float dir, float tm);
+	void walk();
 
 	//足先座標を返す
 	float get_x();

@@ -26,6 +26,7 @@ void ParallelLeg::set_dependencies(MRMode *mode, CANCommand *command)
 {
 	this->MRmode = mode;
 	this->CANcmd = command;
+	set_limits();
 }
 
 
@@ -39,6 +40,14 @@ void ParallelLeg::set_y_lim(float ymax, float ymin)
 {
 	y.pos.max = ymax;
 	y.pos.min = ymin;
+}
+
+void ParallelLeg::set_limits()
+{
+	MRMode::Area mode = MRmode->get_area(MRMode::Now);
+	Limits *limits = MRmode->get_limits(mode);
+	set_x_lim(limits->x.max, limits->x.min);
+	set_y_lim(limits->y.max, limits->y.min);
 }
 
 void ParallelLeg::set_x_initial(float x_initial){
@@ -88,6 +97,11 @@ void ParallelLeg::walk(float spd, float dir, float tm)
 	check_flag();//if(flag.stay)mode = Move; を含める?
 	calc_velocity();//vel計算
 	calc_position();//pos計算
+}
+
+void ParallelLeg::walk()
+{
+	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction), CANcmd->get(CANID::Time));
 }
 
 //斜め方向に歩くとき

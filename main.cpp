@@ -21,6 +21,7 @@ ParallelLeg FL(Front, Left, -200, 200);
 
 
 void initLegs();
+void set_limits();
 void CANrcv();
 
 
@@ -39,17 +40,20 @@ int main(){
 	while(1){
 		AdjustCycle(5000);
 
+		MRmode.update();
+		if(MRmode.is_switched())set_limits();
+
+		FR.walk();
+		FL.walk();
+
 		FRf.state_update();
 		FRr.state_update();
 		FLf.state_update();
 		FLr.state_update();
-		
-		//.walk()が入る
-
-		FRf.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
-		FRr.move_to(FR.get_x(), FR.get_y()/*, FR.get_lim_duty_max(), FR.get_lim_duty_min()*/);
-		FLf.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
-		FLr.move_to(FL.get_x(), FL.get_y()/*, FL.get_lim_duty_max(), FL.get_lim_duty_min()*/);
+		FRf.move_to(FR.get_x(), FR.get_y());
+		FRr.move_to(FR.get_x(), FR.get_y());
+		FLf.move_to(FL.get_x(), FL.get_y());
+		FLr.move_to(FL.get_x(), FL.get_y());
 	}
 }
 
@@ -68,8 +72,22 @@ void initLegs(){
 	FLf.set_PID_from_file("/local/PID_FLf.txt");
 	FLr.set_PID_from_file("/local/PID_FLr.txt");
 
+	FRf.set_dependencies(&MRmode);
+	FRr.set_dependencies(&MRmode);
+	FLf.set_dependencies(&MRmode);
+	FLr.set_dependencies(&MRmode);
 	FR.set_dependencies(&MRmode, &CANcmd);
 	FL.set_dependencies(&MRmode, &CANcmd);
+}
+
+
+void set_limits(){
+	FRf.set_limits();
+	FRr.set_limits();
+	FLf.set_limits();
+	FLr.set_limits();
+	FR.set_limits();
+	FL.set_limits();
 }
 
 

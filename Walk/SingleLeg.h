@@ -30,6 +30,7 @@ public:
 	SingleLeg(LegPosition arg_fr, LegPosition arg_rl, float hrz_base, float vrt_base);
 	//~SingleLeg();
 	void unitize(PwmOut *motor, SingleLegQEI *enc, InitSwitch *sw);
+	void set_dependencies(MRMode *mode);
 
 	//x反転する
 	void move_to(float arg_x, float arg_y);
@@ -53,7 +54,8 @@ public:
 
 	void set_PID_from_file(const char *fileName);
 	void set_PID(float Kp, float Ki, float Kd);
-	void set_limit(int d_max, int d_min);
+	void set_limits();
+	void set_duty_limit(int d_max, int d_min);
 	void reset_duty();
 	void reset_duty(float reset);
 
@@ -70,6 +72,7 @@ private:
 	PwmOut *motor;
 	SingleLegQEI *enc;
 	InitSwitch *sw;
+	MRMode *MRmode;
 	LegPID legPID;
 };
 

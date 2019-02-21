@@ -89,6 +89,7 @@ public:
 
 	MRMode(CANCommand *command, enum Area init_area, bool operate);
 	void update();
+	bool is_switched();
 
 	Area get_area(enum Reference ref);
 //	float get_lim_x_max(enum Reference ref);
@@ -109,10 +110,10 @@ public:
 private:
 	CANCommand *CANcmd;
 	Area area[MRMode::Reference_end];
-//	Limits *limit[MRMode::Reference_end];
-//	ToesInfo *toeinfo[MRMode::Reference_end];
+	Area roop_prev, roop_now;//前回と今回のループでのモード
 	struct{
 		bool operate;//手動
+		bool switched;//モードが切り替わった直後
 	}flag;
 };
 
