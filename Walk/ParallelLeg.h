@@ -27,11 +27,14 @@ public:
 	void set_x_lim(float xmax, float xmin);
 	void set_y_lim(float ymax, float ymin);
 	void set_limits();
+
 	void set_x_initial(float x_initial);
 	void set_y_initial(float y_initial);
 	void set_initial(float x_initial, float y_initial);
 	void set_high(float high);
 	void set_gradient(float grad);
+	void set_orbits();
+
 	void set_period(float p);
 	void set_duty(float d);
 

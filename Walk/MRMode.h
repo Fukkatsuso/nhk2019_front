@@ -49,7 +49,7 @@ struct Limits{
 	}x, y, angle, duty;
 };
 
-struct ToesInfo{
+struct Orbits{
 	float gradient; //フィールド勾配
 	float init; //足先の初期位置
 	float high; //足先を上げるときの最大高さ
@@ -105,7 +105,7 @@ public:
 	float get_gradient(enum Reference ref);
 	float get_init(enum Reference ref);
 	float get_high(enum Reference ref);
-	ToesInfo *get_toesInfo(enum Area area);
+	Orbits *get_orbits (enum Area area);
 
 private:
 	CANCommand *CANcmd;

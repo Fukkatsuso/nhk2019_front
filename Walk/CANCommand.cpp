@@ -39,9 +39,16 @@ bool CANID_is_to(int id, CANID::To to)
 	return ((id&0x010) == (to&0x010));
 }
 
+
 CANCommand::CANCommand(CAN *can)
 {
 	this->can = can;
+	//一応初期化
+	rcvData[CANID::Period] = 0;
+	rcvData[CANID::Duty] = 1;
+	rcvData[CANID::Speed] = 0;
+	rcvData[CANID::Direction] = 0;
+	rcvData[CANID::Time] = 0;
 }
 
 

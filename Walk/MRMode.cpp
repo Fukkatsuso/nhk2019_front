@@ -31,7 +31,7 @@ Limits limits[MRMode::Area_end] =
 				{{}, {}, {}, {}}	//Finish2
 		};
 
-ToesInfo toesInfo[MRMode::Area_end] =
+Orbits orbits[MRMode::Area_end] =
 		{		//gradient, init, high
 				{0,		280, 	10},	//WaitGobiUrtuu
 				{0, 	280, 	10},	//GetGerege
@@ -129,6 +129,6 @@ Limits* MRMode::get_limits(enum Area area){
 //
 //}
 
-ToesInfo* MRMode::get_toesInfo(enum Area area){
-	return &toesInfo[area];
+Orbits* MRMode::get_orbits(enum Area area){
+	return &orbits[area];
 }

@@ -92,6 +92,7 @@ void ParallelLeg::walk(float spd, float dir, float tm)
 	x.pos.now = x.pos.next;
 	y.pos.now = y.pos.next;
 	calc_dt(tm);//時刻更新
+	////////////////////////////////
 	set_timing();//足上げタイミング等計算
 	walk_mode();//足のモード
 	check_flag();//if(flag.stay)mode = Move; を含める?
@@ -101,6 +102,7 @@ void ParallelLeg::walk(float spd, float dir, float tm)
 
 void ParallelLeg::walk()
 {
+	set_period(CANcmd->get(CANID::Period)); set_duty(CANcmd->get(CANID::Duty));
 	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction), CANcmd->get(CANID::Time));
 }
 
