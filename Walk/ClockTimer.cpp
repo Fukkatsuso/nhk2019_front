@@ -24,8 +24,10 @@ void ClockTimer::reset()
 
 void ClockTimer::calc_dt()
 {
-	timer.dif = read() - timer.prev;
-	timer.prev = read();
+	float now = read();
+	timer.dif = now - timer.prev;
+	if(timer.dif<0)timer.dif = now;
+	timer.prev = now;
 }
 
 

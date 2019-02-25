@@ -39,6 +39,11 @@ bool CANID_is_to(int id, CANID::To to)
 	return ((id&0x010) == (to&0x010));
 }
 
+bool CANID_is_type(int id, CANID::DataType type)
+{
+	return ((id&0x001) == (type&0x001));
+}
+
 
 CANCommand::CANCommand(CAN *can)
 {

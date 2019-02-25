@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../Walk/CANCommand.cpp \
+../Walk/ClockTimer.cpp \
 ../Walk/ForwardKinematics.cpp \
 ../Walk/InverseKinematics.cpp \
 ../Walk/LegPID.cpp \
@@ -14,6 +15,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./Walk/CANCommand.o \
+./Walk/ClockTimer.o \
 ./Walk/ForwardKinematics.o \
 ./Walk/InverseKinematics.o \
 ./Walk/LegPID.o \
@@ -23,6 +25,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./Walk/CANCommand.d \
+./Walk/ClockTimer.d \
 ./Walk/ForwardKinematics.d \
 ./Walk/InverseKinematics.d \
 ./Walk/LegPID.d \

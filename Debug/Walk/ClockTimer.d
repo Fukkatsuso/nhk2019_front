@@ -1,5 +1,5 @@
-Walk/ParallelLeg.o Walk/ParallelLeg.d: ../Walk/ParallelLeg.cpp \
- ../Walk/ParallelLeg.h \
+Walk/ClockTimer.o Walk/ClockTimer.d: ../Walk/ClockTimer.cpp \
+ ../Walk/ClockTimer.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/mbed.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/platform.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\targets\hal\TARGET_NXP\TARGET_LPC176X/device.h \
@@ -69,11 +69,9 @@ Walk/ParallelLeg.o Walk/ParallelLeg.d: ../Walk/ParallelLeg.cpp \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\hal/gpio_irq_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/wait_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\hal/sleep_api.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/rtc_time.h \
- ../Walk/MRMode.h ../Walk/CANCommand.h ../Walk/ClockTimer.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/functions.h
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/rtc_time.h
 
-../Walk/ParallelLeg.h:
+../Walk/ClockTimer.h:
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/mbed.h:
 
@@ -214,11 +212,3 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\hal/sleep_api.h:
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1\mbed-src\api/rtc_time.h:
-
-../Walk/MRMode.h:
-
-../Walk/CANCommand.h:
-
-../Walk/ClockTimer.h:
-
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2v_1/functions.h:

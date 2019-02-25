@@ -104,6 +104,11 @@ void CANrcv(){
 		if(CANID_is_from(rcvMsg.id, CANID::FromMaster) && CANID_is_to(rcvMsg.id, CANID::ToSlaveAll)){
 			//歩行パラメータ取得
 			CANcmd.receive(rcvMsg.id, rcvMsg.data);
+			if(CANID_is_type(rcvMsg.id, CANID::TimerReset) && CANcmd.get(CANID::TimerReset)){
+				//タイマーリセット
+				timer_FR.reset();
+				timer_FL.reset();
+			}
 		}
 	}
 }

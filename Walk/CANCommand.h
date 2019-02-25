@@ -53,6 +53,7 @@ int CANID_generate(CANID::From from, CANID::To to);
 int CANID_generate(CANID::From from, CANID::To to, CANID::DataType type);
 bool CANID_is_from(int id, CANID::From from);
 bool CANID_is_to(int id, CANID::To to);
+bool CANID_is_type(int id, CANID::DataType type);
 
 
 /*
