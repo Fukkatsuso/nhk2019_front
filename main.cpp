@@ -1,5 +1,6 @@
 #include "mbed.h"
 #include "Pins.h"
+#include "Walk/ClockTimer.h"
 #include "Walk/SingleLeg.h"
 #include "Walk/ParallelLeg.h"
 #include "Walk/MRMode.h"
@@ -17,6 +18,8 @@ CANMessage rcvMsg;
 CANCommand CANcmd(&can);
 MRMode MRmode(&CANcmd, MRMode::GobiArea, true);//実行の度に要確認
 
+ClockTimer timer_FR;
+ClockTimer timer_FL;
 SingleLeg FRf(Front, Right, BASE_X, 0);
 SingleLeg FRr(Rear, Right, -BASE_X, 0);
 ParallelLeg FR(Front, Right, 200, 200);
@@ -81,8 +84,8 @@ void initLegs(){
 	FRr.set_dependencies(&MRmode);
 	FLf.set_dependencies(&MRmode);
 	FLr.set_dependencies(&MRmode);
-	FR.set_dependencies(&MRmode, &CANcmd);
-	FL.set_dependencies(&MRmode, &CANcmd);
+	FR.set_dependencies(&timer_FR, &MRmode, &CANcmd);
+	FL.set_dependencies(&timer_FL, &MRmode, &CANcmd);
 }
 
 

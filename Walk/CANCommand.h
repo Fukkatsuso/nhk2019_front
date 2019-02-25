@@ -42,7 +42,7 @@ struct CANID{
 		Duty,
 		Speed,
 		Direction,
-		Time,
+		TimerReset,
 		Area,
 		Gait,
 		DataType_end//<=0x00f=15 に制限（仕様上）

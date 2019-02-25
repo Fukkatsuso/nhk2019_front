@@ -10,6 +10,7 @@
 
 #include "mbed.h"
 #include "MRMode.h"
+#include "ClockTimer.h"
 #include "CANCommand.h"
 
 //絶対固定
@@ -22,7 +23,7 @@ class ParallelLeg
 {
 public:
 	ParallelLeg(int fr, int rl, float pos_x, float pos_y);
-	void set_dependencies(MRMode *mode, CANCommand *command);
+	void set_dependencies(ClockTimer *tm_period, MRMode *mode, CANCommand *command);
 
 	void set_x_lim(float xmax, float xmin);
 	void set_y_lim(float ymax, float ymin);
@@ -57,7 +58,7 @@ public:
 protected:
 	void mrmode_update(); //まだ書いてない。MRModeの更新を反映させる
 	float curve_adjust(float value);
-	void calc_dt(float tm);
+//	void calc_dt(float tm);
 	void set_timing();
 	void walk_mode();
 	void check_flag();
@@ -70,6 +71,7 @@ private:
 	const short fr;
 	const short rl;
 
+	ClockTimer *timer_period;
 	MRMode *MRmode;
 	float gradient; //フィールド勾配
 	float high;	//振り上げ高さ
@@ -100,18 +102,19 @@ private:
 	short mode_prv;
 
 	struct{
+		bool timer_reset;//タイマーリセットの指令があるか//使うか未定
 		bool recovery;//復帰完了
 		bool stay_command;//静止コマンド
-		bool stay;//静止状態
+		bool stay;//静止状態	CANで送信するプログラムを実装せねば
 		bool first_cycle;//最初の歩行サイクル
 		bool climb;//登山
 	}flag;
 
-	struct{
-		float prv;
-		float now;
-		float dif;
-	}time;
+//	struct{
+//		float prv;
+//		float now;
+//		float dif;
+//	}time;
 };
 
 

@@ -14,7 +14,7 @@ short CANFormats[CANID::DataType_end][CANCommand::FormatType::FormatType_end] =
 		{CANID::Duty,		1,	4},	//Duty
 		{CANID::Speed,		3,	4},	//Speed
 		{CANID::Direction,	2,	4},	//Direction
-		{CANID::Time,		2,	4},	//Time
+		{CANID::TimerReset,	1,	0},	//TimerReset
 		{CANID::Area,		2,	0},	//Area
 		{CANID::Gait,		1,	0}	//Gait
 };
@@ -48,7 +48,6 @@ CANCommand::CANCommand(CAN *can)
 	rcvData[CANID::Duty] = 1;
 	rcvData[CANID::Speed] = 0;
 	rcvData[CANID::Direction] = 0;
-	rcvData[CANID::Time] = 0;
 }
 
 

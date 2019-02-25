@@ -16,14 +16,16 @@ ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
 {
 	speed = 0;
 
+	flag.timer_reset = true;
 	flag.recovery = true;
 	flag.stay_command = true;
 	flag.stay = true;
 	flag.first_cycle = true;
 }
 
-void ParallelLeg::set_dependencies(MRMode *mode, CANCommand *command)
+void ParallelLeg::set_dependencies(ClockTimer *tm_period, MRMode *mode, CANCommand *command)
 {
+	this->timer_period = tm_period;
 	this->MRmode = mode;
 	this->CANcmd = command;
 	set_limits();
@@ -91,7 +93,8 @@ void ParallelLeg::walk(float spd, float dir, float tm)
 	speed = curve_adjust(spd);
 	x.pos.now = x.pos.next;
 	y.pos.now = y.pos.next;
-	calc_dt(tm);//時刻更新
+	timer_period->calc_dt();
+//	calc_dt(tm);//時刻更新
 	////////////////////////////////
 	set_timing();//足上げタイミング等計算
 	walk_mode();//足のモード
@@ -103,7 +106,7 @@ void ParallelLeg::walk(float spd, float dir, float tm)
 void ParallelLeg::walk()
 {
 	set_period(CANcmd->get(CANID::Period)); set_duty(CANcmd->get(CANID::Duty));
-	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction), CANcmd->get(CANID::Time));
+	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction), timer_period->read());
 }
 
 //斜め方向に歩くとき
@@ -114,13 +117,14 @@ float ParallelLeg::curve_adjust(float value)
 	return value;
 }
 
-void ParallelLeg::calc_dt(float tm)
-{
-	time.prv = time.now;
-	time.now = tm;
-	if(time.now < time.prv)time.prv = 0.0;//タイマーリセットの次の瞬間
-	time.dif = time.now - time.prv;
-}
+//void ParallelLeg::calc_dt(float tm)
+//{
+//	time.prv = time.now;
+//	time.now = tm;
+//	if(time.now < time.prv)time.prv = 0.0;//タイマーリセットの次の瞬間
+//	time.dif = time.now - time.prv;
+//}
+
 
 void ParallelLeg::set_timing()
 {
@@ -153,17 +157,18 @@ void ParallelLeg::set_timing()
 void ParallelLeg::walk_mode()
 {
 	mode_prv = mode;
+	float now = timer_period->read();
 
-	if(timing[0]<=time.now && time.now<timing[1]){
+	if(timing[0]<=now && now<timing[1]){
 		if(timing[2]<=timing[3])mode = Move;//case:beta>=0.75
-		else if(time.now<(timing[2]-timing[3]) && !flag.first_cycle)mode = Down;
+		else if(timer_period->read()<(timing[2]-timing[3]) && !flag.first_cycle)mode = Down;
 		else mode = Move;
 		//mode = Move;
 	}
 	//timing[1]とtiming[2]をLEGUP_TIME:LEGDOWN_TIMEに内分
-	else if(timing[1]<=time.now && time.now<(LEGDOWN_TIME*timing[1]+LEGUP_TIME*timing[2])/(LEGUP_TIME+LEGDOWN_TIME))mode = Up;
-	else if((LEGDOWN_TIME*timing[1]+LEGUP_TIME*timing[2])/(LEGUP_TIME+LEGDOWN_TIME)<=time.now && time.now<timing[2])mode = Down;
-	else if(time.now>=timing[2])mode = Move;
+	else if(timing[1]<=now && now<(LEGDOWN_TIME*timing[1]+LEGUP_TIME*timing[2])/(LEGUP_TIME+LEGDOWN_TIME))mode = Up;
+	else if((LEGDOWN_TIME*timing[1]+LEGUP_TIME*timing[2])/(LEGUP_TIME+LEGDOWN_TIME)<=now && now<timing[2])mode = Down;
+	else if(now>=timing[2])mode = Move;
 	else mode = Move;
 }
 
@@ -226,7 +231,7 @@ void ParallelLeg::calc_step()
 
 void ParallelLeg::calc_vel_recovery()
 {
-	float tm = time.now - timing[1];
+	float tm = timer_period->read() - timing[1];
 	float Ty = (1.0-duty)*period;//遊脚時間
 	//x速度計算
 	x.vel = ((step-x.pos.recover_start)/Ty) * (1.0 - cos(2.0*M_PI*tm/Ty)/duty);//計算改良1
@@ -241,8 +246,8 @@ void ParallelLeg::calc_vel_recovery()
 
 void ParallelLeg::calc_position()
 {
-	x.pos.dif += x.vel*time.dif;
-	y.pos.dif += y.vel*time.dif;
+	x.pos.dif += x.vel*timer_period->get_dt();
+	y.pos.dif += y.vel*timer_period->get_dt();
 	if(fabs(y.vel)==0)y.pos.dif = 0;
 	x.pos.next = limit(x.pos.init + x.pos.dif, x.pos.max, x.pos.min);
 	y.pos.next = limit(y.pos.init + y.pos.dif, y.pos.max, y.pos.min);
