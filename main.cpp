@@ -6,6 +6,11 @@
 #include "Walk/CANCommand.h"
 #include "Walk/ForwardKinematics.h"
 
+/*
+ * 歩行計画
+ * デューティー比をベースにして歩行速度を決定する
+ */
+
 LocalFileSystem local("local");
 
 CANMessage rcvMsg;
