@@ -1,5 +1,5 @@
-Walk/CANs/CANCommand.o Walk/CANs/CANCommand.d: \
- ../Walk/CANs/CANCommand.cpp ../Walk/CANs/CANCommand.h \
+Walk/CANs/CANProtocol.o Walk/CANs/CANProtocol.d: \
+ ../Walk/CANs/CANProtocol.cpp ../Walk/CANs/CANProtocol.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/mbed.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/platform.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\targets\hal\TARGET_NXP\TARGET_LPC176X/device.h \
@@ -71,7 +71,7 @@ Walk/CANs/CANCommand.o Walk/CANs/CANCommand.d: \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\hal/sleep_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/rtc_time.h
 
-../Walk/CANs/CANCommand.h:
+../Walk/CANs/CANProtocol.h:
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/mbed.h:
 

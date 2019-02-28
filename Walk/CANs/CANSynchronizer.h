@@ -10,6 +10,7 @@
 
 #include "CANProtocol.h"
 
+
 class CANSynchronizer : public CANProtocol
 {
 public:
