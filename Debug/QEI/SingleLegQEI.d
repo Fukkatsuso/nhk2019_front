@@ -70,7 +70,8 @@ QEI/SingleLegQEI.o QEI/SingleLegQEI.d: ../QEI/SingleLegQEI.cpp \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/wait_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\hal/sleep_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/rtc_time.h \
- ../QEI/QEI_freePin.h ../QEI/QEI.h
+ ../QEI/QEI_freePin.h ../QEI/QEI.h \
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/Walk/Protected/LegConst.h
 
 ../QEI/SingleLegQEI.h:
 
@@ -217,3 +218,5 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 ../QEI/QEI_freePin.h:
 
 ../QEI/QEI.h:
+
+C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/Walk/Protected/LegConst.h:

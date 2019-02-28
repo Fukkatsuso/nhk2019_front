@@ -11,8 +11,6 @@
 #include "mbed.h"
 #include "QEI_freePin.h"
 
-#define OFFSET_ENC (85.0*400.0/180.0)//鉛直方向とのオフセット角度をパルスに変換//180°=400pulses
-
 
 class SingleLegQEI : public QEI_freePin
 {

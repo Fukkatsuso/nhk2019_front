@@ -7,6 +7,13 @@
 
 #include "InverseKinematics.h"
 #include "functions.h"
+#include "LegConst.h"
+
+
+const float InverseKinematics::l_upper = LEG_UPPER;
+const float InverseKinematics::l_fore = LEG_FORE;
+
+
 
 /************
  * 			*
@@ -19,17 +26,18 @@ InverseKinematics::InverseKinematics(float x_base, float y_base)
 	y.base = y_base;
 }
 
+
+//static void InverseKinematics::lengths(float upper, float fore)
+//{
+//	l_upper = upper;
+//	l_fore = fore;
+//}
+
+
 void InverseKinematics::set_angle_limit(float angle_max, float angle_min)
 {
 	angle_base_max = angle_max;
 	angle_base_min = angle_min;
-}
-
-
-void InverseKinematics::lengths(float upper, float fore)
-{
-	l_upper = upper;
-	l_fore = fore;
 }
 
 

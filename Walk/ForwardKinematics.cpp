@@ -7,29 +7,29 @@
 
 #include "ForwardKinematics.h"
 #include "functions.h"
+#include "Protected/LegConst.h"
+
+
+const float ForwardKinematics::LegInfo::upper = LEG_UPPER;
+const float ForwardKinematics::LegInfo::fore = LEG_FORE;
 
 
 ForwardKinematics::ForwardKinematics(){}
 
 
-void ForwardKinematics::set_f(float base_x, float base_y, float upper, float fore, SingleLegQEI *enc)
+void ForwardKinematics::set_f(float base_x, float base_y, SingleLegQEI *enc)
 {
-
-	front.upper = upper;
-	front.fore = fore;
-	front.enc = enc;
 	front.x.base = base_x;
 	front.y.base = base_y;
+	front.enc = enc;
 }
 
 
-void ForwardKinematics::set_r(float base_x, float base_y, float upper, float fore, SingleLegQEI *enc)
+void ForwardKinematics::set_r(float base_x, float base_y, SingleLegQEI *enc)
 {
-	rear.upper = upper;
-	rear.fore = fore;
-	rear.enc = enc;
 	rear.x.base = base_x;
 	rear.y.base = base_y;
+	rear.enc = enc;
 }
 
 

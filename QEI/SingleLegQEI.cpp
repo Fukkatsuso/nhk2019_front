@@ -6,6 +6,7 @@
  */
 
 #include "SingleLegQEI.h"
+#include "Walk/Protected/LegConst.h"
 
 
 SingleLegQEI::SingleLegQEI(PinName channelA, PinName channelB):

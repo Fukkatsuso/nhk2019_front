@@ -13,11 +13,6 @@
 #include "ClockTimer.h"
 //#include "CANCommand.h"
 
-//絶対固定
-#define BASE_X 20
-#define LEG_UPPER 135
-#define LEG_FORE 160
-
 
 class ParallelLeg
 {

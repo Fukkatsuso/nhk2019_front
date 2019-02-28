@@ -17,11 +17,12 @@ public:
 	//引数：アームの根元のxy座標。固定。
 	InverseKinematics(float x_base, float y_base);
 
+	//upper, fore は静的メンバ変数にした。いちいち定義しない
+	//アームの長さ：根元から順に2つ
+//	static void lengths(float upper, float fore);
+
 	//角度制限
 	void set_angle_limit(float angle_max, float angle_min);
-
-	//アームの長さ：根元から順に2つ
-	void lengths(float upper, float fore);
 
 	//指定の座標xyに動かすための、アームの角度(x軸とのなす角)を計算して返す
 	float move_to(float arg_x, float arg_y);
@@ -37,8 +38,8 @@ protected:
 	}x, y;
 
 private:
-	float l_upper;		//アームの根元側の長さ
-	float l_fore;		//アームの先端側の長さ
+	static const float l_upper;		//アームの根元側の長さ
+	static const float l_fore;		//アームの先端側の長さ
 
 	float angle_base;	//根元の角度。x軸とのなす角
 	float angle_base_max;

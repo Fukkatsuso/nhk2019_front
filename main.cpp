@@ -11,7 +11,7 @@
  * デューティー比をベースにして歩行速度を決定する
  */
 
-LocalFileSystem local("local");
+LocalFileSystem local("local");//PIDゲイン調整に使用
 
 CANMessage rcvMsg;
 MRMode MRmode(MRMode::GobiArea, true);//実行の度に要確認
@@ -69,10 +69,6 @@ void initLegs(){
 	FRr.unitize(&motor_FRr, &enc_FRr, &sw_FRr);
 	FLf.unitize(&motor_FLf, &enc_FLf, &sw_FLf);
 	FLr.unitize(&motor_FLr, &enc_FLr, &sw_FLr);
-	FRf.lengths(LEG_UPPER, LEG_FORE);
-	FRr.lengths(LEG_UPPER, LEG_FORE);
-	FLf.lengths(LEG_UPPER, LEG_FORE);
-	FLr.lengths(LEG_UPPER, LEG_FORE);
 	FRf.set_PID_from_file("/local/PID_FRf.txt");
 	FRr.set_PID_from_file("/local/PID_FRr.txt");
 	FLf.set_PID_from_file("/local/PID_FLf.txt");

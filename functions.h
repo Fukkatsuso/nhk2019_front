@@ -14,16 +14,16 @@
 
 
 //リミット:int
-int limit(int value, int max, int min);
+extern int limit(int value, int max, int min);
 
 //リミット:double
-double limit(double value, double max, double min);
+extern double limit(double value, double max, double min);
 
 //二乗和平方根
-float sqrt2(float a, float b);
+extern float sqrt2(float a, float b);
 
 //余弦定理
-float cos_formula(float A1, float A2, float B);
+extern float cos_formula(float A1, float A2, float B);
 
 
 #endif /* FUNCTIONS_H_ */

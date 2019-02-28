@@ -7,6 +7,8 @@
 
 #include "SingleLeg.h"
 
+//絶対固定
+#define BASE_X 20
 
 //π = 180°
 float rad_to_degree(float rad)

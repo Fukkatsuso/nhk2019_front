@@ -10,11 +10,13 @@
 #define WALK_SINGLELEG_H_
 
 #include "mbed.h"
-#include "InverseKinematics.h"
-#include "SingleLegQEI.h"
+#include "Protected/LegConst.h"
+#include "Protected/InverseKinematics.h"
+#include "QEI/SingleLegQEI.h"
 #include "InitSwitch.h"
 #include "LegPID.h"
 #include "MRMode.h"
+
 
 #define ANGLE_MAX 84.6f//degree
 #define ANGLE_MIN -13.05f//degree
