@@ -9,7 +9,6 @@
 #define WALK_MRMODE_H_
 
 #include "mbed.h"
-#include "CANCommand.h"
 
 //脚持ち上げ:脚下げ = LEGUP:LEGDOWN
 #define LEGUP_MOVE 4.0f
@@ -87,7 +86,7 @@ public:
 		Reference_end
 	};
 
-	MRMode(CANCommand *command, enum Area init_area, bool operate);
+	MRMode(enum Area init_area, bool operate);
 	void update();
 	bool is_switched();
 
@@ -108,7 +107,6 @@ public:
 	Orbits *get_orbits (enum Area area);
 
 private:
-	CANCommand *CANcmd;
 	Area area[MRMode::Reference_end];
 	Area roop_prev, roop_now;//前回と今回のループでのモード
 	struct{

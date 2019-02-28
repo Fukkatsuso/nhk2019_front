@@ -1,51 +1,83 @@
 /*
- * CANCommand.cpp
+ * CANProtocol.h
  *
- *  Created on: 2019/02/18
+ *  Created on: 2019/02/28
  *      Author: mutsuro
  */
 
-#include "CANCommand.h"
+#ifndef WALK_CANS_CANPROTOCOL_H_
+#define WALK_CANS_CANPROTOCOL_H_
 
+#include "mbed.h"
 
-short CANFormats[CANID::DataType_end][CANCommand::FormatType::FormatType_end] =
-{		//ID,				Len_integer,	Len_fraction
-		{CANID::Period,		1,	4},	//Period
-		{CANID::Duty,		1,	4},	//Duty
-		{CANID::Speed,		3,	4},	//Speed
-		{CANID::Direction,	2,	4},	//Direction
-		{CANID::TimerReset,	1,	0},	//TimerReset
-		{CANID::Area,		2,	0},	//Area
-		{CANID::Gait,		1,	0},	//Gait
-		{CANID::LegState,	1,	0}	//LegState
+struct CANID{
+	enum From{
+		FromMaster = 0x000,
+		FromSlave = 0x100,
+		FromFront = 0x200,
+		FromRear = 0x300,
+		FromFR = 0x400,
+		FromFL = 0x500,
+		FromRR = 0x600,
+		FromRL = 0x700
+	};
+	enum To{
+		ToMaster = 0x000,
+		ToSlaveAll = 0x010,
+		ToFront = 0x020,
+		ToRear = 0x030,
+		ToFR = 0x040,
+		ToFL = 0x050,
+		ToRR = 0x060,
+		ToRL = 0x070
+	};
+	enum DataType{
+		Period=0,
+		Duty,
+		Speed,
+		Direction,
+		TimerReset,
+		Area,
+		Gait,//番号で歩容を見る	//保留
+		LegState,//Slaveから送信	//保留
+		DataType_end//<=0x00f=15 に制限（仕様上）
+	};
 };
 
-int CANID_generate(CANID::From from, CANID::To to)
-{
-	return ((from&0x100) | (to&0x010));
-}
-
-int CANID_generate(CANID::From from, CANID::To to, CANID::DataType type)
-{
-	return ((from&0x100) | (to&0x010) | (type&0x001));
-}
-
-bool CANID_is_from(int id, CANID::From from)
-{
-	return ((id&0x100) == (from&0x100));
-}
-
-bool CANID_is_to(int id, CANID::To to)
-{
-	return ((id&0x010) == (to&0x010));
-}
-
-bool CANID_is_type(int id, CANID::DataType type)
-{
-	return ((id&0x001) == (type&0x001));
-}
+int CANID_generate(CANID::From from, CANID::To to);
+int CANID_generate(CANID::From from, CANID::To to, CANID::DataType type);
+bool CANID_is_from(int id, CANID::From from);
+bool CANID_is_to(int id, CANID::To to);
+bool CANID_is_type(int id, CANID::DataType type);
 
 
+class CANProtocol{
+protected:
+	CAN *can;
+
+	static struct FormatType{
+		enum{
+			ID=0, //ID
+			Len_integer, //整数部分長
+			Len_fraction, //小数部分長
+			FormatType_end
+		};
+	};
+
+	static short CANFormats[CANID::DataType_end][FormatType::FormatType_end] =
+	{		//ID,				Len_integer,	Len_fraction
+			{CANID::Period,		1,	4},	//Period
+			{CANID::Duty,		1,	4},	//Duty
+			{CANID::Speed,		3,	4},	//Speed
+			{CANID::Direction,	2,	4},	//Direction
+			{CANID::TimerReset,	1,	0},	//TimerReset
+			{CANID::Area,		2,	0},	//Area
+			{CANID::Gait,		1,	0},	//Gait
+			{CANID::LegState,	1,	0}	//LegState
+	};
+};
+
+/*
 CANCommand::CANCommand(CAN *can)
 {
 	this->can = can;
@@ -142,3 +174,6 @@ float CANCommand::decode_from_array(unsigned char array[], int len_i, int len_f)
 	if(array[0])value *= -1;
 	return value;
 }
+*/
+
+#endif /* WALK_CANS_CANPROTOCOL_H_ */

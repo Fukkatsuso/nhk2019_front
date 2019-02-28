@@ -26,6 +26,7 @@ C_DEPS :=
 SUBDIRS := \
 . \
 QEI \
+Walk/CANs \
 Walk \
 mbed-src/common \
 mbed-src/targets/cmsis/TARGET_NXP/TARGET_LPC176X/TOOLCHAIN_GCC_CR \

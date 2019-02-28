@@ -11,7 +11,7 @@
 #include "mbed.h"
 #include "MRMode.h"
 #include "ClockTimer.h"
-#include "CANCommand.h"
+//#include "CANCommand.h"
 
 //絶対固定
 #define BASE_X 20
@@ -23,7 +23,7 @@ class ParallelLeg
 {
 public:
 	ParallelLeg(int fr, int rl, float pos_x, float pos_y);
-	void set_dependencies(ClockTimer *tm_period, MRMode *mode, CANCommand *command);
+	void set_dependencies(ClockTimer *tm_period, MRMode *mode);
 
 	void set_x_lim(float xmax, float xmin);
 	void set_y_lim(float ymax, float ymin);
@@ -76,7 +76,6 @@ private:
 	float gradient; //フィールド勾配
 	float high;	//振り上げ高さ
 
-	CANCommand *CANcmd;
 	float period;
 	float duty;
 	float speed;

@@ -4,7 +4,6 @@
 #include "Walk/SingleLeg.h"
 #include "Walk/ParallelLeg.h"
 #include "Walk/MRMode.h"
-#include "CANs/CANCommand.h"
 #include "Walk/ForwardKinematics.h"
 
 /*
@@ -15,8 +14,7 @@
 LocalFileSystem local("local");
 
 CANMessage rcvMsg;
-CANCommand CANcmd(&can);
-MRMode MRmode(&CANcmd, MRMode::GobiArea, true);//実行の度に要確認
+MRMode MRmode(MRMode::GobiArea, true);//実行の度に要確認
 
 ClockTimer timer_FR;
 ClockTimer timer_FL;
@@ -84,8 +82,8 @@ void initLegs(){
 	FRr.set_dependencies(&MRmode);
 	FLf.set_dependencies(&MRmode);
 	FLr.set_dependencies(&MRmode);
-	FR.set_dependencies(&timer_FR, &MRmode, &CANcmd);
-	FL.set_dependencies(&timer_FL, &MRmode, &CANcmd);
+	FR.set_dependencies(&timer_FR, &MRmode);
+	FL.set_dependencies(&timer_FL, &MRmode);
 }
 
 
@@ -101,14 +99,14 @@ void set_limits(){
 
 void CANrcv(){
 	if(can.read(rcvMsg)){
-		if(CANID_is_from(rcvMsg.id, CANID::FromMaster) && CANID_is_to(rcvMsg.id, CANID::ToSlaveAll)){
-			//歩行パラメータ取得
-			CANcmd.receive(rcvMsg.id, rcvMsg.data);
-			if(CANID_is_type(rcvMsg.id, CANID::TimerReset) && CANcmd.get(CANID::TimerReset)){
-				//タイマーリセット
-				timer_FR.reset();
-				timer_FL.reset();
-			}
-		}
+//		if(CANID_is_from(rcvMsg.id, CANID::FromMaster) && CANID_is_to(rcvMsg.id, CANID::ToSlaveAll)){
+//			//歩行パラメータ取得
+//			CANcmd.receive(rcvMsg.id, rcvMsg.data);
+//			if(CANID_is_type(rcvMsg.id, CANID::TimerReset) && CANcmd.get(CANID::TimerReset)){
+//				//タイマーリセット
+//				timer_FR.reset();
+//				timer_FL.reset();
+//			}
+//		}
 	}
 }

@@ -23,11 +23,10 @@ ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
 	flag.first_cycle = true;
 }
 
-void ParallelLeg::set_dependencies(ClockTimer *tm_period, MRMode *mode, CANCommand *command)
+void ParallelLeg::set_dependencies(ClockTimer *tm_period, MRMode *mode)
 {
 	this->timer_period = tm_period;
 	this->MRmode = mode;
-	this->CANcmd = command;
 	set_limits();
 }
 
@@ -105,8 +104,8 @@ void ParallelLeg::walk(float spd, float dir, float tm)
 
 void ParallelLeg::walk()
 {
-	set_period(CANcmd->get(CANID::Period)); set_duty(CANcmd->get(CANID::Duty));
-	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction), timer_period->read());
+//	set_period(CANcmd->get(CANID::Period)); set_duty(CANcmd->get(CANID::Duty));
+//	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction), timer_period->read());
 }
 
 //斜め方向に歩くとき
