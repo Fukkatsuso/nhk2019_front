@@ -16,7 +16,8 @@ short CANFormats[CANID::DataType_end][CANCommand::FormatType::FormatType_end] =
 		{CANID::Direction,	2,	4},	//Direction
 		{CANID::TimerReset,	1,	0},	//TimerReset
 		{CANID::Area,		2,	0},	//Area
-		{CANID::Gait,		1,	0}	//Gait
+		{CANID::Gait,		1,	0},	//Gait
+		{CANID::LegState,	1,	0}	//LegState
 };
 
 int CANID_generate(CANID::From from, CANID::To to)

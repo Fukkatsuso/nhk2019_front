@@ -4,7 +4,7 @@
 #include "Walk/SingleLeg.h"
 #include "Walk/ParallelLeg.h"
 #include "Walk/MRMode.h"
-#include "Walk/CANCommand.h"
+#include "CANs/CANCommand.h"
 #include "Walk/ForwardKinematics.h"
 
 /*
