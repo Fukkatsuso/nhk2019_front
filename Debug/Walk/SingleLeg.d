@@ -71,13 +71,14 @@ Walk/SingleLeg.o Walk/SingleLeg.d: ../Walk/SingleLeg.cpp \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\hal/sleep_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/rtc_time.h \
  ../Walk/Protected/LegConst.h ../Walk/Protected/InverseKinematics.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/QEI_freePin.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/QEI.h \
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/SingleLegQEI.h \
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/QEI_freePin.h \
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/QEI.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/InitSwitch.h \
  ../Walk/LegPID.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/PID.h \
- ../Walk/MRMode.h
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h \
+ ../Walk/MRMode.h ../Walk/CANs/CANReceiver.h ../Walk/CANs/CANProtocol.h
 
 ../Walk/SingleLeg.h:
 
@@ -225,11 +226,11 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 
 ../Walk/Protected/InverseKinematics.h:
 
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h:
+C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/SingleLegQEI.h:
 
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/QEI_freePin.h:
+C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/QEI_freePin.h:
 
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/QEI.h:
+C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/QEI.h:
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/InitSwitch.h:
 
@@ -237,4 +238,10 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/PID.h:
 
+C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h:
+
 ../Walk/MRMode.h:
+
+../Walk/CANs/CANReceiver.h:
+
+../Walk/CANs/CANProtocol.h:

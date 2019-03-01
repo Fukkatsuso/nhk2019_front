@@ -53,8 +53,9 @@ Orbits orbits[MRMode::Area_end] =
 		};
 
 
-MRMode::MRMode(enum Area init_area, bool operate=false)
+MRMode::MRMode(CANReceiver *rcv, enum Area init_area, bool operate=false)
 {
+	this->can_receiver = rcv;
 	area[Now] = area[Initial] = init_area;
 	flag.operate = operate;
 }
@@ -63,7 +64,7 @@ MRMode::MRMode(enum Area init_area, bool operate=false)
 //getする前に必ず実行すること
 void MRMode::update()
 {
-//	area[Now] = (Area)(CANcmd->get_area());//今のArea
+	area[Now] = (Area)(can_receiver->get_area());//今のArea
 	roop_prev = roop_now;	roop_now = area[Now];
 	flag.switched = (roop_now!=roop_prev);//Area切り替わりの判断
 	area[Prev] = (Area)((int)area[Now] - (((int)area[Now]>(int)area[Initial])? 1:0));//1つ前のArea

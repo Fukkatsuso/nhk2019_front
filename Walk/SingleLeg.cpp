@@ -63,6 +63,7 @@ void SingleLeg::move_to(float arg_x, float arg_y)
 	angle = rad_to_degree(angle);//degree
 
 	status.duty = 0.5 + (fr*rl)*legPID.calc_duty(angle);
+	motor->write(status.duty);
 }
 
 void SingleLeg::move_to(float arg_x, float arg_y, float duty_max, float duty_min)
@@ -71,13 +72,13 @@ void SingleLeg::move_to(float arg_x, float arg_y, float duty_max, float duty_min
 	SingleLeg::move_to(arg_x, arg_y);
 }
 
-//センサー更新・モーター駆動
+//センサー更新	//スイッチONでエンコーダーリセットの機能だけでも可?
 void SingleLeg::state_update()
 {
 	status.sw = sw->read();
 	if(status.sw)enc->reset();
-	status.enc = enc->getAngle();//[degree]
-	motor->write(status.duty);
+	status.enc = enc->getAngle();//[degree]	//不要な気がする
+//	motor->write(status.duty);	//move_to()で実行
 }
 
 

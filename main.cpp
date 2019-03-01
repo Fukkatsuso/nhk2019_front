@@ -1,5 +1,7 @@
 #include "mbed.h"
 #include "Pins.h"
+#include "Walk/CANs/CANReceiver.h"
+#include "Walk/CANs/CANSynchronizer.h"
 #include "Walk/ClockTimer.h"
 #include "Walk/SingleLeg.h"
 #include "Walk/ParallelLeg.h"
@@ -14,7 +16,10 @@
 LocalFileSystem local("local");//PIDゲイン調整に使用
 
 CANMessage rcvMsg;
-MRMode MRmode(MRMode::GobiArea, true);//実行の度に要確認
+CANReceiver can_receiver(&can);
+CANSynchronizer can_synchronizer(&can);
+
+MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
 
 ClockTimer timer_FR;
 ClockTimer timer_FL;
@@ -49,9 +54,11 @@ int main(){
 		MRmode.update();
 		if(MRmode.is_switched())set_limits();
 
+		//脚固定系座標での目標位置計算
 		FR.walk();
 		FL.walk();
 
+		//駆動
 		FRf.state_update();
 		FRr.state_update();
 		FLf.state_update();
@@ -95,14 +102,14 @@ void set_limits(){
 
 void CANrcv(){
 	if(can.read(rcvMsg)){
-//		if(CANID_is_from(rcvMsg.id, CANID::FromMaster) && CANID_is_to(rcvMsg.id, CANID::ToSlaveAll)){
-//			//歩行パラメータ取得
-//			CANcmd.receive(rcvMsg.id, rcvMsg.data);
+		if(CANID_is_from(rcvMsg.id, CANID::FromMaster) && CANID_is_to(rcvMsg.id, CANID::ToSlaveAll)){
+			//歩行パラメータ取得
+			can_receiver.receive(rcvMsg.id, rcvMsg.data);
 //			if(CANID_is_type(rcvMsg.id, CANID::TimerReset) && CANcmd.get(CANID::TimerReset)){
 //				//タイマーリセット
 //				timer_FR.reset();
 //				timer_FL.reset();
 //			}
-//		}
+		}
 	}
 }

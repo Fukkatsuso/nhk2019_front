@@ -18,6 +18,8 @@ public:
 	void receive(unsigned int id_can, unsigned char data_can[]);
 	float get_data(enum CANID::DataType type);
 
+	int get_area();
+
 protected:
 	float decode_from_candata(unsigned char data_can[], int len_i, int len_f);
 

@@ -23,10 +23,12 @@ ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
 	flag.first_cycle = true;
 }
 
-void ParallelLeg::set_dependencies(ClockTimer *tm_period, MRMode *mode)
+void ParallelLeg::set_dependencies(ClockTimer *tm_period, MRMode *mode, CANReceiver *can_rcv, CANSynchronizer *can_syn)
 {
 	this->timer_period = tm_period;
 	this->MRmode = mode;
+	this->can_receiver = can_rcv;
+	this->can_synchronizer = can_syn;
 	set_limits();
 }
 
@@ -77,24 +79,25 @@ void ParallelLeg::set_gradient(float grad)//引数[°], 結果[rad]
 
 void ParallelLeg::set_period(float p)
 {
-	period = (p>0? p:0);
+	if(p < 0)p = 0;
+	period = p;
 }
 
 void ParallelLeg::set_duty(float d)
 {
-	duty = ((0.5<=d && d<=1.0)? d:1.0);
+	if(d < 0.5)d = 0.5;
+	else if(d > 1.0)d = 1.0;
+	duty = d;
 }
 
 
-void ParallelLeg::walk(float spd, float dir, float tm)
+void ParallelLeg::walk(float spd, float dir)
 {
 	direction = dir;
 	speed = curve_adjust(spd);
 	x.pos.now = x.pos.next;
 	y.pos.now = y.pos.next;
-	timer_period->calc_dt();
-//	calc_dt(tm);//時刻更新
-	////////////////////////////////
+	timer_period->calc_dt(); //	calc_dt(tm);//時刻更新
 	set_timing();//足上げタイミング等計算
 	walk_mode();//足のモード
 	check_flag();//if(flag.stay)mode = Move; を含める?
@@ -105,7 +108,7 @@ void ParallelLeg::walk(float spd, float dir, float tm)
 void ParallelLeg::walk()
 {
 //	set_period(CANcmd->get(CANID::Period)); set_duty(CANcmd->get(CANID::Duty));
-//	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction), timer_period->read());
+//	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction));
 }
 
 //斜め方向に歩くとき
@@ -129,24 +132,24 @@ void ParallelLeg::set_timing()
 {
 	timing[0] = 0;//時刻ゼロ
 	//復帰開始
-	if(speed>=0){//前進: RL->FL->RR->FR	//FR,RL,FL,RRだった
-		if(rl==Left){
-			if(fr==Rear)timing[1] = 0;//RL
-			else timing[1] = period * 1.0/4.0;//FL
+	if(speed>=0){//前進: FR,RL,FL,RR
+		if(fr==Front){
+			if(rl==Right) timing[1] = 0;//FR
+			else timing[1] = period / 2.0f;//FL
 		}
-		else{
-			if(fr==Rear)timing[1] = period * 2.0/4.0;//RR
-			else timing[1] = period * 3.0/4.0;//FR
+		else{//fr==Rear
+			if(rl==Left) timing[1] = period * (0.5f - duty);//RL
+			else timing[1] = period * (1.0f - duty);//RR
 		}
 	}
-	else{//後退: FR->RR->FL->RL	//RL,FR,RR,FLだった
-		if(rl==Right){
-			if(fr==Front)timing[1] = 0;//FR
-			else timing[1] = period * 1.0/4.0;//RR
+	else{//後退（前後左右反転）: RL,FR,RR,FLだった
+		if(fr==Rear){
+			if(rl==Left) timing[1] = 0;//RL
+			else timing[1] = period / 2.0f;//RR
 		}
-		else{
-			if(fr==Front)timing[1] = period * 2.0/4.0;//FL
-			else timing[1] = period * 3.0/4.0;//RL
+		else{//fr==Front
+			if(rl==Right) timing[1] = period * (0.5f - duty);//FR
+			else timing[1] = period * (1.0f - duty);//FL
 		}
 	}
 	timing[2] = timing[1] + (1.0-duty)*period;//復帰完了

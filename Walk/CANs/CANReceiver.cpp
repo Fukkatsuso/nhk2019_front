@@ -39,6 +39,11 @@ float CANReceiver::get_data(enum CANID::DataType type)
 	return data[type];
 }
 
+int CANReceiver::get_area()
+{
+	return data[CANID::Area];
+}
+
 
 /************************
  * 		protected		*

@@ -9,6 +9,7 @@
 #define WALK_MRMODE_H_
 
 #include "mbed.h"
+#include "CANs/CANReceiver.h"
 
 //脚持ち上げ:脚下げ = LEGUP:LEGDOWN
 #define LEGUP_MOVE 4.0f
@@ -86,7 +87,7 @@ public:
 		Reference_end
 	};
 
-	MRMode(enum Area init_area, bool operate);
+	MRMode(CANReceiver *rcv, enum Area init_area, bool operate);
 	void update();
 	bool is_switched();
 
@@ -107,6 +108,7 @@ public:
 	Orbits *get_orbits (enum Area area);
 
 private:
+	CANReceiver *can_receiver;
 	Area area[MRMode::Reference_end];
 	Area roop_prev, roop_now;//前回と今回のループでのモード
 	struct{

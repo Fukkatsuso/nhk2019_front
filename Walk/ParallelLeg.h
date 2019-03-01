@@ -11,14 +11,15 @@
 #include "mbed.h"
 #include "MRMode.h"
 #include "ClockTimer.h"
-//#include "CANCommand.h"
+#include "CANs/CANReceiver.h"
+#include "CANs/CANSynchronizer.h"
 
 
 class ParallelLeg
 {
 public:
 	ParallelLeg(int fr, int rl, float pos_x, float pos_y);
-	void set_dependencies(ClockTimer *tm_period, MRMode *mode);
+	void set_dependencies(ClockTimer *tm_period, MRMode *mode, CANReceiver *can_rcv, CANSynchronizer *can_syn);
 
 	void set_x_lim(float xmax, float xmin);
 	void set_y_lim(float ymax, float ymin);
@@ -35,7 +36,7 @@ public:
 	void set_duty(float d);
 
 	//速度, 方向 -> 次の着地点（歩幅）
-	void walk(float spd, float dir, float tm);
+	void walk(float spd, float dir);
 	void walk();
 
 	//足先座標を返す
@@ -68,6 +69,8 @@ private:
 
 	ClockTimer *timer_period;
 	MRMode *MRmode;
+	CANReceiver *can_receiver;
+	CANSynchronizer *can_synchronizer;
 	float gradient; //フィールド勾配
 	float high;	//振り上げ高さ
 

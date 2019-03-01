@@ -70,15 +70,16 @@ main.o main.d: ../main.cpp \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\hal/sleep_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/rtc_time.h \
  ../Pins.h ../QEI/SingleLegQEI.h ../QEI/QEI_freePin.h ../QEI/QEI.h \
- ../InitSwitch.h ../Walk/ClockTimer.h ../Walk/SingleLeg.h \
- ../Walk/Protected/LegConst.h ../Walk/Protected/InverseKinematics.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h \
+ ../InitSwitch.h ../Walk/CANs/CANReceiver.h ../Walk/CANs/CANProtocol.h \
+ ../Walk/ClockTimer.h ../Walk/SingleLeg.h ../Walk/Protected/LegConst.h \
+ ../Walk/Protected/InverseKinematics.h \
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/SingleLegQEI.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/InitSwitch.h \
  ../Walk/LegPID.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/PID.h \
- ../Walk/MRMode.h ../Walk/ParallelLeg.h ../Walk/ClockTimer.h \
- ../Walk/MRMode.h ../Walk/ForwardKinematics.h \
- C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/SingleLegQEI.h
+ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h \
+ ../Walk/MRMode.h ../Walk/CANs/CANReceiver.h ../Walk/ParallelLeg.h \
+ ../Walk/ClockTimer.h ../Walk/MRMode.h ../Walk/ForwardKinematics.h
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/mbed.h:
 
@@ -230,6 +231,10 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 
 ../InitSwitch.h:
 
+../Walk/CANs/CANReceiver.h:
+
+../Walk/CANs/CANProtocol.h:
+
 ../Walk/ClockTimer.h:
 
 ../Walk/SingleLeg.h:
@@ -238,7 +243,7 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 
 ../Walk/Protected/InverseKinematics.h:
 
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h:
+C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/SingleLegQEI.h:
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/InitSwitch.h:
 
@@ -246,7 +251,11 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 
 C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/PID.h:
 
+C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h:
+
 ../Walk/MRMode.h:
+
+../Walk/CANs/CANReceiver.h:
 
 ../Walk/ParallelLeg.h:
 
@@ -255,5 +264,3 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 ../Walk/MRMode.h:
 
 ../Walk/ForwardKinematics.h:
-
-C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/SingleLegQEI.h:
