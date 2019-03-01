@@ -36,7 +36,7 @@ public:
 	void set_x_initial(float x_initial);
 	void set_y_initial(float y_initial);
 	void set_initial(float x_initial, float y_initial);
-	void set_high(float high);
+	void set_height(float height);
 	void set_gradient(float grad);
 	void set_orbits();
 
@@ -80,7 +80,7 @@ private:
 	CANReceiver *can_receiver;
 	CANSynchronizer *can_synchronizer;
 	float gradient; //フィールド勾配
-	float high;	//振り上げ高さ
+	float height;	//振り上げ高さ
 
 	float period;
 	float duty;

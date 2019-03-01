@@ -8,7 +8,7 @@
 #include "ParallelLeg.h"
 #include "functions.h"
 
-#define FACTOR_Y (4.0*M_PI*(high-y.pos.init)/(Ty*(4.0+M_PI)))//坂道の傾斜はまだ考慮していない
+#define FACTOR_Y (4.0*M_PI*(height-y.pos.init)/(Ty*(4.0+M_PI)))//坂道の傾斜はまだ考慮していない
 
 
 ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
@@ -48,8 +48,8 @@ void ParallelLeg::set_y_lim(float ymax, float ymin)
 
 void ParallelLeg::set_limits()
 {
-	MRMode::Area mode = MRmode->get_area(MRMode::Now);
-	Limits *limits = MRmode->get_limits(mode);
+	MRMode::Area mrmode = MRmode->get_area(MRMode::Now);
+	Limits *limits = MRmode->get_limits(mrmode);
 	set_x_lim(limits->x.max, limits->x.min);
 	set_y_lim(limits->y.max, limits->y.min);
 }
@@ -68,9 +68,9 @@ void ParallelLeg::set_initial(float x_initial, float y_initial)
 	y.pos.init = y_initial;
 }
 
-void ParallelLeg::set_high(float high)
+void ParallelLeg::set_height(float height)
 {
-	this->high = high;
+	this->height = height;
 }
 
 void ParallelLeg::set_gradient(float grad)//引数[°], 結果[rad]
@@ -78,6 +78,16 @@ void ParallelLeg::set_gradient(float grad)//引数[°], 結果[rad]
 	gradient = M_PI * grad / 180.0;
 }
 
+void ParallelLeg::set_orbits()
+{
+	MRMode::Area mrmode = MRmode->get_area(MRMode::Now);
+	Orbits *orbits = MRmode->get_orbits(mrmode);
+	set_initial(orbits->init_x, orbits->init_y);
+	set_height(orbits->height);
+	set_gradient(orbits->gradient);
+}
+
+//FrontLegのみ/////////////////////////////////
 void ParallelLeg::set_period(float period)
 {
 	if(period < 0)period = 0;
@@ -92,6 +102,7 @@ void ParallelLeg::set_duty(float duty)
 	this->duty = duty;
 	can_synchronizer->set_duty(duty);
 }
+//////////////////////////////////////////////
 
 
 void ParallelLeg::walk(float spd, float dir)
@@ -111,7 +122,7 @@ void ParallelLeg::walk(float spd, float dir)
 void ParallelLeg::walk()
 {
 //	set_period(CANcmd->get(CANID::Period)); set_duty(CANcmd->get(CANID::Duty));
-//	walk(CANcmd->get(CANID::Speed), CANcmd->get(CANID::Direction));
+	walk(can_receiver->get_data(CANID::Speed), can_receiver->get_data(CANID::Direction));
 }
 
 //斜め方向に歩くとき

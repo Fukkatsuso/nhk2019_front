@@ -41,6 +41,8 @@ MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
  * 		main	  *
  ******************/
 int main(){
+	float walk_period = 0;
+	float walk_duty = 1;
 	can.frequency(1000000);
 	can.attach(&CANrcv, CAN::RxIrq);
 	wait_ms(300); //全ての基板の電源が入るまで待つ
@@ -54,6 +56,11 @@ int main(){
 
 		MRmode.update();
 		if(MRmode.is_switched())set_limits();
+
+		FR.set_period(walk_period);
+		FR.set_duty(walk_duty);
+		FL.set_period(walk_period);
+		FL.set_duty(walk_duty);
 
 		//脚固定系座標での目標位置計算
 		FR.walk();

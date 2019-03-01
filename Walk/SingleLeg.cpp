@@ -77,7 +77,7 @@ void SingleLeg::state_update()
 {
 	status.sw = sw->read();
 	if(status.sw)enc->reset();
-	status.enc = enc->getAngle();//[degree]	//不要な気がする
+//	status.enc = enc->getAngle();//[degree]	//不要な気がする
 //	motor->write(status.duty);	//move_to()で実行
 }
 

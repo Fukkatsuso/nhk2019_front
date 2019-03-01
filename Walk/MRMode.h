@@ -45,8 +45,9 @@ struct Limits{
 
 struct Orbits{
 	float gradient; //フィールド勾配
-	float init; //足先の初期位置
-	float high; //足先を上げるときの最大高さ
+	float init_x; //足先の初期位置(x)
+	float init_y; //(y)
+	float height; //足先を上げるときの最大高さ
 };
 
 
@@ -86,19 +87,7 @@ public:
 	bool is_switched();
 
 	Area get_area(enum Reference ref);
-//	float get_lim_x_max(enum Reference ref);
-//	float get_lim_x_min(enum Reference ref);
-//	float get_lim_y_max(enum Reference ref);
-//	float get_lim_y_min(enum Reference ref);
-//	float get_lim_angle_max(enum Reference ref);
-//	float get_lim_angle_min(enum Reference ref);
-//	float get_lim_duty_max(enum Reference ref);
-//	float get_lim_duty_min(enum Reference ref);
 	Limits *get_limits(enum Area area);
-
-	float get_gradient(enum Reference ref);
-	float get_init(enum Reference ref);
-	float get_high(enum Reference ref);
 	Orbits *get_orbits (enum Area area);
 
 private:
