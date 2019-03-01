@@ -41,8 +41,8 @@ MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
  * 		main	  *
  ******************/
 int main(){
-	float walk_period = 0;
-	float walk_duty = 1;
+	float walk_period = 2;
+	float walk_duty = 0.80;
 	can.frequency(1000000);
 	can.attach(&CANrcv, CAN::RxIrq);
 	wait_ms(300); //全ての基板の電源が入るまで待つ
@@ -111,13 +111,16 @@ void set_limits(){
 void CANrcv(){
 	if(can.read(rcvMsg)){
 		unsigned int id = rcvMsg.id;
-		if(CANID_is_from(id, CANID::FromMaster) && CANID_is_to(id, CANID::ToSlaveAll)){
-			//歩行パラメータ取得
-			can_receiver.receive(id, rcvMsg.data);
+		if(CANID_is_from(id, CANID::FromMaster)){
 			if(CANID_is_type(id, CANID::TimerReset)){
 				//タイマーリセット	//リセットできないならCANsnd_TimerReset()に移動
 				timer_FR.reset();
 				timer_FL.reset();
+				return;
+			}
+			else if(CANID_is_to(id, CANID::ToSlaveAll)){
+				//歩行パラメータ取得
+				can_receiver.receive(id, rcvMsg.data);
 			}
 		}
 	}
