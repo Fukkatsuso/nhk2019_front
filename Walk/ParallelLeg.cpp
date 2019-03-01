@@ -15,6 +15,7 @@ ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
 	fr(fr), rl(rl)
 {
 	speed = 0;
+	timing[0] = 0;//時刻ゼロ
 
 	flag.timer_reset = true;
 	flag.recovery = true;
@@ -100,7 +101,7 @@ void ParallelLeg::walk(float spd, float dir)
 	timer_period->calc_dt(); //	calc_dt(tm);//時刻更新
 	set_timing();//足上げタイミング等計算
 	walk_mode();//足のモード
-	check_flag();//if(flag.stay)mode = Move; を含める?
+	check_flag();
 	calc_velocity();//vel計算
 	calc_position();//pos計算
 }
@@ -130,26 +131,26 @@ float ParallelLeg::curve_adjust(float value)
 
 void ParallelLeg::set_timing()
 {
-	timing[0] = 0;//時刻ゼロ
+	//timing[0]はコンストラクタで0に初期化
 	//復帰開始
 	if(speed>=0){//前進: FR,RL,FL,RR
 		if(fr==Front){
 			if(rl==Right) timing[1] = 0;//FR
-			else timing[1] = period / 2.0f;//FL
+			else timing[1] = period / 2.0;//FL
 		}
 		else{//fr==Rear
-			if(rl==Left) timing[1] = period * (0.5f - duty);//RL
-			else timing[1] = period * (1.0f - duty);//RR
+			if(rl==Left) timing[1] = period * (0.5 - duty);//RL
+			else timing[1] = period * (1.0 - duty);//RR
 		}
 	}
 	else{//後退（前後左右反転）: RL,FR,RR,FLだった
 		if(fr==Rear){
 			if(rl==Left) timing[1] = 0;//RL
-			else timing[1] = period / 2.0f;//RR
+			else timing[1] = period / 2.0;//RR
 		}
 		else{//fr==Front
-			if(rl==Right) timing[1] = period * (0.5f - duty);//FR
-			else timing[1] = period * (1.0f - duty);//FL
+			if(rl==Right) timing[1] = period * (0.5 - duty);//FR
+			else timing[1] = period * (1.0 - duty);//FL
 		}
 	}
 	timing[2] = timing[1] + (1.0-duty)*period;//復帰完了
@@ -163,7 +164,7 @@ void ParallelLeg::walk_mode()
 
 	if(timing[0]<=now && now<timing[1]){
 		if(timing[2]<=timing[3])mode = Move;//case:beta>=0.75
-		else if(timer_period->read()<(timing[2]-timing[3]) && !flag.first_cycle)mode = Down;
+		else if(now<(timing[2]-timing[3]) && !flag.first_cycle)mode = Down;
 		else mode = Move;
 		//mode = Move;
 	}
@@ -186,11 +187,19 @@ void ParallelLeg::check_flag()
 		flag.stay_command = true;
 	else flag.stay_command = false;
 
+//要変更/////////////////////////////
 	//最初のサイクルかどうか判断する(現状では最初の踏み出しが完了していないことを示す)フラグ:first_cycle
 	if(flag.stay)
 		flag.first_cycle = true;
 	else if(flag.recovery)
 		flag.first_cycle = false;
+///////////////////////////////////
+
+	if(flag.stay_command && fabs(x.pos.now-x.pos.init)<X_STAY_MARGIN){
+		flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
+		mode = Stay;
+	}
+	else flag.stay = false;
 }
 
 //送り時
@@ -210,13 +219,11 @@ void ParallelLeg::calc_velocity()
 		calc_step();//復帰の着地点座標(x)
 		calc_vel_recovery();
 		break;
-	}
-	if(flag.stay_command && fabs(x.pos.now-x.pos.init)<X_STAY_MARGIN){
+	case Stay:
 		x.vel = 0.0;
 		y.vel = 0.0;
-		flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
+		break;
 	}
-	else flag.stay = false;
 }
 
 

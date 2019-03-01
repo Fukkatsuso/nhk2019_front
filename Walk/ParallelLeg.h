@@ -14,6 +14,14 @@
 #include "CANs/CANReceiver.h"
 #include "CANs/CANSynchronizer.h"
 
+//脚持ち上げ:脚下げ = LEGUP:LEGDOWN
+#define LEGUP_MOVE 4.0f
+#define LEGDOWN_MOVE (1.0f)
+#define LEGUP_TIME 1.0f
+#define LEGDOWN_TIME 1.0f//4.0f
+
+#define X_STAY_MARGIN 2.0f
+
 
 class ParallelLeg
 {
@@ -95,8 +103,8 @@ private:
 	}x, y;
 
 	float timing[4];//時刻0, 復帰開始時刻, 復帰完了時刻, 1周期時刻
-	short mode;
-	short mode_prv;
+	LegMode mode;
+	LegMode mode_prv;
 
 	struct{
 		bool timer_reset;//タイマーリセットの指令があるか//使うか未定

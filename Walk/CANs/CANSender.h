@@ -8,6 +8,7 @@
 #ifndef WALK_CANS_CANSENDER_H_
 #define WALK_CANS_CANSENDER_H_
 
+#include "mbed.h"
 #include "CANProtocol.h"
 
 

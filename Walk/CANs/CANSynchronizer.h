@@ -9,19 +9,18 @@
 #define WALK_CANS_CANSYNCHRONIZER_H_
 
 #include "mbed.h"
-#include "CANProtocol.h"
 #include "CANSender.h"
 
 
-class CANSynchronizer : public CANProtocol
+//Master
+class CANSynchronizer : public CANSender
 {
 public:
-	CANSynchronizer(CAN *can, CANSender *can_sender);
+	CANSynchronizer(CAN *can);
 	void set_period(float period, bool send);
 	void set_duty(float duty, bool send);
 
 private:
-	CANSender *can_sender;
 	float period;
 	float duty;
 };

@@ -85,8 +85,8 @@ void initLegs(){
 	FRr.set_dependencies(&MRmode);
 	FLf.set_dependencies(&MRmode);
 	FLr.set_dependencies(&MRmode);
-	FR.set_dependencies(&timer_FR, &MRmode);
-	FL.set_dependencies(&timer_FL, &MRmode);
+	FR.set_dependencies(&timer_FR, &MRmode, &can_receiver, &can_synchronizer);
+	FL.set_dependencies(&timer_FL, &MRmode, &can_receiver, &can_synchronizer);
 }
 
 

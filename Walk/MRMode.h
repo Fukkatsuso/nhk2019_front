@@ -11,13 +11,6 @@
 #include "mbed.h"
 #include "CANs/CANReceiver.h"
 
-//脚持ち上げ:脚下げ = LEGUP:LEGDOWN
-#define LEGUP_MOVE 4.0f
-#define LEGDOWN_MOVE (1.0f)
-#define LEGUP_TIME 1.0f
-#define LEGDOWN_TIME 1.0f//4.0f
-
-#define X_STAY_MARGIN 2.0f
 
 //normal
 #define DUTY_MAX (0.8)///0.8
@@ -39,7 +32,8 @@ enum LegPosition{
 enum LegMode{
 	Move = 1,
 	Up = 2,
-	Down = 3
+	Down = 3,
+	Stay = 4
 };
 
 struct Limits{
