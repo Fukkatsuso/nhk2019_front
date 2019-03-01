@@ -15,12 +15,6 @@
 
 LocalFileSystem local("local");//PIDゲイン調整に使用
 
-CANMessage rcvMsg;
-CANReceiver can_receiver(&can);
-CANSynchronizer can_synchronizer(&can);
-
-MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
-
 ClockTimer timer_FR;
 ClockTimer timer_FL;
 SingleLeg FRf(Front, Right, BASE_X, 0);
@@ -34,6 +28,13 @@ ParallelLeg FL(Front, Left, -200, 200);
 void initLegs();
 void set_limits();
 void CANrcv();
+void CANsnd_TimerReset();
+
+CANMessage rcvMsg;
+CANReceiver can_receiver(&can);
+CANSynchronizer can_synchronizer(&can, &CANsnd_TimerReset);
+
+MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
 
 
 /******************
@@ -102,14 +103,20 @@ void set_limits(){
 
 void CANrcv(){
 	if(can.read(rcvMsg)){
-		if(CANID_is_from(rcvMsg.id, CANID::FromMaster) && CANID_is_to(rcvMsg.id, CANID::ToSlaveAll)){
+		unsigned int id = rcvMsg.id;
+		if(CANID_is_from(id, CANID::FromMaster) && CANID_is_to(id, CANID::ToSlaveAll)){
 			//歩行パラメータ取得
-			can_receiver.receive(rcvMsg.id, rcvMsg.data);
-//			if(CANID_is_type(rcvMsg.id, CANID::TimerReset) && CANcmd.get(CANID::TimerReset)){
-//				//タイマーリセット
-//				timer_FR.reset();
-//				timer_FL.reset();
-//			}
+			can_receiver.receive(id, rcvMsg.data);
+			if(CANID_is_type(id, CANID::TimerReset)){
+				//タイマーリセット	//リセットできないならCANsnd_TimerReset()に移動
+				timer_FR.reset();
+				timer_FL.reset();
+			}
 		}
 	}
+}
+
+//Timer同期用
+void CANsnd_TimerReset(){
+	can_synchronizer.timer_reset();
 }

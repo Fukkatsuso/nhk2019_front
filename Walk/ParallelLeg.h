@@ -40,8 +40,8 @@ public:
 	void set_gradient(float grad);
 	void set_orbits();
 
-	void set_period(float p);
-	void set_duty(float d);
+	void set_period(float period);
+	void set_duty(float duty);
 
 	//速度, 方向 -> 次の着地点（歩幅）
 	void walk(float spd, float dir);

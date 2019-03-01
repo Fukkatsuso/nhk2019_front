@@ -16,11 +16,17 @@
 class CANSynchronizer : public CANSender
 {
 public:
-	CANSynchronizer(CAN *can);
-	void set_period(float period, bool send);
-	void set_duty(float duty, bool send);
+	CANSynchronizer(CAN *can, void (*fptr_timerreset)(void));
+	void set_period(float period);
+	void set_duty(float duty);
+	void timer_reset();
+
+	float get_period();
+	float get_duty();
 
 private:
+	void (*fptr_timerreset)();
+	Ticker ticker;
 	float period;
 	float duty;
 };

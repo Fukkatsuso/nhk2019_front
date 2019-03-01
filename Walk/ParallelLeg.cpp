@@ -78,17 +78,19 @@ void ParallelLeg::set_gradient(float grad)//引数[°], 結果[rad]
 	gradient = M_PI * grad / 180.0;
 }
 
-void ParallelLeg::set_period(float p)
+void ParallelLeg::set_period(float period)
 {
-	if(p < 0)p = 0;
-	period = p;
+	if(period < 0)period = 0;
+	this->period = period;
+	can_synchronizer->set_period(period);
 }
 
-void ParallelLeg::set_duty(float d)
+void ParallelLeg::set_duty(float duty)
 {
-	if(d < 0.5)d = 0.5;
-	else if(d > 1.0)d = 1.0;
-	duty = d;
+	if(duty < 0.5)duty = 0.5;
+	else if(duty > 1.0)duty = 1.0;
+	this->duty = duty;
+	can_synchronizer->set_duty(duty);
 }
 
 

@@ -10,23 +10,45 @@
 #include "CANSynchronizer.h"
 
 
-CANSynchronizer::CANSynchronizer(CAN *can):
-	CANSender(can){}
-
-
-void CANSynchronizer::set_period(float period, bool send=true)
+CANSynchronizer::CANSynchronizer(CAN *can, void (*fptr_timerreset)(void)):
+	CANSender(can)
 {
-	this->period = period;
-	if(!send)return;
-	//CAN送信
-	this->send(CANID_generate(CANID::FromFront, CANID::ToRear, CANID::Period), period);
+	this->fptr_timerreset = fptr_timerreset;
 }
 
 
-void CANSynchronizer::set_duty(float duty, bool send=true)
+void CANSynchronizer::set_period(float period)
 {
-	this->duty = duty;
-	if(!send)return;
+	if(this->period == period)return;
+	this->period = period;
+	ticker.attach(fptr_timerreset, period);//変更があれば実行
 	//CAN送信
-	this->send(CANID_generate(CANID::FromFront, CANID::ToRear, CANID::Duty), duty);
+	this->send(CANID_generate(CANID::FromMaster, CANID::ToRear, CANID::Period), period);
+}
+
+
+void CANSynchronizer::set_duty(float duty)
+{
+	if(this->duty == duty)return;
+	this->duty = duty;
+	//CAN送信
+	this->send(CANID_generate(CANID::FromMaster, CANID::ToRear, CANID::Duty), duty);
+}
+
+
+void CANSynchronizer::timer_reset()
+{
+	//ToSlaveAllにして自分自身も受信・タイマーリセットする
+	send(CANID_generate(CANID::FromMaster, CANID::ToSlaveAll, CANID::TimerReset), 1);
+}
+
+
+float CANSynchronizer::get_period()
+{
+	return period;
+}
+
+float CANSynchronizer::get_duty()
+{
+	return duty;
 }
