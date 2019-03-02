@@ -63,6 +63,7 @@ protected:
 	void mrmode_update(); //まだ書いてない。MRModeの更新を反映させる
 	float curve_adjust(float value);
 //	void calc_dt(float tm);
+	void timer_update();
 	void set_timing();
 	void walk_mode();
 	void check_flag();

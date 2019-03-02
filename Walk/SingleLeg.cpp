@@ -62,6 +62,7 @@ void SingleLeg::move_to(float arg_x, float arg_y)
 	float angle = InverseKinematics::move_to(arg_y, fr*arg_x);//xy反転
 	angle = rad_to_degree(angle);//degree
 
+	state_update();
 	status.duty = 0.5 + (fr*rl)*legPID.calc_duty(angle);
 	motor->write(status.duty);
 }

@@ -19,7 +19,7 @@ public:
 	CANSynchronizer(CAN *can, void (*fptr_timerreset)(void));
 	void set_period(float period);
 	void set_duty(float duty);
-	void timer_reset();
+	void timer_reset(bool allReset);
 
 	float get_period();
 	float get_duty();

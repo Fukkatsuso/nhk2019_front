@@ -111,7 +111,7 @@ void ParallelLeg::walk(float spd, float dir)
 	speed = curve_adjust(spd);
 	x.pos.now = x.pos.next;
 	y.pos.now = y.pos.next;
-	timer_period->calc_dt(); //	calc_dt(tm);//時刻更新
+	timer_update();
 	set_timing();//足上げタイミング等計算
 	walk_mode();//足のモード
 	check_flag();
@@ -140,6 +140,12 @@ float ParallelLeg::curve_adjust(float value)
 //	if(time.now < time.prv)time.prv = 0.0;//タイマーリセットの次の瞬間
 //	time.dif = time.now - time.prv;
 //}
+
+void ParallelLeg::timer_update()
+{	//歩き始めたらタイマーリセット->その瞬間tickerセット
+	if(mode_prv==Stay && mode!=Stay)can_synchronizer->timer_reset(true);
+	timer_period->calc_dt(); //	calc_dt(tm);//時刻更新
+}
 
 
 void ParallelLeg::set_timing()

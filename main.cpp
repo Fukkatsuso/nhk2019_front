@@ -8,6 +8,7 @@
 #include "Walk/MRMode.h"
 #include "Walk/ForwardKinematics.h"
 
+//タイマー辺りに注意
 /*
  * 歩行計画
  * デューティー比をベースにして歩行速度を決定する
@@ -67,14 +68,13 @@ int main(){
 		FL.walk();
 
 		//駆動
-		FRf.state_update();
-		FRr.state_update();
-		FLf.state_update();
-		FLr.state_update();
 		FRf.move_to(FR.get_x(), FR.get_y());
 		FRr.move_to(FR.get_x(), FR.get_y());
 		FLf.move_to(FL.get_x(), FL.get_y());
 		FLr.move_to(FL.get_x(), FL.get_y());
+
+		//DEBUG
+//		pc.printf("", );
 	}
 }
 
@@ -126,7 +126,8 @@ void CANrcv(){
 	}
 }
 
+
 //Timer同期用
 void CANsnd_TimerReset(){
-	can_synchronizer.timer_reset();
+	can_synchronizer.timer_reset(false);
 }
