@@ -100,6 +100,9 @@ private:
 	}flag;
 };
 
+extern Limits limits[MRMode::Area_end];
+extern Orbits orbits[MRMode::Area_end];
+
 /*
  * example:
  * MRMode mode(&cancommand, MRMode::WaitGobiUrtuu, false);

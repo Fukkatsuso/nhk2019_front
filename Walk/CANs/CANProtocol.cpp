@@ -24,25 +24,25 @@ const short CANProtocol::CANFormats[CANID::DataType_end][FormatType::FormatType_
 
 int CANID_generate(CANID::From from, CANID::To to)
 {
-	return ((from&0x100) | (to&0x010));
+	return ((from&0xf00) | (to&0x0f0));
 }
 
 int CANID_generate(CANID::From from, CANID::To to, CANID::DataType type)
 {
-	return ((from&0x100) | (to&0x010) | (type&0x001));
+	return ((from&0xf00) | (to&0x0f0) | (type&0x00f));
 }
 
 bool CANID_is_from(int id, CANID::From from)
 {
-	return ((id&0x100) == (from&0x100));
+	return ((id&0xf00) == (from&0xf00));
 }
 
 bool CANID_is_to(int id, CANID::To to)
 {
-	return ((id&0x010) == (to&0x010));
+	return ((id&0x0f0) == (to&0x0f0));
 }
 
 bool CANID_is_type(int id, CANID::DataType type)
 {
-	return ((id&0x001) == (type&0x001));
+	return ((id&0x00f) == (type&0x00f));
 }

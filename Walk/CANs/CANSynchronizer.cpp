@@ -36,7 +36,7 @@ void CANSynchronizer::set_duty(float duty)
 }
 
 
-void CANSynchronizer::timer_reset(bool allReset=false)
+void CANSynchronizer::timer_reset(bool allReset)
 {
 	//ToSlaveAllにして自分自身も受信・タイマーリセットする
 	send(CANID_generate(CANID::FromMaster, CANID::ToSlaveAll, CANID::TimerReset), 1);

@@ -31,6 +31,7 @@ void ParallelLeg::set_dependencies(ClockTimer *tm_period, MRMode *mode, CANRecei
 	this->can_receiver = can_rcv;
 	this->can_synchronizer = can_syn;
 	set_limits();
+	set_orbits();
 }
 
 
@@ -143,7 +144,11 @@ float ParallelLeg::curve_adjust(float value)
 
 void ParallelLeg::timer_update()
 {	//歩き始めたらタイマーリセット->その瞬間tickerセット
-	if(mode_prv==Stay && mode!=Stay)can_synchronizer->timer_reset(true);
+	if(mode==Stay){
+		timer_period->reset();
+		can_synchronizer->timer_reset(true);//CAN送る必要ないかも
+	}
+	if(timer_period->read()>period)timer_period->reset();
 	timer_period->calc_dt(); //	calc_dt(tm);//時刻更新
 }
 
@@ -256,6 +261,7 @@ void ParallelLeg::calc_step()
 	}
 	step = speed * period * duty / 2.0 + x.pos.init;//復帰完了地点
 }
+
 
 void ParallelLeg::calc_vel_recovery()
 {

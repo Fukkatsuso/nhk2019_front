@@ -19,7 +19,7 @@ CANReceiver::CANReceiver(CAN *can)
  * CANReceiver canrcv(&can);
  * void can_receive(){
  * 		if(can.read(rcvMsg)){
- * 			if((rcvMsg.id&0x110)==(CANID::From::Master | CANID::To::SlaveAll)){
+ * 			if((rcvMsg.id&0xff0)==(CANID::From::Master | CANID::To::SlaveAll)){
  * 				canrcv.recerive(rcvMsg.id, rcvMsg.data);
  * 			}
  * 		}
@@ -27,7 +27,7 @@ CANReceiver::CANReceiver(CAN *can)
  */
 void CANReceiver::receive(unsigned int id_can, unsigned char data_can[])
 {
-	id_can = (id_can)&(0x001);//下一桁のみ取り出す
+	id_can = (id_can)&(0x00f);//下一桁のみ取り出す
 	if(id_can<0 || CANID::DataType_end<=id_can)return;
 	data[id_can] = decode_from_candata(data_can,
 			CANFormats[id_can][FormatType::Len_integer], CANFormats[id_can][FormatType::Len_fraction]);

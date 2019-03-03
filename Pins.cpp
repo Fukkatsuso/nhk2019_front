@@ -10,23 +10,23 @@
 /*----------------------
  -----機能選択するピン-----
  ----------------------*/
-CAN can(p30, p29);
+CAN can(p9, p10);
 
 
 /********************
  * 		enc			*
  ********************/
-SingleLegQEI enc_FRf(p13, p14);
+SingleLegQEI enc_FRf(p12, p11);
 SingleLegQEI enc_FRr(p27, p28);
-SingleLegQEI enc_FLf(p12, p11);
-SingleLegQEI enc_FLr(p16, p17);
+SingleLegQEI enc_FLf(p14, p13);
+SingleLegQEI enc_FLr(p29, p30);
 
 
 /********************
  * 		スイッチ		*
  ********************/
-InitSwitch sw_FRf(p7, 1);
-InitSwitch sw_FRr(p8, 1);
+InitSwitch sw_FRf(p22, 0);
+InitSwitch sw_FRr(p21, 1);
 InitSwitch sw_FLf(p6, 1);
 InitSwitch sw_FLr(p5, 1);
 
