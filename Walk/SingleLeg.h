@@ -18,7 +18,7 @@
 #include "MRMode.h"
 
 
-#define ANGLE_MAX 84.6f//degree
+#define ANGLE_MAX 118.6f//degree
 #define ANGLE_MIN -13.05f//degree
 
 
@@ -32,7 +32,7 @@ public:
 	//引数：前後, 左右, リンクの根元の水平位置座標, 鉛直位置座標 (リンクの根元が原点)
 	SingleLeg(LegPosition arg_fr, LegPosition arg_rl, float hrz_base, float vrt_base);
 	//~SingleLeg();
-	void unitize(PwmOut *motor, SingleLegQEI *enc, InitSwitch *sw);
+	void unitize(PwmOut *motor, SingleLegQEI *enc, InitSwitch *sw, Timer *timer);
 	void set_dependencies(MRMode *mode);
 
 	//x反転する
@@ -58,7 +58,7 @@ public:
 	void set_PID_from_file(const char *fileName);
 	void set_PID(float Kp, float Ki, float Kd);
 	void set_limits();
-	void set_duty_limit(int d_max, int d_min);
+	void set_duty_limit(float d_max, float d_min);
 	void reset_duty();
 	void reset_duty(float reset);
 

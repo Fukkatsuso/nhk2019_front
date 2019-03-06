@@ -10,6 +10,10 @@
 //絶対固定
 #define BASE_X 20
 
+
+extern Serial pc;//DEBUG
+
+
 //π = 180°
 float rad_to_degree(float rad)
 {
@@ -28,11 +32,13 @@ SingleLeg::SingleLeg(LegPosition arg_fr, LegPosition arg_rl, float hrz_base, flo
 }
 
 
-void SingleLeg::unitize(PwmOut *motor, SingleLegQEI *enc, InitSwitch *sw)
+//legPID.set_PID()よりも先に実行すること! timerの初期化ができなくなる
+void SingleLeg::unitize(PwmOut *motor, SingleLegQEI *enc, InitSwitch *sw, Timer *timer)
 {
 	this->motor = motor;
 	this->enc = enc;
 	this->sw = sw;
+	legPID.set_timer(timer);
 }
 
 void SingleLeg::set_dependencies(MRMode *mode)
@@ -65,6 +71,8 @@ void SingleLeg::move_to(float arg_x, float arg_y)
 	state_update();
 	status.duty = 0.5 + (fr*rl)*legPID.calc_duty(angle);
 	motor->write(status.duty);
+
+//	pc.printf("d[%1.3f]  ", status.duty);
 }
 
 void SingleLeg::move_to(float arg_x, float arg_y, float duty_max, float duty_min)
@@ -158,9 +166,9 @@ void SingleLeg::set_limits()
 	set_duty_limit(limits->duty.max, limits->duty.min);
 }
 
-void SingleLeg::set_duty_limit(int d_max, int d_min)
+void SingleLeg::set_duty_limit(float d_max, float d_min)
 {
-	legPID.param_set_limit(d_max, d_min);
+	legPID.param_set_limit(d_max-0.5, d_min-0.5);
 }
 
 void SingleLeg::reset_duty()

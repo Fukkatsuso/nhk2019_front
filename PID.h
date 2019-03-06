@@ -24,6 +24,8 @@ public:
 	PID();
 	~PID();
 
+	//timerの実体を減らすためにポインタにする。set_PID()より先に実行すること!
+	void set_timer(Timer *timer);
 	void set_PID(float Kp, float Ki, float Kd);
 
 	void start(float obs_init=0, float opr_init=0);
@@ -51,7 +53,7 @@ private:
 	float Ki;
 	float Kd;
 
-	Timer timer;
+	Timer *timer;
 
 	struct{
 		float now;

@@ -8,6 +8,8 @@
 #include "PID.h"
 
 
+extern Serial pc;
+
 /*PID::PID(float Kp, float Ki, float Kd):
 	Kp(Kp), Ki(Ki), Kd(Kd)
 {}*/
@@ -19,6 +21,12 @@ PID::PID(){}
 PID::~PID(){}
 
 
+void PID::set_timer(Timer *timer)
+{
+	this->timer = timer;
+}
+
+//事前にset_timer()を実行すること!
 void PID::set_PID(float Kp, float Ki, float Kd)
 {
 	this->Kp = Kp;
@@ -46,10 +54,10 @@ void PID::start(float obs_init, float opr_init)
 	//後でコレが_opr.prvの値になる
 	opr.nxt = opr_init;
 
-	timer.reset();
-	timer.start();
+	timer->reset();
+	timer->start();
 
-	time.now = timer.read();
+	time.now = 0;//タイマーが足りないので全脚で共通のタイマーを使うことに
 }
 
 
@@ -74,10 +82,9 @@ void PID::param_update(float obs_now, float obs_tgt)
 
 	//ループ時間
 	time.prv = time.now;
-	time.now = timer.read();
+	time.now = timer->read();
 	time.dif = time.now - time.prv;
 }
-
 
 void PID::calc(float obs_now, float obs_tgt)
 {
@@ -90,6 +97,8 @@ void PID::calc(float obs_now, float obs_tgt)
 	opr.dif = Kp*P + Ki*I + Kd*D;
 	opr.nxt = opr.prv + opr.dif;
 	param_limit();
+
+//	pc.printf("[%1.3f,%1.3f] ", opr.max, opr.min);
 }
 
 

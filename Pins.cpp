@@ -34,10 +34,10 @@ InitSwitch sw_FLr(p5, 1);
 /********************
  * 		DCモータ		*
  ********************/
-PwmOut motor_FRf(p25);
-PwmOut motor_FRr(p26);
-PwmOut motor_FLf(p23);
-PwmOut motor_FLr(p24);
+PwmOut motor_FRf(p26);
+PwmOut motor_FRr(p25);
+PwmOut motor_FLf(p24);
+PwmOut motor_FLr(p23);
 
 /*----------------------
  ----mbed本体上のピン-----

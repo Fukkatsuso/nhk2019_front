@@ -16,6 +16,8 @@
 
 LocalFileSystem local("local");//PIDゲイン調整に使用
 
+Timer timer_PID;
+
 ClockTimer timer_FR;
 ClockTimer timer_FL;
 SingleLeg FRf(Front, Right, BASE_X, 0);
@@ -51,6 +53,7 @@ int main(){
 
 	initParts();
 	initLegs();
+	set_limits();
 
 	while(1){
 		AdjustCycle(1000);//min:0.0008[sec]=800[us]
@@ -74,13 +77,12 @@ int main(){
 		FLr.move_to(FL.get_x(), FL.get_y());
 
 		//DEBUG
-		pc.printf("mode:%d  ", FR.get_mode());
-		pc.printf("timer:%1.4f  ", timer_FR.read());
+		pc.printf("mode:%d  ", FL.get_mode());
+		pc.printf("timer:%1.4f  ", timer_FL.read());
 		pc.printf("speed:%3.4f  dir:%1.3f  ", can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction));
-		pc.printf("x:%3.3f  y:%3.3f  ", FR.get_x(), FR.get_y());
-		pc.printf("y_vel:%3.3f  ", FR.get_y_vel());
-		pc.printf("sw[%d][%d][%d][%d]  ", sw_FRf.read(), sw_FRr.read(), sw_FLf.read(), sw_FLr.read());
-		pc.printf("enc[%2.2f][%2.2f][%2.2f][%2.2f]  ", enc_FRf.getAngle(), enc_FRr.getAngle(), enc_FLf.getAngle(), enc_FLr.getAngle());
+		pc.printf("x:%3.3f  y:%3.3f  ", FL.get_x(), FL.get_y());
+		pc.printf("enc:%3.2f  ", enc_FLf.getAngle());
+		pc.printf("angle:%3.2f  duty:%1.4f  ", FLf.get_angle(), FLf.get_duty());
 
 		pc.printf("\r\n");
 	}
@@ -88,10 +90,10 @@ int main(){
 
 
 void initLegs(){
-	FRf.unitize(&motor_FRf, &enc_FRf, &sw_FRf);
-	FRr.unitize(&motor_FRr, &enc_FRr, &sw_FRr);
-	FLf.unitize(&motor_FLf, &enc_FLf, &sw_FLf);
-	FLr.unitize(&motor_FLr, &enc_FLr, &sw_FLr);
+	FRf.unitize(&motor_FRf, &enc_FRf, &sw_FRf, &timer_PID);
+	FRr.unitize(&motor_FRr, &enc_FRr, &sw_FRr, &timer_PID);
+	FLf.unitize(&motor_FLf, &enc_FLf, &sw_FLf, &timer_PID);
+	FLr.unitize(&motor_FLr, &enc_FLr, &sw_FLr, &timer_PID);
 	FRf.set_PID_from_file("/local/PID_FRf.txt");
 	FRr.set_PID_from_file("/local/PID_FRr.txt");
 	FLf.set_PID_from_file("/local/PID_FLf.txt");

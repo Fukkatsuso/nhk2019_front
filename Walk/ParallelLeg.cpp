@@ -5,11 +5,12 @@
  *      Author: mutsuro
  */
 
+
 #include "ParallelLeg.h"
 #include "functions.h"
 
-#define FACTOR_Y (4.0*M_PI*(height-y.pos.init)/(Ty*(4.0+M_PI)))//坂道の傾斜はまだ考慮していない
-
+//#define FACTOR_Y (4.0*M_PI*(height-y.pos.init)/(Ty*(4.0+M_PI)))//坂道の傾斜はまだ考慮していない
+#define FACTOR_Y (4.0*M_PI*(-height)/(Ty*(4.0+M_PI)))
 
 ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
 	fr(fr), rl(rl)
@@ -146,7 +147,7 @@ void ParallelLeg::timer_update()
 {	//歩き始めたらタイマーリセット->その瞬間tickerセット
 	if(mode==Stay){
 		timer_period->reset();
-		can_synchronizer->timer_reset(true);//CAN送る必要ないかも
+//		can_synchronizer->timer_reset(true);//CAN送る必要ない
 	}
 	if(timer_period->read()>period)timer_period->reset();
 	timer_period->calc_dt(); //	calc_dt(tm);//時刻更新
@@ -163,7 +164,7 @@ void ParallelLeg::set_timing()
 			else timing[1] = period / 2.0;//FL
 		}
 		else{//fr==Rear
-			if(rl==Left) timing[1] = period * (0.5 - duty);//RL
+			if(rl==Left) timing[1] = period * (duty - 0.5);//RL
 			else timing[1] = period * (1.0 - duty);//RR
 		}
 	}
@@ -173,7 +174,7 @@ void ParallelLeg::set_timing()
 			else timing[1] = period / 2.0;//RR
 		}
 		else{//fr==Front
-			if(rl==Right) timing[1] = period * (0.5 - duty);//FR
+			if(rl==Right) timing[1] = period * (duty - 0.5);//FR
 			else timing[1] = period * (1.0 - duty);//FL
 		}
 	}
