@@ -16,6 +16,13 @@ const float ForwardKinematics::LegInfo::fore = LEG_FORE;
 
 ForwardKinematics::ForwardKinematics(){}
 
+ForwardKinematics::ForwardKinematics(float f_bx, float f_by, SingleLegQEI *f_enc,
+									 float r_bx, float r_by, SingleLegQEI *r_enc)
+{
+	set_f(f_bx, f_by, f_enc);
+	set_r(r_bx, r_by, r_enc);
+}
+
 
 void ForwardKinematics::set_f(float base_x, float base_y, SingleLegQEI *enc)
 {
@@ -48,7 +55,7 @@ void ForwardKinematics::estimate()
 
 void ForwardKinematics::calc_elbow(LegInfo *leg)
 {
-	leg->angle = leg->enc->getAngle();
+	leg->angle = leg->enc->getRadian();//!!
 	leg->y.elbow = leg->y.base + leg->upper*cos(leg->angle);
 }
 

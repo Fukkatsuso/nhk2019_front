@@ -1,5 +1,6 @@
 #include "mbed.h"
 #include "Pins.h"
+#include "functions.h"
 #include "Walk/CANs/CANReceiver.h"
 #include "Walk/CANs/CANSynchronizer.h"
 #include "Walk/ClockTimer.h"
@@ -27,11 +28,26 @@ SingleLeg FLf(Front, Left, BASE_X, 0);
 SingleLeg FLr(Rear, Left, -BASE_X, 0);
 ParallelLeg FL(Front, Left, -200, 200);
 
+ForwardKinematics fw_FR(BASE_X, 0, &enc_FRf, -BASE_X, 0, &enc_FRr);
+ForwardKinematics fw_FL(BASE_X, 0, &enc_FLf, -BASE_X, 0, &enc_FLr);
 
-void initLegs();
+
+void setLegs();
 void set_limits();
 void CANrcv();
 void CANsnd_TimerReset();
+
+struct InitLegInfo{
+	bool enc_reset;
+	bool finish_init;
+	float angle_target;
+	float x_target;
+	float y_target;
+};
+void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
+			  SingleLeg *leg_r, InitLegInfo *info_r,
+			  ForwardKinematics *fw);
+void autoInit();
 
 CANMessage rcvMsg;
 CANReceiver can_receiver(&can);
@@ -44,19 +60,22 @@ MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
  * 		main	  *
  ******************/
 int main(){
-	float walk_period = 2;
-	float walk_duty = 0.80;
+	float walk_period = 1;//2;
+	float walk_duty = 0.55;//0.80;
 	can.frequency(1000000);
 	can.attach(&CANrcv, CAN::RxIrq);
 	wait_ms(300); //全ての基板の電源が入るまで待つ
 	pc.baud(921600);
 
-	initParts();
-	initLegs();
+	initParts();//センサー・モーター初期化
+	setLegs();//不変的設定
+
+	autoInit();//自動キャリブレーション
+
 	set_limits();
 
 	while(1){
-		AdjustCycle(1000);//min:0.0008[sec]=800[us]
+		AdjustCycle(1000);//min:0.0008[sec]=800[us](?)
 
 		MRmode.update();
 		if(MRmode.is_switched())set_limits();
@@ -65,6 +84,7 @@ int main(){
 		FR.set_duty(walk_duty);
 		FL.set_period(walk_period);
 		FL.set_duty(walk_duty);
+		can_synchronizer.set_period(walk_period);
 
 		//脚固定系座標での目標位置計算
 		FR.walk();
@@ -89,7 +109,7 @@ int main(){
 }
 
 
-void initLegs(){
+void setLegs(){
 	FRf.unitize(&motor_FRf, &enc_FRf, &sw_FRf, &timer_PID);
 	FRr.unitize(&motor_FRr, &enc_FRr, &sw_FRr, &timer_PID);
 	FLf.unitize(&motor_FLf, &enc_FLf, &sw_FLf, &timer_PID);
@@ -139,4 +159,90 @@ void CANsnd_TimerReset(){
 	timer_FR.reset();
 	timer_FL.reset();
 	can_synchronizer.timer_reset(false);
+}
+
+
+void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
+		  	  SingleLeg *leg_r, InitLegInfo *info_r,
+			  ForwardKinematics *fw){
+	//ゆっくりスイッチに近づける
+	if(!info_f->enc_reset){
+		info_f->angle_target = leg_f->get_enc() + 0.2;//200[roop/sec], 20[degree/sec] -> 0.1[degree/roop]
+		info_r->angle_target = leg_r->get_enc() - 0.1;
+		if(leg_f->get_sw()){
+			leg_f->reset_duty();leg_r->reset_duty();
+			leg_f->reset_enc();
+			info_f->enc_reset = true;
+		}
+	}
+	else if(!info_r->enc_reset){
+		info_f->angle_target = 30;
+		info_r->angle_target = leg_r->get_enc() + 0.2;
+		if(leg_r->get_sw()){
+			leg_f->reset_duty();leg_r->reset_duty();
+			leg_r->reset_enc();
+			info_r->enc_reset = true;
+		}
+	}
+	else{//enc両方リセット完了
+		if((fabs(0.0f - fw->get_x()) < 1.0) && (fabs(250.0f - fw->get_y()) < 1.0))
+			info_f->finish_init = info_r->finish_init = true;
+		fw->estimate();
+		info_f->x_target = info_r->x_target = 0.0f;
+		info_f->y_target = info_r->y_target = 250.0f;
+	}
+
+	//駆動
+	if(!info_f->enc_reset){
+		leg_f->set_duty_limit(0.55, 0.45);
+		leg_r->set_duty_limit(0.55, 0.45);
+		leg_f->move_to_angle(info_f->angle_target);
+		leg_r->move_to_angle(info_r->angle_target);
+	}
+	else if(!info_r->enc_reset){
+		leg_f->set_duty_limit(0.575, 0.4);
+		leg_r->set_duty_limit(0.575, 0.4);
+		leg_f->move_to_angle(info_f->angle_target);
+		leg_r->move_to_angle(info_r->angle_target);
+	}
+	else{
+		leg_f->set_duty_limit(0.6, 0.4);
+		leg_r->set_duty_limit(0.6, 0.4);
+		leg_f->move_to(info_f->x_target, info_f->y_target);
+		leg_r->move_to(info_r->x_target, info_r->y_target);
+	}
+}
+
+void autoInit(){
+	InitLegInfo frf, frr, flf, flr;
+	frf.enc_reset = frr.enc_reset = flf.enc_reset = flr.enc_reset = false;
+	frf.finish_init = frr.finish_init = flf.finish_init = flr.finish_init = false;
+	while(!(frf.finish_init && frr.finish_init && flf.finish_init && flr.finish_init)){
+		AdjustCycle(5000);
+		initLegs(&FRf, &frf, &FRr, &frr, &fw_FR);
+		initLegs(&FLf, &flf, &FLr, &flr, &fw_FL);
+		pc.printf("enc");
+		pc.printf("[%3.2f][%3.2f]", enc_FRf.getAngle(), enc_FRr.getAngle());
+		pc.printf("[%3.2f][%3.2f]", enc_FLf.getAngle(), enc_FLr.getAngle());
+		pc.printf("  target");
+		if(!frf.enc_reset || !frr.enc_reset)
+			pc.printf("ang[%3.2f][%3.2f]", frf.angle_target, frr.angle_target);
+		else{
+			pc.printf("xy[%3.2f][%3.2f]", frf.x_target, frf.y_target);
+			pc.printf("est[%3.2f][%3.2f]", fw_FR.get_x(), fw_FR.get_y());
+		}
+		if(!flf.enc_reset || !flr.enc_reset)
+			pc.printf("ang[%3.2f][%3.2f]", flf.angle_target, flr.angle_target);
+		else{
+			pc.printf("xy[%3.2f][%3.2f]", flf.x_target, flr.y_target);
+			pc.printf("est[%3.2f][%3.2f]", fw_FL.get_x(), fw_FL.get_y());
+		}
+//		pc.printf("  sw");
+//		pc.printf("[%d][%d]", sw_FRf.read(), sw_FRr.read());
+//		pc.printf("[%d][%d]", sw_FLf.read(), sw_FLr.read());
+		pc.printf("  duty");
+		pc.printf("[%1.3f][%1.3f]", FRf.get_duty(), FRr.get_duty());
+		pc.printf("[%1.3f][%1.3f]", FLf.get_duty(), FLr.get_duty());
+		pc.printf("\r\n");
+	}
 }

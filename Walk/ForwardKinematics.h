@@ -15,6 +15,8 @@
 class ForwardKinematics{
 public:
 	ForwardKinematics();
+	ForwardKinematics(float f_bx, float f_by, SingleLegQEI *f_enc,
+					  float r_bx, float r_by, SingleLegQEI *r_enc);
 	void set_f(float base_x, float base_y, SingleLegQEI *enc);
 	void set_r(float base_x, float base_y, SingleLegQEI *enc);
 	void estimate();

@@ -38,6 +38,7 @@ public:
 	//x反転する
 	void move_to(float arg_x, float arg_y);
 	void move_to(float arg_x, float arg_y, float duty_max, float duty_min);
+	void move_to_angle(float target_degree);
 	void state_update();
 	//void lim_angle(float);
 
@@ -54,6 +55,7 @@ public:
 	//センサーから
 	float get_enc();
 	int get_sw();
+	void reset_enc();
 
 	void set_PID_from_file(const char *fileName);
 	void set_PID(float Kp, float Ki, float Kd);
