@@ -21,6 +21,10 @@
 #define ANGLE_MAX 118.6f//degree
 #define ANGLE_MIN -13.05f//degree
 
+//初期化用:normal
+#define DUTY_MAX (0.8)///0.8
+#define DUTY_MIN (0.2)//0.2
+
 
 //rad -> degree
 float rad_to_degree(float rad);

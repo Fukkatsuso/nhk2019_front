@@ -131,7 +131,7 @@ void ParallelLeg::walk()
 float ParallelLeg::curve_adjust(float value)
 {
 	if((rl*direction)>0)	//その足の方に歩く->小股で
-		value *= fabs(cos(direction));
+		value *= /*fabs*/(cos(2.0*direction));///////////////////////////////////////////
 	return value;
 }
 

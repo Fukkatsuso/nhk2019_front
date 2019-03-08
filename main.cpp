@@ -9,10 +9,9 @@
 #include "Walk/MRMode.h"
 #include "Walk/ForwardKinematics.h"
 
-//タイマー辺りに注意
 /*
- * 歩行計画
- * デューティー比をベースにして歩行速度を決定する
+ * 予定
+ * 障害物用の軌道を模索
  */
 
 LocalFileSystem local("local");//PIDゲイン調整に使用
@@ -78,7 +77,26 @@ int main(){
 		AdjustCycle(1000);//min:0.0008[sec]=800[us](?)
 
 		MRmode.update();
-		if(MRmode.is_switched())set_limits();
+//		if(MRmode.is_switched())
+			set_limits();
+
+		if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(280-110);
+		if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(280-110);
+
+//		switch((int)MRmode.get_area(MRMode::Now)){
+//		case MRMode::GobiArea:
+//			walk_period = 1;
+//			walk_duty = 0.55;
+//			break;
+//		case MRMode::SandDune:
+//			walk_period = 2;
+//			walk_duty = 0.8;
+//			break;
+//		case MRMode::Tussock1:
+//			walk_period = 2;
+//			walk_duty = 0.8;
+//			break;
+//		}
 
 		FR.set_period(walk_period);
 		FR.set_duty(walk_duty);
@@ -143,12 +161,11 @@ void set_limits(){
 void CANrcv(){
 	if(can.read(rcvMsg)){
 		unsigned int id = rcvMsg.id;
-		if(CANID_is_from(id, CANID::FromMaster)){
-			if(CANID_is_type(id, CANID::TimerReset))return;
-			if(CANID_is_to(id, CANID::ToSlaveAll)){
-				//歩行パラメータ取得
-				can_receiver.receive(id, rcvMsg.data);
-			}
+		if(!CANID_is_from(id, CANID::FromMaster))return;
+		if(CANID_is_type(id, CANID::TimerReset))return;
+		if(CANID_is_to(id, CANID::ToSlaveAll)){
+			//歩行パラメータ取得
+			can_receiver.receive(id, rcvMsg.data);
 		}
 	}
 }
@@ -214,27 +231,28 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 }
 
 void autoInit(){
-	InitLegInfo frf, frr, flf, flr;
-	frf.enc_reset = frr.enc_reset = flf.enc_reset = flr.enc_reset = false;
-	frf.finish_init = frr.finish_init = flf.finish_init = flr.finish_init = false;
-	while(!(frf.finish_init && frr.finish_init && flf.finish_init && flr.finish_init)){
+			//	右前,右後,左前,左後
+	InitLegInfo Rf, Rr, Lf, Lr;
+	Rf.enc_reset = Rr.enc_reset = Lf.enc_reset = Lr.enc_reset = false;
+	Rf.finish_init = Rr.finish_init = Lf.finish_init = Lr.finish_init = false;
+	while(!(Rf.finish_init && Rr.finish_init && Lf.finish_init && Lr.finish_init)){
 		AdjustCycle(5000);
-		initLegs(&FRf, &frf, &FRr, &frr, &fw_FR);
-		initLegs(&FLf, &flf, &FLr, &flr, &fw_FL);
+		initLegs(&FRf, &Rf, &FRr, &Rr, &fw_FR);
+		initLegs(&FLf, &Lf, &FLr, &Lr, &fw_FL);
 		pc.printf("enc");
 		pc.printf("[%3.2f][%3.2f]", enc_FRf.getAngle(), enc_FRr.getAngle());
 		pc.printf("[%3.2f][%3.2f]", enc_FLf.getAngle(), enc_FLr.getAngle());
 		pc.printf("  target");
-		if(!frf.enc_reset || !frr.enc_reset)
-			pc.printf("ang[%3.2f][%3.2f]", frf.angle_target, frr.angle_target);
+		if(!Rf.enc_reset || !Rr.enc_reset)
+			pc.printf("ang[%3.2f][%3.2f]", Rf.angle_target, Rr.angle_target);
 		else{
-			pc.printf("xy[%3.2f][%3.2f]", frf.x_target, frf.y_target);
+			pc.printf("xy[%3.2f][%3.2f]", Rf.x_target, Rf.y_target);
 			pc.printf("est[%3.2f][%3.2f]", fw_FR.get_x(), fw_FR.get_y());
 		}
-		if(!flf.enc_reset || !flr.enc_reset)
-			pc.printf("ang[%3.2f][%3.2f]", flf.angle_target, flr.angle_target);
+		if(!Lf.enc_reset || !Lr.enc_reset)
+			pc.printf("ang[%3.2f][%3.2f]", Lf.angle_target, Lr.angle_target);
 		else{
-			pc.printf("xy[%3.2f][%3.2f]", flf.x_target, flr.y_target);
+			pc.printf("xy[%3.2f][%3.2f]", Lf.x_target, Lr.y_target);
 			pc.printf("est[%3.2f][%3.2f]", fw_FL.get_x(), fw_FL.get_y());
 		}
 //		pc.printf("  sw");
@@ -244,5 +262,7 @@ void autoInit(){
 		pc.printf("[%1.3f][%1.3f]", FRf.get_duty(), FRr.get_duty());
 		pc.printf("[%1.3f][%1.3f]", FLf.get_duty(), FLr.get_duty());
 		pc.printf("\r\n");
+
+		if(pc.readable())if(pc.getc()=="s")break;//"s"を押したら強制終了
 	}
 }

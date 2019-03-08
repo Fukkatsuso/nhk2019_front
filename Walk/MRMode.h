@@ -12,10 +12,6 @@
 #include "CANs/CANReceiver.h"
 
 
-//normal
-#define DUTY_MAX (0.8)///0.8
-#define DUTY_MIN (0.2)//0.2
-
 /*stay
 #define DUTY_MAX (0.65)//(0.8)
 #define DUTY_MIN (0.35)//(0.2)
