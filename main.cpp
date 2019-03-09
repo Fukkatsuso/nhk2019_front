@@ -33,6 +33,7 @@ ForwardKinematics fw_FL(BASE_X, 0, &enc_FLf, -BASE_X, 0, &enc_FLr);
 
 void setLegs();
 void set_limits();
+void set_cycle(float *period, float *duty);
 void CANrcv();
 void CANsnd_TimerReset();
 
@@ -80,23 +81,12 @@ int main(){
 //		if(MRmode.is_switched())
 			set_limits();
 
-		if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(280-110);
-		if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(280-110);
+		if(MRmode.get_now()==MRMode::SandDune){
+			if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(280-110);
+			if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(280-110);
+		}
 
-//		switch((int)MRmode.get_area(MRMode::Now)){
-//		case MRMode::GobiArea:
-//			walk_period = 1;
-//			walk_duty = 0.55;
-//			break;
-//		case MRMode::SandDune:
-//			walk_period = 2;
-//			walk_duty = 0.8;
-//			break;
-//		case MRMode::Tussock1:
-//			walk_period = 2;
-//			walk_duty = 0.8;
-//			break;
-//		}
+		set_cycle(&walk_period, &walk_duty);
 
 		FR.set_period(walk_period);
 		FR.set_duty(walk_duty);
@@ -158,6 +148,27 @@ void set_limits(){
 }
 
 
+void set_cycle(float *period, float *duty){
+	switch((int)MRmode.get_now()){
+	case MRMode::GobiArea:
+		*period = 0.75;
+		*duty = 0.55;
+		break;
+	case MRMode::SandDune:
+		*period = 1;
+		*duty = 0.55;
+		break;
+	case MRMode::Tussock1:
+		*period = 1;
+		*duty = 0.55;
+		break;
+	case MRMode::Start2:
+		*period = 2;
+		*duty = 0.8;
+	}
+}
+
+
 void CANrcv(){
 	if(can.read(rcvMsg)){
 		unsigned int id = rcvMsg.id;
@@ -184,7 +195,7 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 			  ForwardKinematics *fw){
 	//ゆっくりスイッチに近づける
 	if(!info_f->enc_reset){
-		info_f->angle_target = leg_f->get_enc() + 0.2;//200[roop/sec], 20[degree/sec] -> 0.1[degree/roop]
+		info_f->angle_target = leg_f->get_enc() + 0.25;//200[roop/sec], 20[degree/sec] -> 0.1[degree/roop]
 		info_r->angle_target = leg_r->get_enc() - 0.1;
 		if(leg_f->get_sw()){
 			leg_f->reset_duty();leg_r->reset_duty();
@@ -194,7 +205,7 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 	}
 	else if(!info_r->enc_reset){
 		info_f->angle_target = 30;
-		info_r->angle_target = leg_r->get_enc() + 0.2;
+		info_r->angle_target = leg_r->get_enc() + 0.25;
 		if(leg_r->get_sw()){
 			leg_f->reset_duty();leg_r->reset_duty();
 			leg_r->reset_enc();
@@ -217,8 +228,8 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 		leg_r->move_to_angle(info_r->angle_target);
 	}
 	else if(!info_r->enc_reset){
-		leg_f->set_duty_limit(0.575, 0.4);
-		leg_r->set_duty_limit(0.575, 0.4);
+		leg_f->set_duty_limit(0.575, 0.425);
+		leg_r->set_duty_limit(0.6, 0.4);
 		leg_f->move_to_angle(info_f->angle_target);
 		leg_r->move_to_angle(info_r->angle_target);
 	}
@@ -263,6 +274,6 @@ void autoInit(){
 		pc.printf("[%1.3f][%1.3f]", FLf.get_duty(), FLr.get_duty());
 		pc.printf("\r\n");
 
-		if(pc.readable())if(pc.getc()=="s")break;//"s"を押したら強制終了
+		if(pc.readable())if(pc.getc()=='s')break;//"s"を押したら強制終了
 	}
 }

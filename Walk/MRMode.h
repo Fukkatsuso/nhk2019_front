@@ -64,6 +64,8 @@ public:
 		WaitMountainUrtuu,//待機
 		GetSign,//非接触の合図
 		Start2,//歩行開始
+		StartClimb1,//Front登山開始
+		StartClimb2,//Rear
 		MountainArea,//登山
 		UukhaiZone,//ウーハイゾーン
 		Uukhai,//ウーハイ
@@ -83,6 +85,7 @@ public:
 	bool is_switched();
 
 	Area get_area(enum Reference ref);
+	Area get_now();
 	Limits *get_limits(enum Area area);
 	Orbits *get_orbits (enum Area area);
 

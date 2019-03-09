@@ -52,7 +52,7 @@ void ParallelLeg::set_y_lim(float ymax, float ymin)
 
 void ParallelLeg::set_limits()
 {
-	MRMode::Area mrmode = MRmode->get_area(MRMode::Now);
+	MRMode::Area mrmode = MRmode->get_now();//->get_area(MRMode::Now);
 	Limits *limits = MRmode->get_limits(mrmode);
 	set_x_lim(limits->x.max, limits->x.min);
 	set_y_lim(limits->y.max, limits->y.min);
@@ -84,7 +84,7 @@ void ParallelLeg::set_gradient(float grad)//引数[°], 結果[rad]
 
 void ParallelLeg::set_orbits()
 {
-	MRMode::Area mrmode = MRmode->get_area(MRMode::Now);
+	MRMode::Area mrmode = MRmode->get_now();//->get_area(MRMode::Now);
 	Orbits *orbits = MRmode->get_orbits(mrmode);
 	set_initial(orbits->init_x, orbits->init_y);
 	set_height(orbits->height);
@@ -231,7 +231,7 @@ void ParallelLeg::calc_velocity()
 	switch(mode){
 	case Move:
 		x.vel = -speed;
-		y.vel = 0.0;//speed * tan(gradient)	//(y.pos.init-y.pos.now)/(duty*period/4.0)
+		y.vel = speed * tan(gradient);	//(y.pos.init-y.pos.now)/(duty*period/4.0)
 		break;
 	case Up:
 		calc_step();//復帰の着地点座標(x)
@@ -239,6 +239,9 @@ void ParallelLeg::calc_velocity()
 		break;
 	case Down:
 		calc_step();//復帰の着地点座標(x)
+		//着地点y=step*tan(gradient)
+		//下げ高さ==最下点y-着地点y
+		height -= 2.0*(step-x.pos.init)*tan(gradient);//毎ループでheight更新するので
 		calc_vel_recovery();
 		break;
 	case Stay:
