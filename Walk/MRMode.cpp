@@ -9,7 +9,8 @@
 #include "MRMode.h"
 
 #define X_NORMAL_WIDTH 60
-#define X_CLIMB_WIDTH 150
+#define X_CLIMB_MAX 130
+#define X_CLIMB_MIN -180
 
 Limits limits[MRMode::Area_end] =
 		{	//----------ParallelLeg----------   ----------SingleLeg----------
@@ -26,36 +27,39 @@ Limits limits[MRMode::Area_end] =
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Finish1
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//WaitMountainUrtuu
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//GetSign
-			  {{X_CLIMB_WIDTH,  -X_CLIMB_WIDTH}, 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Start2
-			  {{X_CLIMB_WIDTH,  -X_CLIMB_WIDTH}, 	{250, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},//StartClimb1//Front開始
-			  {{X_CLIMB_WIDTH,  -X_CLIMB_WIDTH}, 	{250, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},//StartClimb2
-			  {{100, 			-100}, 				{250, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//MountainArea
+			  {{X_CLIMB_MAX,  	X_CLIMB_MIN},	 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Start2
+			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{250, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},//StartClimb1//Front開始
+			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{250, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},//StartClimb2
+			  {{X_CLIMB_MAX,	X_CLIMB_MIN},		{250, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//MountainArea
 			  {{100, 			-100}, 				{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//UukhaiZone
 			  {{100, 			-100}, 				{250,	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Uukhai
 			  {{100,			-100}, 				{250,	150}, 	{110, 		-20}, 		{0.7, 	   0.3}}	//Finish2
 		};
 
+#define GRAD_SLOPE 14.9
+#define X_CLIMB_INIT -53 // = init_y * tan(gradient)
+
 Orbits orbits[MRMode::Area_end] =
-		{		//gradient, init_x,	init_y, height
-				{0,			0, 		280, 	10},	//WaitGobiUrtuu
-				{0, 		0,		280, 	10},	//GetGerege
-				{0, 		0,		280, 	10},	//PrepareWalking
-				{0, 		0,		280, 	50},	//Start1
-				{0, 		0,		280, 	50},	//GobiArea
-				{0, 		0,		280, 	150},	//SandDune
-				{0, 		0,		250, 	100},	//ReadyForTussock
-				{0, 		0,		280, 	350},//150},	//Tussock1
-				{0, 		0,		280, 	150},	//Tussock2
-				{0, 		0,		280, 	100},	//Finish1
-				{0, 		0,		200, 	50},	//WaitMountainUrtuu
-				{0, 		0,		200, 	50},	//GetSign
-				{0, 		0,		200, 	100},	//Start2
-				{14.9,		0, 		200, 	100},//StartClimb1//Front開始
-				{14.9,		0, 		200, 	100},//StartClimb2
-				{0, 		0,		200, 	100},	//MountainArea
-				{0, 		0,		250, 	80},	//UukhaiZone
-				{0, 		0,		250, 	80},	//Uukhai
-				{0, 		0,		250, 	50}	//Finish2
+		{		//gradient, 	init_x,			init_y, height
+				{0,				0, 				280, 	10},	//WaitGobiUrtuu
+				{0, 			0,				280, 	10},	//GetGerege
+				{0, 			0,				280, 	10},	//PrepareWalking
+				{0, 			0,				280, 	50},	//Start1
+				{0, 			0,				280, 	30},	//GobiArea
+				{0, 			0,				280, 	150},	//SandDune
+				{0, 			0,				250, 	100},	//ReadyForTussock
+				{0, 			0,				280, 	350},//150},	//Tussock1
+				{0, 			0,				280, 	150},	//Tussock2
+				{0, 			0,				280, 	100},	//Finish1
+				{0, 			0,				200, 	50},	//WaitMountainUrtuu
+				{0, 			0,				200, 	50},	//GetSign
+				{0, 			0,				200, 	100},	//Start2
+				{GRAD_SLOPE,	0, 				200, 	100},	//StartClimb1//Front開始
+				{0,				0, 				200, 	100},	//StartClimb2
+				{0, 			X_CLIMB_INIT,	200, 	100},	//MountainArea
+				{0, 			0,				250, 	80},	//UukhaiZone
+				{0, 			0,				250, 	80},	//Uukhai
+				{0, 			0,				250, 	50}	//Finish2
 		};
 
 

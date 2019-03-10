@@ -235,13 +235,14 @@ void ParallelLeg::calc_velocity()
 		break;
 	case Up:
 		calc_step();//復帰の着地点座標(x)
+		//上げ高さ=?
 		calc_vel_recovery();
 		break;
 	case Down:
 		calc_step();//復帰の着地点座標(x)
 		//着地点y=step*tan(gradient)
-		//下げ高さ==最下点y-着地点y
-		height -= 2.0*(step-x.pos.init)*tan(gradient);//毎ループでheight更新するので
+		//下げ高さ=最下点y-着地点y
+//		height -= 2.0*(step-x.pos.init)*tan(gradient);//毎ループでheight更新するので
 		calc_vel_recovery();
 		break;
 	case Stay:
@@ -276,6 +277,8 @@ void ParallelLeg::calc_vel_recovery()
 		y.vel = 2.0 * FACTOR_Y * cos(2.0*M_PI*(tm/Ty-1.0/4.0));
 	else if(Ty*3.0/4.0<=tm && tm<=Ty)
 		y.vel = -FACTOR_Y * (1.0 - cos(4.0*M_PI*(1.0-tm/Ty)));
+//	x.vel *= cos(gradient); //坂道用
+//	y.vel *= cos(gradient); //坂道用
 }
 
 void ParallelLeg::calc_position()
