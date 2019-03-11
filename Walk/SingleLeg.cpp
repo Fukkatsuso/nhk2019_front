@@ -29,6 +29,8 @@ SingleLeg::SingleLeg(LegPosition arg_fr, LegPosition arg_rl, float hrz_base, flo
 	set_angle_limit(ANGLE_MAX, ANGLE_MIN);
 	legPID.param_set_limit(DUTY_MAX-0.5, DUTY_MIN-0.5);
 	status.duty = 0.5;
+	area = MRMode::PrepareWalking;
+	area_prv = MRMode::Area_end;
 }
 
 
@@ -45,6 +47,12 @@ void SingleLeg::set_dependencies(MRMode *mode)
 {
 	MRmode = mode;
 	set_limits();
+}
+
+void SingleLeg::mrmode_update()
+{
+	area_prv = area;
+	area = MRmode->get_now();
 }
 
 
@@ -171,8 +179,8 @@ void SingleLeg::set_PID(float Kp, float Ki, float Kd)
 
 void SingleLeg::set_limits()
 {
-	MRMode::Area mode = MRmode->get_area(MRMode::Now);
-	Limits *limits = MRmode->get_limits(mode);
+	if(area==area_prv)return;
+	Limits *limits = MRmode->get_limits(area);
 	set_angle_limit(limits->angle.max, limits->angle.min);
 	set_duty_limit(limits->duty.max, limits->duty.min);
 }

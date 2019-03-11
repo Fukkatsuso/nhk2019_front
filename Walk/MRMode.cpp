@@ -46,7 +46,7 @@ Orbits orbits[MRMode::Area_end] =
 				{0, 			0,				280, 	10},	//PrepareWalking
 				{0, 			0,				280, 	50},	//Start1
 				{0, 			0,				280, 	30},	//GobiArea
-				{0, 			0,				280, 	150},	//SandDune
+				{0, 			0,				280, 	200},//150},	//SandDune
 				{0, 			0,				250, 	100},	//ReadyForTussock
 				{0, 			0,				280, 	350},//150},	//Tussock1
 				{0, 			0,				280, 	150},	//Tussock2

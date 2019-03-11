@@ -39,6 +39,8 @@ public:
 	void unitize(PwmOut *motor, SingleLegQEI *enc, InitSwitch *sw, Timer *timer);
 	void set_dependencies(MRMode *mode);
 
+	void mrmode_update();
+
 	//x反転する
 	void move_to(float arg_x, float arg_y);
 	void move_to(float arg_x, float arg_y, float duty_max, float duty_min);
@@ -83,6 +85,9 @@ private:
 	InitSwitch *sw;
 	MRMode *MRmode;
 	LegPID legPID;
+
+	MRMode::Area area;
+	MRMode::Area area_prv;
 };
 
 

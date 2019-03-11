@@ -29,8 +29,15 @@ enum LegMode{
 	Move = 1,
 	Up = 2,
 	Down = 3,
-	Stay = 4
+	Stay = 4,
+	//障害物用
+	StableUp = 5,
+	StableSlide = 6,
+	StableDown = 7,
+	StableMove = 8,
+	StableWait = 9
 };
+
 
 struct Limits{
 	struct{
