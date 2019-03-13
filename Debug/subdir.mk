@@ -4,18 +4,21 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../LegFunctions.cpp \
 ../PID.cpp \
 ../Pins.cpp \
 ../functions.cpp \
 ../main.cpp 
 
 OBJS += \
+./LegFunctions.o \
 ./PID.o \
 ./Pins.o \
 ./functions.o \
 ./main.o 
 
 CPP_DEPS += \
+./LegFunctions.d \
 ./PID.d \
 ./Pins.d \
 ./functions.d \
