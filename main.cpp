@@ -49,6 +49,8 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 			  ForwardKinematics *fw);
 void autoInit();
 
+void orbit_log(ParallelLeg *invLeg, ForwardKinematics *fwLeg);
+
 CANMessage rcvMsg;
 CANReceiver can_receiver(&can);
 CANSynchronizer can_synchronizer(&can, &CANsnd_TimerReset);
@@ -89,9 +91,11 @@ int main(){
 		can_synchronizer.set_period(walk_period);
 
 		//腰固定座標系での目標位置計算
-		if(MRmode.get_now()==MRMode::SandDune){
+		if(MRmode.get_now()==MRMode::SandDuneFront){
 			if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(280-100);
 			if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(280-100);
+			//登山でこれを試してみる
+			//ただし、復帰幅と送り幅が違って徐々に足が前にいってしまう
 //			FR.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
 //			FL.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
 		}
@@ -101,22 +105,25 @@ int main(){
 			FL.walk();
 
 		//駆動
-		FRf.move_to(FR.get_x(), FR.get_y());
 		FRr.move_to(FR.get_x(), FR.get_y());
-		FLf.move_to(FL.get_x(), FL.get_y());
+		FRf.move_to(FR.get_x(), FR.get_y());
 		FLr.move_to(FL.get_x(), FL.get_y());
+		FLf.move_to(FL.get_x(), FL.get_y());
 
 		//DEBUG
-		pc.printf("mode:%d  ", FL.get_mode());
-		pc.printf("timer:%1.4f  ", timer_FL.read());
-		pc.printf("speed:%3.4f  dir:%1.3f  ", can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction));
-		pc.printf("x:%3.3f  y:%3.3f  ", FL.get_x(), FL.get_y());
-		pc.printf("enc:%3.2f  ", enc_FLf.getAngle());
-		pc.printf("angle:%3.2f  duty:%1.4f  ", FLf.get_angle(), FLf.get_duty());
+		if(pc.readable()){
+//			pc.printf("mode:%d  ", FL.get_mode());
+//			pc.printf("timer:%1.4f  ", timer_FL.read());
+//			pc.printf("speed:%3.4f  dir:%1.3f  ", can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction));
+//			pc.printf("x:%3.3f  y:%3.3f  ", FL.get_x(), FL.get_y());
+//			pc.printf("enc:%3.2f  ", enc_FLf.getAngle());
+//			pc.printf("angle:%3.2f  duty:%1.4f  ", FLf.get_angle(), FLf.get_duty());
+//
+//			pc.printf("vel[%3.2f][%3.2f]  ", FL.get_x_vel(), FL.get_y_vel());
 
-		pc.printf("vel[%3.2f][%3.2f]  ", FL.get_x_vel(), FL.get_y_vel());
-
-		pc.printf("\r\n");
+			orbit_log(&FL, &fw_FL);
+			pc.printf("\r\n");
+		}
 	}
 }
 
@@ -161,10 +168,14 @@ void set_limits(){
 void set_cycle(float *period, float *duty){
 	switch((int)MRmode.get_now()){
 	case MRMode::GobiArea:
-		*period = 1;
+		*period = 2;//1.5;//1;
 		*duty = 0.55;
 		break;
-	case MRMode::SandDune:
+	case MRMode::SandDuneFront:
+		*period = 1.6;//5;//1;
+		*duty = 0.55;//0.8;//0.55;
+		break;
+	case MRMode::SandDuneRear:
 		*period = 1.6;//5;//1;
 		*duty = 0.55;//0.8;//0.55;
 		break;
@@ -286,4 +297,11 @@ void autoInit(){
 
 		if(pc.readable())if(pc.getc()=='s')break;//"s"を押したら強制終了
 	}
+}
+
+
+void orbit_log(ParallelLeg *invLeg, ForwardKinematics *fwLeg){
+	fwLeg->estimate();
+	pc.printf("%3.4f\t%3.4f\t", invLeg->get_x(), invLeg->get_y());
+	pc.printf("%3.4f\t%3.4f\t", fwLeg->get_x(), fwLeg->get_y());
 }

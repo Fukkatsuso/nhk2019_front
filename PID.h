@@ -81,6 +81,7 @@ private:
 		float dif_prv_prv;
 		float tgt;
 		float tgt_prv;
+		float tgt_prv_prv;
 	}obs;//センサー観測
 
 	double P;

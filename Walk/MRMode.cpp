@@ -20,7 +20,8 @@ Limits limits[MRMode::Area_end] =
 			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//PrepareWalking
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Start1
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GobiArea
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//SandDune
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//SandDuneFront
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//SandDuneRear
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//ReadyForTussock
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Tussock1
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Tussock2
@@ -46,8 +47,9 @@ Orbits orbits[MRMode::Area_end] =
 				{0, 			0,				280, 	10},	//PrepareWalking
 				{0, 			0,				280, 	50},	//Start1
 				{0, 			0,				280, 	30},	//GobiArea
-				{0, 			0,				280, 	200},//150},	//SandDune
-				{0, 			0,				250, 	100},	//ReadyForTussock
+				{0, 			-5,				280, 	300},//150	//SandDuneFront
+				{0,				5,				280,	30},	//SandDuneRear
+				{0, 			0,				250, 	50},	//ReadyForTussock
 				{0, 			0,				280, 	350},//150},	//Tussock1
 				{0, 			0,				280, 	150},	//Tussock2
 				{0, 			0,				280, 	100},	//Finish1

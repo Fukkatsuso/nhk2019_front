@@ -71,6 +71,7 @@ void PID::param_update(float obs_now, float obs_tgt)
 	obs.prv = obs.now;
 	obs.now = obs_now;
 
+	obs.tgt_prv_prv = obs.tgt_prv;
 	obs.tgt_prv = obs.tgt;
 	obs.tgt = obs_tgt;
 	if(obs_tgt==obs_now)start(obs_now, opr.prv);//積分値初期化

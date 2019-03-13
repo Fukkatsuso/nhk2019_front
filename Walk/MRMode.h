@@ -63,7 +63,8 @@ public:
 		PrepareWalking,
 		Start1,//歩行開始
 		GobiArea,//直進
-		SandDune,//段差
+		SandDuneFront,//段差1
+		SandDuneRear,//段差2
 		ReadyForTussock,//ここに何か入れるべき
 		Tussock1,//紐1
 		Tussock2,//紐2
