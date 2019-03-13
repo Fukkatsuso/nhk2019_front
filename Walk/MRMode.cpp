@@ -57,7 +57,7 @@ Orbits orbits[MRMode::Area_end] =
 				{0, 			0,				200, 	50},	//GetSign
 				{0, 			0,				200, 	100},	//Start2
 				{GRAD_SLOPE,	0, 				200, 	100},	//StartClimb1//Front開始
-				{0,				0, 				200, 	100},	//StartClimb2
+				{0,				X_CLIMB_INIT,	200, 	100},	//StartClimb2
 				{0, 			X_CLIMB_INIT,	200, 	100},	//MountainArea
 				{0, 			0,				250, 	80},	//UukhaiZone
 				{0, 			0,				250, 	80},	//Uukhai

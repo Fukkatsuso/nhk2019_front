@@ -34,6 +34,7 @@ ForwardKinematics fw_FL(BASE_X, 0, &enc_FLf, -BASE_X, 0, &enc_FLr);
 void setLegs();
 void set_limits();
 void set_cycle(float *period, float *duty);
+void moveLeg(SingleLeg *front, SingleLeg *rear, float x, float y);
 void CANrcv();
 void CANsnd_TimerReset();
 
@@ -48,7 +49,6 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 			  SingleLeg *leg_r, InitLegInfo *info_r,
 			  ForwardKinematics *fw);
 void autoInit();
-
 void orbit_log(ParallelLeg *invLeg, ForwardKinematics *fwLeg);
 
 CANMessage rcvMsg;
@@ -94,21 +94,23 @@ int main(){
 		if(MRmode.get_now()==MRMode::SandDuneFront){
 			if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(280-100);
 			if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(280-100);
-			//登山でこれを試してみる
+		}
+
+		if(MRMode::StartClimb1<=MRmode.get_now() && MRmode.get_now()<=MRMode::MountainArea){
+			//1歩1歩進めていく歩容
 			//ただし、復帰幅と送り幅が違って徐々に足が前にいってしまう
-//			FR.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
-//			FL.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
+			//軌道計算を要再考
+			FR.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
+			moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
+			FL.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
+			moveLeg(&FLf, &FLr, FL.get_x(), FL.get_y());
 		}
 		else{
-		}
 			FR.walk();
+			moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
 			FL.walk();
-
-		//駆動
-		FRr.move_to(FR.get_x(), FR.get_y());
-		FRf.move_to(FR.get_x(), FR.get_y());
-		FLr.move_to(FL.get_x(), FL.get_y());
-		FLf.move_to(FL.get_x(), FL.get_y());
+			moveLeg(&FLf, &FLr, FL.get_x(), FL.get_y());
+		}
 
 		//DEBUG
 		if(pc.readable()){
@@ -187,6 +189,12 @@ void set_cycle(float *period, float *duty){
 		*period = 2;
 		*duty = 0.8;
 	}
+}
+
+
+void moveLeg(SingleLeg *front, SingleLeg *rear, float x, float y){
+	front->move_to(x, y);
+	rear->move_to(x, y);
 }
 
 
