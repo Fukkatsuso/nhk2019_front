@@ -140,7 +140,7 @@ void ParallelLeg::walk()
 
 void ParallelLeg::walk_stable(float spd, float dir, float rate_stablemove_time)
 {
-	time_stablemove = period * rate_stablemove_time;	//クロールver.
+	time_stablemove = period * rate_stablemove_time/2.0;	//トロットver.
 	direction = dir;
 	speed = curve_adjust(spd);
 	x.pos.now = x.pos.next;
@@ -323,33 +323,39 @@ void ParallelLeg::calc_position()
 //クロールver.
 void ParallelLeg::set_stable_timing()
 {
-	float period_recover = period - time_stablemove; //periodはMove時間も含むため
+	float period_recover = period - time_stablemove*2.0; //periodはMove時間も含むため
 	//復帰開始
-	if(speed>=0){//前進:FR->FL->RR->RL
+	if(speed>=0){//前進:FR&RL->FL&RR
 		if(fr==Front){
 			if(rl==Right)timing_stable[1] = 0;
-			else timing_stable[1] = period_recover * 1.0/4.0;
+			else timing_stable[1] = period * 0.5;
 		}
 		else{
-			if(rl==Right)timing_stable[1] = period_recover * 2.0/4.0;
-			else timing_stable[1] = period_recover * 3.0/4.0;
+			//period/2 - time_stablemove - (1-duty)*period_recover
+			//= period_recover/2 - (1-duty)*period_recover
+			//= (duty-0.5)*period_recover
+			if(rl==Left)timing_stable[1] = (duty-0.5)*period_recover;
+			//period - time_stablemove - (1-duty)*period_recover
+			//= period_recover + time_stablemove - (1-duty)*period_recover
+			//= duty*period_recover + time_stablemove
+			else timing_stable[1] = duty*period_recover + time_stablemove;
 		}
 	}
 	else{
 		if(fr==Rear){
 			if(rl==Left)timing_stable[1] = 0;
-			else timing_stable[1] = period_recover * 1.0/4.0;
+			else timing_stable[1] = period * 0.5;
 		}
 		else{
-			if(rl==Left)timing_stable[1] = period_recover * 2.0/4.0;
-			else timing_stable[1] = period_recover * 3.0/4.0;
+			if(rl==Right)timing_stable[1] = (duty-0.5)*period_recover;
+			else timing_stable[1] = duty*period_recover + time_stablemove;
 		}
 	}
-	if(timing_stable[1]>=period_recover*0.5)timing_stable[1] += (time_stablemove + period_recover*(duty-0.75))/2.0;
-	timing_stable[2] = timing_stable[1] + period_recover/4.0; //復帰完了
-	timing_stable[3] = period_recover*2.0/4.0; //Move開始
-	timing_stable[4] = timing_stable[3] + time_stablemove; //Move完了
-	timing_stable[5] = period; //1周期
+	timing_stable[2] = timing_stable[1] + period_recover*(1-duty); //復帰完了
+	timing_stable[3] = period_recover/2.0; //Move1開始
+	timing_stable[4] = timing_stable[3] + time_stablemove; //Move1完了
+	timing_stable[5] = period - time_stablemove; //Move2開始
+	timing_stable[6] = timing_stable[7] = period; //Move2終了・1周期
 }
 
 
@@ -357,7 +363,7 @@ void ParallelLeg::walk_stable_mode()
 {
 	mode_prv = mode;
 	float now = timer_period->read();
-	double period_recover = (double)timing_stable[2] - (double)timing_stable[1]; //periodはMove時間も含むため
+	double period_recover = (double)timing_stable[2] - (double)timing_stable[1]; //復帰に要する時間。periodはMove時間も含むため
 
 	if(timing_stable[1]<=now && now<timing_stable[2]){//復帰中
 		now -= timing_stable[1]; //復帰開始を基準にとる
@@ -369,7 +375,8 @@ void ParallelLeg::walk_stable_mode()
 		else mode = StableDown;
 	}
 	else if(timing_stable[3]<=now && now<timing_stable[4])mode = StableMove;
-	else mode = StableWait;//他の脚の復帰を待機
+	else if(timing_stable[5]<=now && now<timing_stable[6])mode = StableMove;
+	else mode = StableWait;//他の脚の復帰を待機するなど
 }
 
 void ParallelLeg::check_stable_flag()
@@ -446,7 +453,7 @@ void ParallelLeg::calc_stable_vel_recovery()
 		y.vel = height/(finish_time-start_time);// * (1.0/2.0) * sin((tm-start_time)*M_PI/(finish_time-start_time));// / (M_PI/(finish_time-start_time));
 		break;
 	case StableMove:
-		x.vel = -2.0*(step - x.pos.init)/(time_stablemove);// * sin((timer_period->read()-timing_stable[3])*M_PI/time_stablemove);// / (M_PI/time_stablemove);
+		x.vel = -(step - x.pos.init)/(time_stablemove);// * sin((timer_period->read()-timing_stable[3])*M_PI/time_stablemove);// / (M_PI/time_stablemove);
 		y.vel = x.vel * tan(gradient);	//(y.pos.init-y.pos.now)/(duty*period/4.0)
 		break;
 	}

@@ -84,9 +84,9 @@ int main(){
 			//1歩1歩進めていく歩容
 			//ただし、復帰幅と送り幅が違って徐々に足が前にいってしまう
 			//軌道計算を要再考
-			FR.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
+			FR.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.25);
 			moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
-			FL.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.1);
+			FL.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.25);
 			moveLeg(&FLf, &FLr, FL.get_x(), FL.get_y());
 		}
 		else{
@@ -146,12 +146,12 @@ void set_cycle(float *period, float *duty){
 		*duty = 0.8;
 		break;
 	case MRMode::StartClimb1:
-		*period = 5;
-		*duty = 0.8;
+		*period = 4;
+		*duty = 0.55;
 		break;
 	case MRMode::StartClimb2:
-		*period = 5;
-		*duty = 0.8;
+		*period = 4;
+		*duty = 0.55;
 	}
 }
 

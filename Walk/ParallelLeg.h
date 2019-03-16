@@ -122,7 +122,8 @@ private:
 	}x, y;
 
 	float timing[4];//時刻0, 復帰開始時刻, 復帰完了時刻, 1周期時刻
-	float timing_stable[6];//時刻0, 復帰開始時刻, 復帰完了時刻, 胴体移動開始時刻, 胴体移動完了時刻, 1周期時刻
+	//時刻0, 復帰開始時刻, 復帰完了時刻, 胴体移動開始時刻1, 胴体移動完了時刻1, 胴体移動開始時刻2, 胴体移動完了時刻2, 1周期時刻
+	float timing_stable[8];
 	LegMode mode;
 	LegMode mode_prv;
 	MRMode::Area area;
