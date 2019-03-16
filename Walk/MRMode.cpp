@@ -38,7 +38,7 @@ Limits limits[MRMode::Area_end] =
 		};
 
 #define GRAD_SLOPE 14.9
-#define X_CLIMB_INIT -53 // = init_y * tan(gradient)
+#define X_CLIMB_INIT -70//-53 // = init_y * tan(gradient)
 
 Orbits orbits[MRMode::Area_end] =
 		{		//gradient, 	init_x,			init_y, height

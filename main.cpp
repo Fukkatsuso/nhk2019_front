@@ -31,16 +31,15 @@ ParallelLeg FL(Front, Left, -200, 200);
 ForwardKinematics fw_FR(BASE_X, 0, &enc_FRf, -BASE_X, 0, &enc_FRr);
 ForwardKinematics fw_FL(BASE_X, 0, &enc_FLf, -BASE_X, 0, &enc_FLr);
 
-
-void set_cycle(float *period, float *duty);
-void CANrcv();
-void CANsnd_TimerReset();
-
 CANMessage rcvMsg;
 CANReceiver can_receiver(&can);
+void CANsnd_TimerReset(); //Ticker割り込み用関数
 CANSynchronizer can_synchronizer(&can, &CANsnd_TimerReset);
 
 MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
+
+void set_cycle(float *period, float *duty);
+void CANrcv();
 
 
 /******************
@@ -76,7 +75,7 @@ int main(){
 		can_synchronizer.set_period(walk_period);
 
 		//腰固定座標系での目標位置計算
-		if(MRmode.get_now()==MRMode::SandDuneFront){
+		if(MRmode.get_now()==MRMode::SandDuneFront || MRmode.get_now()==MRMode::SandDuneRear){
 			if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(280-100);
 			if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(280-100);
 		}
@@ -108,10 +107,19 @@ int main(){
 //
 //			pc.printf("vel[%3.2f][%3.2f]  ", FL.get_x_vel(), FL.get_y_vel());
 
-			orbit_log(&FL, &fw_FL);
+			pc.printf("%5.3f\t%5.3f\t", FRf.get_D(), FRr.get_D());
+			orbit_log(&FR, &fw_FR);
 			pc.printf("\r\n");
 		}
 	}
+}
+
+
+//Timer同期用
+void CANsnd_TimerReset(){
+	timer_FR.reset();
+	timer_FL.reset();
+	can_synchronizer.timer_reset(false);
 }
 
 
@@ -136,6 +144,14 @@ void set_cycle(float *period, float *duty){
 	case MRMode::Start2:
 		*period = 2;
 		*duty = 0.8;
+		break;
+	case MRMode::StartClimb1:
+		*period = 5;
+		*duty = 0.8;
+		break;
+	case MRMode::StartClimb2:
+		*period = 5;
+		*duty = 0.8;
 	}
 }
 
@@ -150,12 +166,4 @@ void CANrcv(){
 			can_receiver.receive(id, rcvMsg.data);
 		}
 	}
-}
-
-
-//Timer同期用
-void CANsnd_TimerReset(){
-	timer_FR.reset();
-	timer_FL.reset();
-	can_synchronizer.timer_reset(false);
 }

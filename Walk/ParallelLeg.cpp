@@ -140,7 +140,7 @@ void ParallelLeg::walk()
 
 void ParallelLeg::walk_stable(float spd, float dir, float rate_stablemove_time)
 {
-	time_stablemove = period * rate_stablemove_time;
+	time_stablemove = period * rate_stablemove_time;	//クロールver.
 	direction = dir;
 	speed = curve_adjust(spd);
 	x.pos.now = x.pos.next;
@@ -243,9 +243,11 @@ void ParallelLeg::check_flag()
 		flag.first_cycle = false;
 ///////////////////////////////////
 
-	if(flag.stay_command && fabs(x.pos.now-x.pos.init)<X_STAY_MARGIN){
-		flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
-		mode = Stay;
+	if(flag.stay_command){
+		if(fabs(x.pos.now-x.pos.init)<X_STAY_MARGIN && fabs(y.pos.now-y.pos.init)<Y_STAY_MARGIN){
+			flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
+			mode = Stay;
+		}
 	}
 	else flag.stay = false;
 }
@@ -318,6 +320,7 @@ void ParallelLeg::calc_position()
 
 
 //障害物用歩行計算
+//クロールver.
 void ParallelLeg::set_stable_timing()
 {
 	float period_recover = period - time_stablemove; //periodはMove時間も含むため
@@ -333,12 +336,12 @@ void ParallelLeg::set_stable_timing()
 		}
 	}
 	else{
-		if(fr==Front){
-			if(rl==Right)timing_stable[1] = 0;
+		if(fr==Rear){
+			if(rl==Left)timing_stable[1] = 0;
 			else timing_stable[1] = period_recover * 1.0/4.0;
 		}
 		else{
-			if(rl==Right)timing_stable[1] = period_recover * 2.0/4.0;
+			if(rl==Left)timing_stable[1] = period_recover * 2.0/4.0;
 			else timing_stable[1] = period_recover * 3.0/4.0;
 		}
 	}
@@ -348,6 +351,7 @@ void ParallelLeg::set_stable_timing()
 	timing_stable[4] = timing_stable[3] + time_stablemove; //Move完了
 	timing_stable[5] = period; //1周期
 }
+
 
 void ParallelLeg::walk_stable_mode()
 {
@@ -442,7 +446,7 @@ void ParallelLeg::calc_stable_vel_recovery()
 		y.vel = height/(finish_time-start_time);// * (1.0/2.0) * sin((tm-start_time)*M_PI/(finish_time-start_time));// / (M_PI/(finish_time-start_time));
 		break;
 	case StableMove:
-		x.vel = -(step - x.pos.init)/(time_stablemove);// * sin((timer_period->read()-timing_stable[3])*M_PI/time_stablemove);// / (M_PI/time_stablemove);
+		x.vel = -2.0*(step - x.pos.init)/(time_stablemove);// * sin((timer_period->read()-timing_stable[3])*M_PI/time_stablemove);// / (M_PI/time_stablemove);
 		y.vel = x.vel * tan(gradient);	//(y.pos.init-y.pos.now)/(duty*period/4.0)
 		break;
 	}
@@ -494,6 +498,7 @@ void ParallelLeg::calc_stable_position()
 	x.pos.dif += x.vel*timer_period->get_dt();
 	y.pos.dif += y.vel*timer_period->get_dt();
 	if(fabs(y.vel)==0 && mode!=StableSlide)y.pos.dif = 0;
+	if(fabs(x.vel)==0 && mode==StableDown)x.pos.dif = step - x.pos.init;
 //	if(mode==StableDown)x.pos.dif = 0;
 	x.pos.next = limit(x.pos.init + x.pos.dif, x.pos.max, x.pos.min);
 	y.pos.next = limit(y.pos.init + y.pos.dif, y.pos.max, y.pos.min);
