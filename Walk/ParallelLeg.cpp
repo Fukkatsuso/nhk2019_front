@@ -429,75 +429,26 @@ void ParallelLeg::calc_stable_step()
 
 void ParallelLeg::calc_stable_vel_recovery()
 {
-	float tm = timer_period->read() - timing_stable[1];
-	float Ty = (1.0-duty)*(period - time_stablemove);//遊脚時間
-	float start_time;
-	float finish_time; //その動作が終わるまでにかける時間(start_timeが基準)
-	switch(mode){
-	case StableUp:
-		//start_time = 0; //なので省略
-		finish_time = Ty*((LEGUP_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-		x.vel = 0;
-		y.vel = -height/finish_time;// * (1.0/2.0) * sin(tm*M_PI/finish_time);// / (M_PI/finish_time);
-		break;
-	case StableSlide:
-		start_time = Ty*((LEGUP_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-		finish_time = Ty*((LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-		x.vel = (step-x.pos.recover_start)/(finish_time-start_time);// * (1.0/2.0) * sin((tm-start_time)*M_PI/(finish_time-start_time));// / (M_PI/(finish_time-start_time));
-		y.vel = 0;
-		break;
-	case StableDown:
-		start_time = Ty*((LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-		finish_time = Ty;
-		x.vel = 0;
-		y.vel = height/(finish_time-start_time);// * (1.0/2.0) * sin((tm-start_time)*M_PI/(finish_time-start_time));// / (M_PI/(finish_time-start_time));
-		break;
-	case StableMove:
+	if(mode==StableMove){
 		x.vel = -(step - x.pos.init)/(time_stablemove);// * sin((timer_period->read()-timing_stable[3])*M_PI/time_stablemove);// / (M_PI/time_stablemove);
 		y.vel = x.vel * tan(gradient);	//(y.pos.init-y.pos.now)/(duty*period/4.0)
-		break;
 	}
-//	x.vel *= cos(gradient); //坂道用
-//	y.vel *= cos(gradient); //坂道用
+	else{
+		float tm = timer_period->read() - timing_stable[1];
+		float Ty = (1.0-duty)*(period - time_stablemove);//遊脚時間
+		//x速度計算
+		x.vel = ((step-x.pos.recover_start)/Ty) * (1.0 - cos(2.0*M_PI*tm/Ty)/duty);//計算改良1
+		//y速度計算
+		if(0<=tm && tm<=Ty/4.0)
+			y.vel = FACTOR_Y * (1.0 - cos(4.0*M_PI*tm/Ty));
+		else if(Ty/4.0<tm && tm<Ty*3.0/4.0)
+			y.vel = 2.0 * FACTOR_Y * cos(2.0*M_PI*(tm/Ty-1.0/4.0));
+		else if(Ty*3.0/4.0<=tm && tm<=Ty)
+			y.vel = -FACTOR_Y * (1.0 - cos(4.0*M_PI*(1.0-tm/Ty)));
+	}
+	//	x.vel *= cos(gradient); //坂道用
+	//	y.vel *= cos(gradient); //坂道用
 }
-
-//void ParallelLeg::calc_stable_vel_recovery()
-//{
-//	float tm = timer_period->read();// - timing_stable[1];
-//	float Ty = (1.0-duty)*(period - time_stablemove);//遊脚時間
-//	float start_time; //遊脚開始時間
-//	float finish_time; //動作が終わる時間
-//	float required_time;
-//	switch(mode){
-//	case StableUp:
-//		start_time = timing_stable[1];
-//		finish_time = start_time + Ty*((LEGUP_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-//		required_time = finish_time;
-//		x.vel = 0;
-//		y.vel = -height/required_time; //-height * (M_PI/required_time) * sin((tm-start_time)*(M_PI/required_time)) / 2.0;
-//		break;
-//	case StableSlide:
-//		start_time = timing_stable[1] + Ty*((LEGUP_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-//		finish_time = start_time + Ty*((LEGSLIDE_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-//		required_time = finish_time-start_time;
-//		x.vel = (step-x.pos.recover_start)/required_time; //(step-x.pos.recover_start) * (M_PI/required_time) * sin((tm-start_time)*(M_PI/required_time)) / 2.0;
-//		y.vel = 0;
-//		break;
-//	case StableDown:
-//		start_time = timing_stable[1] + Ty*((LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
-//		finish_time = start_time + Ty*((LEGDOWN_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));;
-//		required_time = finish_time-start_time;
-//		x.vel = 0;
-//		y.vel = height/required_time; //height * (M_PI/required_time) * sin((tm-start_time)*(M_PI/required_time)) / 2.0;
-//		break;
-//	case StableMove:
-//		x.vel = -/*2.0**/(step - x.pos.init)/(time_stablemove); //-(step - x.pos.init) * (M_PI/time_stablemove) * sin((tm-timing_stable[3])*(M_PI/time_stablemove));
-//		y.vel = x.vel * tan(gradient);	//(y.pos.init-y.pos.now)/(duty*period/4.0)
-//		break;
-//	}
-////	x.vel *= cos(gradient); //坂道用
-////	y.vel *= cos(gradient); //坂道用
-//}
 
 
 void ParallelLeg::calc_stable_position()
