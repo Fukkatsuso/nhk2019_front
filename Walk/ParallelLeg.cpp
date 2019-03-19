@@ -410,7 +410,10 @@ void ParallelLeg::calc_stable_velocity()
 {
 	if(mode==StableUp || mode==StableSlide || mode==StableDown || mode==StableMove){
 		calc_stable_step();//復帰の着地点座標(x)
-		calc_stable_vel_recovery();
+		if(MRmode->get_now()==MRMode::SandDuneFront || MRmode->get_now()==MRMode::SandDuneRear)
+			calc_stable_vel_recovery_dune();
+		else
+			calc_stable_vel_recovery();
 	}
 	else{
 		x.vel = 0.0;
@@ -448,6 +451,44 @@ void ParallelLeg::calc_stable_vel_recovery()
 	}
 	//	x.vel *= cos(gradient); //坂道用
 	//	y.vel *= cos(gradient); //坂道用
+}
+
+void ParallelLeg::calc_stable_vel_recovery_dune()
+{
+//	float tm = timer_period->read();// - timing_stable[1];
+	float Ty = (1.0-duty)*(period - time_stablemove);//遊脚時間
+	float start_time; //遊脚開始時間
+	float finish_time; //動作が終わる時間
+	float required_time;
+	switch(mode){
+	case StableUp:
+		start_time = timing_stable[1];
+		finish_time = start_time + Ty*((LEGUP_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
+		required_time = finish_time-start_time;
+		x.vel = 0;
+		y.vel = -height/required_time; //-height * (M_PI/required_time) * sin((tm-start_time)*(M_PI/required_time)) / 2.0;
+		break;
+	case StableSlide:
+		start_time = timing_stable[1] + Ty*((LEGUP_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
+		finish_time = start_time + Ty*((LEGSLIDE_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
+		required_time = finish_time-start_time;
+		x.vel = (step-x.pos.recover_start)/required_time; //(step-x.pos.recover_start) * (M_PI/required_time) * sin((tm-start_time)*(M_PI/required_time)) / 2.0;
+		y.vel = 0;
+		break;
+	case StableDown:
+		start_time = timing_stable[1] + Ty*((LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));
+		finish_time = start_time + Ty*((LEGDOWN_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME));;
+		required_time = finish_time-start_time;
+		x.vel = 0;
+		y.vel = height/required_time; //height * (M_PI/required_time) * sin((tm-start_time)*(M_PI/required_time)) / 2.0;
+		break;
+	case StableMove:
+		x.vel = -/*2.0**/(step - x.pos.init)/(time_stablemove); //-(step - x.pos.init) * (M_PI/time_stablemove) * sin((tm-timing_stable[3])*(M_PI/time_stablemove));
+		y.vel = x.vel * tan(gradient);	//(y.pos.init-y.pos.now)/(duty*period/4.0)
+		break;
+	}
+//	x.vel *= cos(gradient); //坂道用
+//	y.vel *= cos(gradient); //坂道用
 }
 
 

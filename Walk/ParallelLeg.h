@@ -87,6 +87,7 @@ protected:
 	void calc_stable_velocity();
 	void calc_stable_step();
 	void calc_stable_vel_recovery();
+	void calc_stable_vel_recovery_dune();
 	void calc_stable_position();
 
 private:

@@ -48,6 +48,7 @@ void CANrcv();
 int main(){
 	float walk_period = 1;//2;
 	float walk_duty = 0.55;//0.80;
+	int mrmode = (int)MRmode.get_now();
 	can.frequency(1000000);
 	can.attach(&CANrcv, CAN::RxIrq);
 	wait_ms(300); //全ての基板の電源が入るまで待つ
@@ -74,13 +75,19 @@ int main(){
 		FL.set_duty(walk_duty);
 		can_synchronizer.set_period(walk_period);
 
+		mrmode = MRmode.get_now();
+
 		//腰固定座標系での目標位置計算
-		if(MRmode.get_now()==MRMode::SandDuneFront || MRmode.get_now()==MRMode::SandDuneRear){
-			if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(280-100);
-			if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(280-100);
+		if(mrmode==MRMode::SandDuneFront || mrmode==MRMode::SandDuneRear){
+			if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(260-100);
+			if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(260-100);
+			FR.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.25);
+			moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
+			FL.walk_stable(can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction), 0.25);
+			moveLeg(&FLf, &FLr, FL.get_x(), FL.get_y());
 		}
 
-		if(MRMode::StartClimb1<=MRmode.get_now() && MRmode.get_now()<=MRMode::MountainArea){
+		else if(MRMode::StartClimb1<=mrmode && mrmode<=MRMode::MountainArea){
 			//1歩1歩進めていく歩容
 			//ただし、復帰幅と送り幅が違って徐々に足が前にいってしまう
 			//軌道計算を要再考
@@ -90,6 +97,10 @@ int main(){
 			moveLeg(&FLf, &FLr, FL.get_x(), FL.get_y());
 		}
 		else{
+			if(mrmode==MRMode::Tussock1){
+				if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_height(360);
+				if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_height(360);
+			}
 			FR.walk();
 			moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
 			FL.walk();
@@ -126,20 +137,20 @@ void CANsnd_TimerReset(){
 void set_cycle(float *period, float *duty){
 	switch((int)MRmode.get_now()){
 	case MRMode::GobiArea:
-		*period = 0.8;//2;//1.5;//1;
+		*period = 1;//2;//1.5;//1;
 		*duty = 0.5;//0.55;
 		break;
 	case MRMode::SandDuneFront:
-		*period = 1.6;//5;//1;
-		*duty = 0.55;//0.8;//0.55;
+		*period = 4;//1.6;//5;//1;
+		*duty = 0.5;//0.55;//0.8;//0.55;
 		break;
 	case MRMode::SandDuneRear:
-		*period = 1.6;//5;//1;
-		*duty = 0.55;//0.8;//0.55;
+		*period = 4;//1.6;//5;//1;
+		*duty = 0.5;//0.55;//0.8;//0.55;
 		break;
 	case MRMode::Tussock1:
-		*period = 1.6;
-		*duty = 0.55;
+		*period = 2;
+		*duty = 0.5;
 		break;
 	case MRMode::Start2:
 		*period = 2;
