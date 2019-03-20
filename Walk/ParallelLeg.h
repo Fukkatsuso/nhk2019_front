@@ -14,11 +14,6 @@
 #include "CANs/CANReceiver.h"
 #include "CANs/CANSynchronizer.h"
 
-//脚持ち上げ:脚下げ = LEGUP:LEGDOWN
-#define LEGUP_MOVE 4.0f
-#define LEGDOWN_MOVE (1.0f)
-#define LEGUP_TIME 1.0f
-#define LEGDOWN_TIME 1.0f//4.0f
 
 //障害物用
 //脚上げ:脚復帰スライド:脚下げ = LEGUP_STABLE_TIME:LEGSLIDE_STABLE_TIME:LEGDOWN_STABLE_TIME
@@ -51,13 +46,17 @@ public:
 	void set_period(float period);
 	void set_duty(float duty);
 
+	void set_walkmode(Gait::Mode gait, Recovery::Mode recovery, float time_stablemove_rate);
+
+	void trigger_sanddune(int trigger);
+	void trigger_tussock(int trigger);
+	void over_obstacle();
+
 	//速度, 方向 -> 次の着地点（歩幅）
 	void walk(float spd, float dir);
 	void walk();
 
-	void walk_stable(float spd, float dir, float rate_stablemove_time);
-
-	//足先座標を返す
+	//DEBUG
 	float get_x();
 	float get_y();
 	float get_x_initial();
@@ -71,24 +70,27 @@ public:
 
 protected:
 	float curve_adjust(float value);
-//	void calc_dt(float tm);
 	void timer_update();
+
+	//NormalGait
 	void set_timing();
 	void walk_mode();
 	void check_flag();
 	void calc_velocity();
+		void calc_vel_move();
 		void calc_step();
-		void calc_vel_recovery();
+		void calc_vel_recovery_cycloid(float timing_start, float Ty);
 	void calc_position();
 
-	void set_stable_timing();
-	void walk_stable_mode();
-	void check_stable_flag();
-	void calc_stable_velocity();
-	void calc_stable_step();
-	void calc_stable_vel_recovery();
-	void calc_stable_vel_recovery_dune();
-	void calc_stable_position();
+	//StableGait
+	void set_timing_stable();
+	void walk_mode_stable();
+	void check_flag_stable();
+	void calc_velocity_stable();
+		void calc_step_stable();
+		void calc_vel_move_stable();
+		void calc_vel_recovery_quadrangle(float timing_start);
+	void calc_position_stable();
 
 private:
 	const short fr;
@@ -125,6 +127,8 @@ private:
 	float timing[4];//時刻0, 復帰開始時刻, 復帰完了時刻, 1周期時刻
 	//時刻0, 復帰開始時刻, 復帰完了時刻, 胴体移動開始時刻1, 胴体移動完了時刻1, 胴体移動開始時刻2, 胴体移動完了時刻2, 1周期時刻
 	float timing_stable[8];
+	Gait::Mode gait_mode;
+	Recovery::Mode recovery_mode;
 	LegMode mode;
 	LegMode mode_prv;
 	MRMode::Area area;
@@ -136,14 +140,14 @@ private:
 		bool stay_command;//静止コマンド
 		bool stay;//静止状態	CANで送信するプログラムを実装せねば
 		bool first_cycle;//最初の歩行サイクル
+		bool sanddune;//段差用足上げ
+		bool tussock;//ひも用足上げ
 		bool climb;//登山
 	}flag;
 
-//	struct{
-//		float prv;
-//		float now;
-//		float dif;
-//	}time;
+	struct{
+		int walk_on_dune; //SandDune上で歩を進めた回数
+	}counter;
 };
 
 

@@ -19,12 +19,11 @@ Limits limits[MRMode::Area_end] =
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//GetGerege
 			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//PrepareWalking
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Start1
-			  {{90, -90}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GobiArea
+			  {{90, -90}, 	{280, 	200}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//GobiArea
 			  {{90, -90}, 	{280, 	120}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//SandDuneFront
-			  {{90, -90}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//SandDuneRear
+			  {{90, -90}, 	{280, 	130}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//SandDuneRear
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//ReadyForTussock
-			  {{90, -90}, 	{280, 	80}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Tussock1
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	100}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Tussock2
+			  {{90, -90}, 	{280, 	80}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Tussock
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Finish1
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//WaitMountainUrtuu
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//GetSign
@@ -46,16 +45,15 @@ Orbits orbits[MRMode::Area_end] =
 				{0, 			0,				280, 	10},	//GetGerege
 				{0, 			0,				280, 	10},	//PrepareWalking
 				{0, 			0,				280, 	50},	//Start1
-				{0, 			0,				260, 	15},//30	//GobiArea
-				{0, 			0,				260,	110},//300},//280, 	300},//150	//SandDuneFront
-				{0,				0,				260,	15},//280,	30},	//SandDuneRear
+				{0, 			0,				260, 	30},//30	//GobiArea
+				{0, 			0,				260,	120},//300},//280, 	300},//150	//SandDuneFront
+				{0,				0,				260,	20},//280,	30},	//SandDuneRear
 				{0, 			0,				250, 	50},	//ReadyForTussock
-				{0, 			-5,				260, 	30},//150},	//Tussock1
-				{0, 			0,				280, 	150},	//Tussock2
+				{0, 			-10,				260, 	30},//150},	//Tussock
 				{0, 			0,				280, 	100},	//Finish1
 				{0, 			0,				200, 	50},	//WaitMountainUrtuu
 				{0, 			0,				200, 	50},	//GetSign
-				{0, 			0,				200, 	100},	//Start2
+				{0, 			0,				200, 	50},	//Start2
 				{GRAD_SLOPE,	0, 				200, 	100},	//StartClimb1//Front開始
 				{0,				X_CLIMB_INIT,	200, 	50},	//StartClimb2
 				{0, 			X_CLIMB_INIT,	200, 	50},	//MountainArea

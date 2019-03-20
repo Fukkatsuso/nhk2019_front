@@ -38,6 +38,20 @@ enum LegMode{
 	StableWait = 9
 };
 
+struct Gait{
+	enum Mode{
+		NormalGait,
+		StableGait
+	};
+};
+
+struct Recovery{
+	enum Mode{
+		Cycloid,
+		Quadrangle
+	};
+};
+
 
 struct Limits{
 	struct{
@@ -66,8 +80,7 @@ public:
 		SandDuneFront,//段差1
 		SandDuneRear,//段差2
 		ReadyForTussock,//ここに何か入れるべき
-		Tussock1,//紐1
-		Tussock2,//紐2
+		Tussock,//紐
 		Finish1,//到着
 		WaitMountainUrtuu,//待機
 		GetSign,//非接触の合図
