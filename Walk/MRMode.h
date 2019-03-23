@@ -41,7 +41,8 @@ enum LegMode{
 struct Gait{
 	enum Mode{
 		NormalGait,
-		StableGait
+		StableGait,
+		ActiveStableGait
 	};
 };
 

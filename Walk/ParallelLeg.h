@@ -19,7 +19,7 @@
 //脚上げ:脚復帰スライド:脚下げ = LEGUP_STABLE_TIME:LEGSLIDE_STABLE_TIME:LEGDOWN_STABLE_TIME
 #define LEGUP_STABLE_TIME 1.0f
 #define LEGSLIDE_STABLE_TIME 1.0f
-#define LEGDOWN_STABLE_TIME 1.0f
+#define LEGDOWN_STABLE_TIME 2.0f
 
 #define X_STAY_MARGIN 2.0f
 #define Y_STAY_MARGIN 2.0f
@@ -89,8 +89,13 @@ protected:
 	void calc_velocity_stable();
 		void calc_step_stable();
 		void calc_vel_move_stable();
-		void calc_vel_recovery_quadrangle(float timing_start);
+		void calc_vel_recovery_quadrangle(float timing_start, float Ty);
 	void calc_position_stable();
+
+	//ActiveStableGait
+	void set_timing_activestable();
+	void walk_mode_activestable();
+	void calc_velocity_activestable();
 
 private:
 	const short fr;

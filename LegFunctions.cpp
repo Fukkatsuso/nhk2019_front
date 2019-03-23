@@ -57,7 +57,7 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 	//ゆっくりスイッチに近づける
 	if(!info_f->enc_reset){
 		info_f->angle_target = leg_f->get_enc() + 0.25;//200[roop/sec], 20[degree/sec] -> 0.1[degree/roop]
-		info_r->angle_target = leg_r->get_enc() - 0.05;
+		info_r->angle_target = leg_r->get_enc() - 0.025;
 		if(leg_f->get_sw()){
 			leg_f->reset_duty();leg_r->reset_duty();
 			leg_f->reset_enc();

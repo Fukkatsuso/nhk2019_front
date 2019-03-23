@@ -77,31 +77,34 @@ int main(){
 
 		mrmode = MRmode.get_now();
 
-		//腰固定座標系での目標位置計算
 		if(mrmode==MRMode::SandDuneFront || mrmode==MRMode::SandDuneRear){
-//			if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_y_initial(260-100);
-//			if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_y_initial(260-100);
 			FR.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x1);
 			FL.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x4);
-			FR.set_walkmode(Gait::StableGait, Recovery::Quadrangle, 0.25);
-			FL.set_walkmode(Gait::StableGait, Recovery::Quadrangle, 0.25);
+			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
+			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
 		}
-		else if(MRMode::StartClimb1<=mrmode && mrmode<=MRMode::MountainArea){
-			FR.set_walkmode(Gait::StableGait, Recovery::Cycloid, 0.25);
-			FL.set_walkmode(Gait::StableGait, Recovery::Cycloid, 0.25);
-		}
-		else{
-			if(mrmode==MRMode::Tussock){
-//				if((int)can_receiver.get_data(CANID::LegUp)&0x1)FR.set_height(360);
-//				if((int)can_receiver.get_data(CANID::LegUp)&0x4)FL.set_height(360);
-				FR.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x1);
-				FL.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x4);
-			}
+		else if(mrmode==MRMode::Tussock){
+			FR.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x1);
+			FL.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x4);
 			FR.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
 			FL.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
-
+//			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.25);
+//			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.25);
+		}
+		else if(MRMode::Start2<=mrmode && mrmode<=MRMode::MountainArea){
+//			FR.set_walkmode(Gait::StableGait, Recovery::Cycloid, 0.25);
+//			FL.set_walkmode(Gait::StableGait, Recovery::Cycloid, 0.25);
+			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0);
+			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0);
+		}
+		else{
+			FR.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
+			FL.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
+//			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.1);
+//			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.1);
 		}
 
+		//腰固定座標系での目標位置計算
 		FR.walk();
 		moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
 		FL.walk();
@@ -120,6 +123,7 @@ int main(){
 
 //			pc.printf("%5.3f\t%5.3f\t", FRf.get_D(), FRr.get_D());
 			orbit_log(&FR, &fw_FR);
+//			orbit_log(&FL, &fw_FL);
 			pc.printf("\r\n");
 		}
 	}
@@ -137,19 +141,19 @@ void CANsnd_TimerReset(){
 void set_cycle(float *period, float *duty){
 	switch((int)MRmode.get_now()){
 	case MRMode::GobiArea:
-		*period = 1;//2;//1.5;//1;
+		*period = 1;//1.6;//1;
 		*duty = 0.5;//0.55;
 		break;
 	case MRMode::SandDuneFront:
-		*period = 4;//1.6;//5;//1;
-		*duty = 0.5;//0.55;//0.8;//0.55;
+		*period = 2;//1.6;//2;
+		*duty = 0.5;
 		break;
 	case MRMode::SandDuneRear:
-		*period = 4;//1.6;//5;//1;
-		*duty = 0.5;//0.55;//0.8;//0.55;
+		*period = 2;//1.6;//2;
+		*duty = 0.5;
 		break;
 	case MRMode::Tussock:
-		*period = 2;
+		*period = 1;//1.0*5.0/3.0;//1;
 		*duty = 0.5;
 		break;
 	case MRMode::Start2:
@@ -157,11 +161,11 @@ void set_cycle(float *period, float *duty){
 		*duty = 0.5;
 		break;
 	case MRMode::StartClimb1:
-		*period = 3;//4;
+		*period = 1;//1.2;
 		*duty = 0.5;
 		break;
 	case MRMode::StartClimb2:
-		*period = 3;//4;
+		*period = 1;//1.2;
 		*duty = 0.5;
 	}
 }
