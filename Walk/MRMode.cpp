@@ -19,11 +19,11 @@ Limits limits[MRMode::Area_end] =
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//GetGerege
 			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//PrepareWalking
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Start1
-			  {{90, -90}, 	{280, 	200}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//GobiArea
-			  {{100, -100}, 	{260, 	120}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//SandDuneFront
-			  {{100, -100}, 	{260, 	120}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//SandDuneRear
+			  {{90, -90}, 							{280, 	200}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//GobiArea
+			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//SandDuneFront
+			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//SandDuneRear
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//ReadyForTussock
-			  {{90, -90}, 	{280, 	80}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//Tussock
+			  {{90, -90}, 							{280, 	80}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//Tussock
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Finish1
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//WaitMountainUrtuu
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{250, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//GetSign

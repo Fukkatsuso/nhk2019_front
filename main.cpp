@@ -10,10 +10,6 @@
 #include "Walk/MRMode.h"
 #include "Walk/ForwardKinematics.h"
 
-/*
- * 予定
- * 障害物用の軌道を模索
- */
 
 LocalFileSystem local("local");//PIDゲイン調整に使用
 
@@ -46,8 +42,8 @@ void CANrcv();
  * 		main	  *
  ******************/
 int main(){
-	float walk_period = 1;//2;
-	float walk_duty = 0.55;//0.80;
+	float walk_period = 1;
+	float walk_duty = 0.5;
 	int mrmode = (int)MRmode.get_now();
 	can.frequency(1000000);
 	can.attach(&CANrcv, CAN::RxIrq);
@@ -62,7 +58,7 @@ int main(){
 	set_limits();
 
 	while(1){
-		AdjustCycle(1000);//min:0.0008[sec]=800[us](?)
+		AdjustCycle(1000);
 
 		MRmode.update();
 		set_limits();
@@ -88,20 +84,14 @@ int main(){
 			FL.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x4);
 			FR.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
 			FL.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
-//			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.25);
-//			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.25);
 		}
 		else if(MRMode::Start2<=mrmode && mrmode<=MRMode::MountainArea){
-//			FR.set_walkmode(Gait::StableGait, Recovery::Cycloid, 0.25);
-//			FL.set_walkmode(Gait::StableGait, Recovery::Cycloid, 0.25);
 			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0);
 			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0);
 		}
 		else{
 			FR.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
 			FL.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
-//			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.1);
-//			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0.1);
 		}
 
 		//腰固定座標系での目標位置計算
@@ -121,7 +111,6 @@ int main(){
 //
 //			pc.printf("vel[%3.2f][%3.2f]  ", FL.get_x_vel(), FL.get_y_vel());
 
-//			pc.printf("%5.3f\t%5.3f\t", FRf.get_D(), FRr.get_D());
 			orbit_log(&FR, &fw_FR);
 //			orbit_log(&FL, &fw_FL);
 			pc.printf("\r\n");
@@ -141,19 +130,19 @@ void CANsnd_TimerReset(){
 void set_cycle(float *period, float *duty){
 	switch((int)MRmode.get_now()){
 	case MRMode::GobiArea:
-		*period = 1;//1.6;//1;
-		*duty = 0.5;//0.55;
+		*period = 1;
+		*duty = 0.5;
 		break;
 	case MRMode::SandDuneFront:
-		*period = 2;//1.6;//2;
+		*period = 2;
 		*duty = 0.5;
 		break;
 	case MRMode::SandDuneRear:
-		*period = 2;//1.6;//2;
+		*period = 2;
 		*duty = 0.5;
 		break;
 	case MRMode::Tussock:
-		*period = 1;//1.0*5.0/3.0;//1;
+		*period = 1;
 		*duty = 0.5;
 		break;
 	case MRMode::Start2:
