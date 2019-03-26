@@ -19,7 +19,8 @@ const short CANProtocol::CANFormats[CANID::DataType_end][FormatType::FormatType_
 		{CANID::Area,		2,	0},	//Area
 		{CANID::LegUp,		2,	0},	//LegUp
 		{CANID::Gait,		1,	0},	//Gait
-		{CANID::LegState,	1,	0}	//LegState
+		{CANID::LegState,	1,	0},	//LegState
+		{CANID::AreaChange,	2, 	0} 	//AreaChange
 };
 
 

@@ -51,6 +51,8 @@ void moveLeg(SingleLeg *front, SingleLeg *rear, float x, float y){
 }
 
 
+#define INITIAL_SET_X 0
+#define INITIAL_SET_Y 260
 void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 		  	  SingleLeg *leg_r, InitLegInfo *info_r,
 			  ForwardKinematics *fw){
@@ -74,11 +76,11 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 		}
 	}
 	else{//enc両方リセット完了
-		if((fabs(0.0f - fw->get_x()) < 1.0) && (fabs(250.0f - fw->get_y()) < 1.0))
+		if((fabs(INITIAL_SET_X - fw->get_x()) < 1.0) && (fabs(INITIAL_SET_Y - fw->get_y()) < 1.0))
 			info_f->finish_init = info_r->finish_init = true;
 		fw->estimate();
-		info_f->x_target = info_r->x_target = 0.0f;
-		info_f->y_target = info_r->y_target = 250.0f;
+		info_f->x_target = info_r->x_target = INITIAL_SET_X;
+		info_f->y_target = info_r->y_target = INITIAL_SET_Y;
 	}
 
 	//駆動
@@ -109,6 +111,7 @@ void autoInit(){
 	Rf.finish_init = Rr.finish_init = Lf.finish_init = Lr.finish_init = false;
 	while(!(Rf.finish_init && Rr.finish_init && Lf.finish_init && Lr.finish_init)){
 		AdjustCycle(5000);
+		led0 = 1;
 		initLegs(&FRf, &Rf, &FRr, &Rr, &fw_FR);
 		initLegs(&FLf, &Lf, &FLr, &Lr, &fw_FL);
 		pc.printf("enc");
@@ -137,6 +140,7 @@ void autoInit(){
 
 		if(pc.readable())if(pc.getc()=='s')break;//"s"を押したら強制終了
 	}
+	led0 = 0;
 }
 
 

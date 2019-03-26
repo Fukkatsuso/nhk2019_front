@@ -3,6 +3,7 @@
 #include "functions.h"
 #include "LegFunctions.h"
 #include "Walk/CANs/CANReceiver.h"
+#include "Walk/CANs/CANSender.h"
 #include "Walk/CANs/CANSynchronizer.h"
 #include "Walk/ClockTimer.h"
 #include "Walk/SingleLeg.h"
@@ -29,10 +30,11 @@ ForwardKinematics fw_FL(BASE_X, 0, &enc_FLf, -BASE_X, 0, &enc_FLr);
 
 CANMessage rcvMsg;
 CANReceiver can_receiver(&can);
+CANSender can_sender(&can);
 void CANsnd_TimerReset(); //Ticker割り込み用関数
 CANSynchronizer can_synchronizer(&can, &CANsnd_TimerReset);
 
-MRMode MRmode(&can_receiver, MRMode::GobiArea, true);//実行の度に要確認
+MRMode MRmode(&can_receiver, &can_sender, MRMode::GobiArea, true);//実行の度に要確認
 
 void set_cycle(float *period, float *duty);
 void CANrcv();
@@ -74,18 +76,29 @@ int main(){
 		mrmode = MRmode.get_now();
 
 		if(mrmode==MRMode::SandDuneFront || mrmode==MRMode::SandDuneRear){
-			FR.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x1);
-			FL.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x4);
+//			FR.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x1);
+//			FL.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x4);
+			FR.trigger_sanddune(kouden_SandDuneFront.read());
+			FL.trigger_sanddune(kouden_SandDuneFront.read());
 			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
 			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
+			if(mrmode==MRMode::SandDuneFront){
+				if(FR.get_count_walk_on_dune() > 1 && FL.get_count_walk_on_dune() > 1){
+					MRmode.request_to_change_area(MRMode::SandDuneRear, CANID::FromFront);
+				}
+			}
 		}
 		else if(mrmode==MRMode::Tussock){
-			FR.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x1);
-			FL.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x4);
+//			FR.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x1);
+//			FL.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x4);
+//			FR.trigger_tussock(kouden_SandDuneFront.read());
+//			FL.trigger_tussock(kouden_SandDuneFront.read());
+			FR.trigger_tussock(1);
+			FL.trigger_tussock(1);
 			FR.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
 			FL.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
 		}
-		else if(MRMode::Start2<=mrmode && mrmode<=MRMode::MountainArea){
+		else if(MRMode::StartClimb1<=mrmode && mrmode<=MRMode::MountainArea){
 			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0);
 			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Cycloid, 0);
 		}
@@ -102,7 +115,8 @@ int main(){
 
 		//DEBUG
 		if(pc.readable()){
-//			pc.printf("mode:%d  ", FR.get_mode());
+			pc.printf("kouden:%d  ", kouden_SandDuneFront.read());
+			pc.printf("mode:%d  ", FR.get_mode());
 //			pc.printf("timer:%1.4f  ", timer_FR.read());
 //			pc.printf("speed:%3.4f  dir:%1.3f  ", can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction));
 //			pc.printf("x:%3.3f  y:%3.3f  ", FL.get_x(), FL.get_y());
@@ -150,11 +164,11 @@ void set_cycle(float *period, float *duty){
 		*duty = 0.5;
 		break;
 	case MRMode::StartClimb1:
-		*period = 1;//1.2;
+		*period = 1;
 		*duty = 0.5;
 		break;
 	case MRMode::StartClimb2:
-		*period = 1;//1.2;
+		*period = 1;
 		*duty = 0.5;
 	}
 }

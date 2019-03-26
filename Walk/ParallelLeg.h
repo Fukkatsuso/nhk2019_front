@@ -67,8 +67,10 @@ public:
 	bool is_recovery();
 	bool is_stay();
 	bool is_climb();
+	int get_count_walk_on_dune();
 
 protected:
+	float limit_speed(float spd);	//またあとで考える
 	float curve_adjust(float value);
 	void timer_update();
 
@@ -129,7 +131,7 @@ private:
 		}pos;
 	}x, y;
 
-	float timing[4];//時刻0, 復帰開始時刻, 復帰完了時刻, 1周期時刻
+	float timing[3];//時刻0, 復帰開始時刻, 復帰完了時刻
 	//時刻0, 復帰開始時刻, 復帰完了時刻, 胴体移動開始時刻1, 胴体移動完了時刻1, 胴体移動開始時刻2, 胴体移動完了時刻2, 1周期時刻
 	float timing_stable[8];
 	Gait::Mode gait_mode;
@@ -140,18 +142,18 @@ private:
 	MRMode::Area area_prv;
 
 	struct{
-		bool timer_reset;//タイマーリセットの指令があるか//使うか未定
-		bool recovery;//復帰完了
-		bool stay_command;//静止コマンド
-		bool stay;//静止状態	CANで送信するプログラムを実装せねば
-		bool first_cycle;//最初の歩行サイクル
-		bool sanddune;//段差用足上げ
-		bool tussock;//ひも用足上げ
-		bool climb;//登山
+		bool timer_reset;	//タイマーリセットの指令があるか//使うか未定
+		bool recovery;		//復帰完了
+		bool stay_command;	//静止コマンド
+		bool stay;			//静止状態	CANで送信するプログラムを実装せねば
+		bool first_cycle;	//最初の歩行サイクル
+		bool sanddune;		//段差用足上げ
+		bool tussock;		//ひも用足上げ
+		bool climb;			//登山
 	}flag;
 
 	struct{
-		int walk_on_dune; //SandDune上で歩を進めた回数
+		int walk_on_dune; 	//SandDune上で歩を進めた回数
 	}counter;
 };
 

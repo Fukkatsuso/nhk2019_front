@@ -70,16 +70,18 @@ LegFunctions.o LegFunctions.d: ../LegFunctions.cpp ../LegFunctions.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\hal/sleep_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/rtc_time.h \
  ../Pins.h ../QEI/SingleLegQEI.h ../QEI/QEI_freePin.h ../QEI/QEI.h \
- ../InitSwitch.h ../Walk/CANs/CANSynchronizer.h ../Walk/CANs/CANSender.h \
- ../Walk/CANs/CANProtocol.h ../Walk/ClockTimer.h ../Walk/SingleLeg.h \
- ../Walk/Protected/LegConst.h ../Walk/Protected/InverseKinematics.h \
+ ../InitSwitch.h ../PhotoelectricSensor.h ../Walk/CANs/CANSynchronizer.h \
+ ../Walk/CANs/CANSender.h ../Walk/CANs/CANProtocol.h ../Walk/ClockTimer.h \
+ ../Walk/SingleLeg.h ../Walk/Protected/LegConst.h \
+ ../Walk/Protected/InverseKinematics.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/QEI/SingleLegQEI.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/InitSwitch.h \
  ../Walk/LegPID.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/PID.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h \
- ../Walk/MRMode.h ../Walk/CANs/CANReceiver.h ../Walk/ParallelLeg.h \
- ../Walk/ClockTimer.h ../Walk/CANs/CANSynchronizer.h ../Walk/MRMode.h \
+ ../Walk/MRMode.h ../Walk/CANs/CANReceiver.h ../Walk/CANs/CANSender.h \
+ ../Walk/ParallelLeg.h ../Walk/ClockTimer.h \
+ ../Walk/CANs/CANSynchronizer.h ../Walk/MRMode.h \
  ../Walk/ForwardKinematics.h
 
 ../LegFunctions.h:
@@ -234,6 +236,8 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 
 ../InitSwitch.h:
 
+../PhotoelectricSensor.h:
+
 ../Walk/CANs/CANSynchronizer.h:
 
 ../Walk/CANs/CANSender.h:
@@ -261,6 +265,8 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 ../Walk/MRMode.h:
 
 ../Walk/CANs/CANReceiver.h:
+
+../Walk/CANs/CANSender.h:
 
 ../Walk/ParallelLeg.h:
 

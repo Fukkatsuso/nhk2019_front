@@ -69,7 +69,8 @@ Pins.o Pins.d: ../Pins.cpp ../Pins.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/wait_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\hal/sleep_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/rtc_time.h \
- ../QEI/SingleLegQEI.h ../QEI/QEI_freePin.h ../QEI/QEI.h ../InitSwitch.h
+ ../QEI/SingleLegQEI.h ../QEI/QEI_freePin.h ../QEI/QEI.h ../InitSwitch.h \
+ ../PhotoelectricSensor.h
 
 ../Pins.h:
 
@@ -220,3 +221,5 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 ../QEI/QEI.h:
 
 ../InitSwitch.h:
+
+../PhotoelectricSensor.h:

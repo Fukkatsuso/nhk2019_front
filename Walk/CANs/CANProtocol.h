@@ -42,6 +42,7 @@ struct CANID{
 		LegUp,
 		Gait,//番号で歩容を見る	//保留
 		LegState,//Slaveから送信	//保留
+		AreaChange,
 		DataType_end//<=0x00f=15 に制限（仕様上）
 	};
 };

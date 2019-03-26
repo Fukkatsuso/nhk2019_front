@@ -78,7 +78,8 @@ Walk/SingleLeg.o Walk/SingleLeg.d: ../Walk/SingleLeg.cpp \
  ../Walk/LegPID.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0/PID.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\QEI/SingleLegQEI.h \
- ../Walk/MRMode.h ../Walk/CANs/CANReceiver.h ../Walk/CANs/CANProtocol.h
+ ../Walk/MRMode.h ../Walk/CANs/CANReceiver.h ../Walk/CANs/CANProtocol.h \
+ ../Walk/CANs/CANSender.h
 
 ../Walk/SingleLeg.h:
 
@@ -245,3 +246,5 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 ../Walk/CANs/CANReceiver.h:
 
 ../Walk/CANs/CANProtocol.h:
+
+../Walk/CANs/CANSender.h:

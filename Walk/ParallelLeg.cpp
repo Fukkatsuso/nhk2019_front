@@ -8,7 +8,6 @@
 #include "ParallelLeg.h"
 #include "functions.h"
 
-//#define FACTOR_Y (4.0*M_PI*(height-y.pos.init)/(Ty*(4.0+M_PI)))//坂道の傾斜はまだ考慮していない
 #define FACTOR_Y (4.0*M_PI*(-height)/(Ty*(4.0+M_PI)))
 
 //extern Serial pc;
@@ -85,6 +84,10 @@ void ParallelLeg::set_y_initial(float y_initial){
 
 void ParallelLeg::set_initial(float x_initial, float y_initial)
 {
+	if(MRmode->is_changing_area()){
+		x_initial = x.pos.init + MRmode->get_x_dif_change_init();
+		y_initial = y.pos.init + MRmode->get_y_dif_change_init();
+	}
 	x.pos.init = x_initial;
 	y.pos.init = y_initial;
 }
@@ -138,23 +141,27 @@ void ParallelLeg::trigger_sanddune(int trigger)
 		flag.sanddune = false;
 		return;
 	}
-//	if(mode==StableDown){
+	if(mode==StableDown){
 //		if(counter.walk_on_dune>2){//3歩目の着地動作はSandDuneを越えているとする
 //			flag.sanddune = false;
 //			counter.walk_on_dune = 0;
 //			return;
 //		}
-//		if(flag.sanddune && mode_prv==StableSlide)counter.walk_on_dune++; //復帰着地の瞬間、1歩カウント
-//	}
+		if(flag.sanddune && mode_prv==StableSlide)counter.walk_on_dune++; //復帰着地の瞬間、1歩カウント
+	}
 //	if(!trigger)return; //そのまま
 	//Quadrangle
 //	if(mode==StableDown)flag.sanddune = (bool)trigger;
 	if(!trigger && mode==StableDown)flag.sanddune = false;
 	if(trigger && mode==StableSlide)flag.sanddune = true; //復帰スライド中にy初期位置を設定
 	//Cycloid
-	//	if(mode==Down)flag.sanddune = (bool)trigger;
+//	if(mode==Down)flag.sanddune = (bool)trigger;
 	if(!trigger && mode==Down)flag.sanddune = false;
 	if(trigger && mode==Down)flag.sanddune = true;
+
+	if(MRmode->is_switched()){
+		if(MRmode->get_now()==MRMode::SandDuneFront)counter.walk_on_dune = 0;
+	}
 }
 
 void ParallelLeg::trigger_tussock(int trigger)
@@ -172,6 +179,8 @@ void ParallelLeg::over_obstacle()
 	if(flag.sanddune){
 		set_y_initial(260-100);
 		set_height(y.pos.init-y.pos.min);
+//		set_x_initial(20);
+		set_x_initial(30);
 		return;
 	}
 	if(flag.tussock){
@@ -226,6 +235,16 @@ void ParallelLeg::walk()
 }
 
 
+//指令スピードに制限かける	//未実装
+float ParallelLeg::limit_speed(float spd)
+{
+	if(speed*spd < 0 && !flag.stay)return 0; //急な正負の変化をフィルタリング
+	if(gait_mode==Gait::NormalGait){
+//		spd = limit(spd, /(duty*period), /(duty*period));
+	}
+	return spd;
+}
+
 //斜め方向に歩くとき
 float ParallelLeg::curve_adjust(float value)
 {
@@ -266,7 +285,6 @@ void ParallelLeg::set_timing()
 		}
 	}
 	timing[2] = timing[1] + (1.0-duty)*period;//復帰完了
-	timing[3] = period;//1周期完了
 }
 
 void ParallelLeg::walk_mode()
@@ -274,15 +292,9 @@ void ParallelLeg::walk_mode()
 	mode_prv = mode;
 	float now = timer_period->read();
 
-	if(timing[0]<=now && now<timing[1]){
-		if(timing[2]<=timing[3])mode = Move;//case:beta>=0.75
-		else if(now<(timing[2]-timing[3]) && !flag.first_cycle)mode = Down;
-		else mode = Move;
-	}
 	//timing[1]とtiming[2]を1:1に内分
-	else if(timing[1]<=now && now<(timing[1]+timing[2])/2.0)mode = Up;
+	if(timing[1]<=now && now<(timing[1]+timing[2])/2.0)mode = Up;
 	else if(((timing[1]+timing[2])/2.0)<=now && now<timing[2])mode = Down;
-	else if(now>=timing[2])mode = Move;
 	else mode = Move;
 }
 
@@ -308,6 +320,10 @@ void ParallelLeg::check_flag()
 
 	if(flag.stay_command){
 		if(fabs(x.pos.now-x.pos.init)<X_STAY_MARGIN && fabs(y.pos.now-y.pos.init)<Y_STAY_MARGIN){
+			flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
+			mode = Stay;
+		}
+		else if(MRmode->is_changing_area()){
 			flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
 			mode = Stay;
 		}
@@ -371,8 +387,9 @@ void ParallelLeg::calc_vel_recovery_cycloid(float timing_start, float Ty)
 
 void ParallelLeg::calc_position()
 {
-	x.pos.dif = limit(x.pos.dif + x.vel*timer_period->get_dt(), x.pos.max-x.pos.init, x.pos.min-x.pos.init);
-	y.pos.dif = limit(y.pos.dif + y.vel*timer_period->get_dt(), y.pos.max-y.pos.init, y.pos.min-y.pos.init);
+	float dt = timer_period->get_dt();
+	x.pos.dif = limit(x.pos.dif + x.vel*dt, x.pos.max-x.pos.init, x.pos.min-x.pos.init);
+	y.pos.dif = limit(y.pos.dif + y.vel*dt, y.pos.max-y.pos.init, y.pos.min-y.pos.init);
 	if(fabs(y.vel)==0)y.pos.dif = 0;
 	x.pos.next = x.pos.init + x.pos.dif;
 	y.pos.next = y.pos.init + y.pos.dif;
@@ -478,9 +495,15 @@ void ParallelLeg::check_flag_stable()
 		flag.first_cycle = false;
 ///////////////////////////////////
 
-	if(flag.stay_command && fabs(x.pos.now-x.pos.init)<X_STAY_MARGIN && fabs(y.pos.now-y.pos.init)<Y_STAY_MARGIN){
-		flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
-		mode = Stay;
+	if(flag.stay_command){
+		if(fabs(x.pos.now-x.pos.init)<X_STAY_MARGIN && fabs(y.pos.now-y.pos.init)<Y_STAY_MARGIN){
+			flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
+			mode = Stay;
+		}
+		else if(MRmode->is_changing_area()){
+			flag.stay = true;//停止コマンドかつ安定動作完了->停止完了
+			mode = Stay;
+		}
 	}
 	else flag.stay = false;
 }
@@ -566,13 +589,13 @@ void ParallelLeg::calc_vel_recovery_quadrangle(float timing_start, float Ty)
 
 void ParallelLeg::calc_position_stable()
 {
-	x.pos.dif += limit(x.vel*timer_period->get_dt(), x.pos.max-x.pos.now, x.pos.min-x.pos.now);
-	y.pos.dif += limit(y.vel*timer_period->get_dt(), y.pos.max-y.pos.now, y.pos.min-y.pos.now);
+	float dt = timer_period->get_dt();
+	x.pos.dif += limit(x.vel*dt, x.pos.max-x.pos.now, x.pos.min-x.pos.now);
+	y.pos.dif += limit(y.vel*dt, y.pos.max-y.pos.now, y.pos.min-y.pos.now);
 	if(recovery_mode==Recovery::Quadrangle){
 		if(fabs(y.vel)==0 && mode!=StableSlide)y.pos.dif = 0;
 		if(fabs(x.vel)==0 && mode==StableDown)x.pos.dif = step - x.pos.init;
 	}
-
 	x.pos.next = x.pos.init + x.pos.dif;
 	y.pos.next = y.pos.init + y.pos.dif;
 }
@@ -603,7 +626,6 @@ void ParallelLeg::set_timing_activestable()
 		}
 	}
 	timing[2] = timing[1] + period_recover*(1.0-duty);//復帰完了
-	timing[3] = period;//1周期完了
 }
 
 void ParallelLeg::walk_mode_activestable()
@@ -707,5 +729,10 @@ bool ParallelLeg::is_stay(){
 bool ParallelLeg::is_climb()
 {
 	return flag.climb;
+}
+
+int ParallelLeg::get_count_walk_on_dune()
+{
+	return counter.walk_on_dune;
 }
 

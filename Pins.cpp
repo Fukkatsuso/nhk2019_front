@@ -30,6 +30,8 @@ InitSwitch sw_FRr(p21, 1);
 InitSwitch sw_FLf(p6, 1);
 InitSwitch sw_FLr(p5, 1);
 
+PhotoelectricSensor kouden_SandDuneFront(p8);
+
 
 /********************
  * 		DCモータ		*

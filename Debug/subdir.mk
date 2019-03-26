@@ -6,6 +6,7 @@
 CPP_SRCS += \
 ../LegFunctions.cpp \
 ../PID.cpp \
+../PhotoelectricSensor.cpp \
 ../Pins.cpp \
 ../functions.cpp \
 ../main.cpp 
@@ -13,6 +14,7 @@ CPP_SRCS += \
 OBJS += \
 ./LegFunctions.o \
 ./PID.o \
+./PhotoelectricSensor.o \
 ./Pins.o \
 ./functions.o \
 ./main.o 
@@ -20,6 +22,7 @@ OBJS += \
 CPP_DEPS += \
 ./LegFunctions.d \
 ./PID.d \
+./PhotoelectricSensor.d \
 ./Pins.d \
 ./functions.d \
 ./main.d 

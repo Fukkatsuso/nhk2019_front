@@ -69,7 +69,8 @@ Walk/MRMode.o Walk/MRMode.d: ../Walk/MRMode.cpp ../Walk/MRMode.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/wait_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\hal/sleep_api.h \
  C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\FrontLegs_2.0\mbed-src\api/rtc_time.h \
- ../Walk/CANs/CANReceiver.h ../Walk/CANs/CANProtocol.h
+ ../Walk/CANs/CANReceiver.h ../Walk/CANs/CANProtocol.h \
+ ../Walk/CANs/CANSender.h
 
 ../Walk/MRMode.h:
 
@@ -216,3 +217,5 @@ C:\Users\mutsuro\Documents\LPCXpresso_8.2.2_650\workspace\nhk_2019_walk_2v\Front
 ../Walk/CANs/CANReceiver.h:
 
 ../Walk/CANs/CANProtocol.h:
+
+../Walk/CANs/CANSender.h:

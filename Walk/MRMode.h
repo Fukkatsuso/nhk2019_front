@@ -10,6 +10,7 @@
 
 #include "mbed.h"
 #include "CANs/CANReceiver.h"
+#include "CANs/CANSender.h"
 
 
 /*stay
@@ -62,10 +63,11 @@ struct Limits{
 };
 
 struct Orbits{
-	float gradient; //フィールド勾配
-	float init_x; //足先の初期位置(x)
-	float init_y; //(y)
-	float height; //足先を上げるときの最大高さ
+	float gradient; 	//フィールド勾配
+	float init_x; 		//足先の初期位置(x)
+	float init_y; 		//(y)
+	float height; 		//足先を上げるときの最大高さ
+	float time_change;	//Areaの変更に伴う初期設定が完了するまでの時間
 };
 
 
@@ -102,23 +104,34 @@ public:
 		Reference_end
 	};
 
-	MRMode(CANReceiver *rcv, enum Area init_area, bool operate);
+	MRMode(CANReceiver *rcv, CANSender *snd, enum Area init_area, bool operate);
 	void update();
 	bool is_switched();
+	bool is_changing_area();
+	void request_to_change_area(enum Area area_req, CANID::From can_from);
 
 	Area get_area(enum Reference ref);
 	Area get_now();
 	Limits *get_limits(enum Area area);
 	Orbits *get_orbits (enum Area area);
+	float get_x_dif_change_init();
+	float get_y_dif_change_init();
 
 private:
+	Timer timer_changing_area;
 	CANReceiver *can_receiver;
+	CANSender *can_sender;
 	Area area[MRMode::Reference_end];
-	Area roop_prev, roop_now;//前回と今回のループでのモード
+	Area roop_prev, roop_now;//前回と今回のモード
 	struct{
-		bool operate;//手動
-		bool switched;//モードが切り替わった直後
+		bool operate;		//手動
+		bool switched;		//モードが切り替わった直後
+		bool changing_area;	//Areaの変更動作中
 	}flag;
+
+	float timeslice_changing_area;
+	float time_changing_area_prev;
+	float x_vel_change_init, y_vel_change_init;	//Areaの変更動作速度
 };
 
 extern Limits limits[MRMode::Area_end];
