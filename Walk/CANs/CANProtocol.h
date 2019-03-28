@@ -40,9 +40,11 @@ struct CANID{
 		TimerReset,
 		Area,
 		LegUp,
-		Gait,//番号で歩容を見る	//保留
-		LegState,//Slaveから送信	//保留
-		AreaChange,
+		AreaChange,	//Area変更の要請を送るためだけ
+		MoveDistFR,	//各脚歩いた量を送信
+		MoveDistFL,
+		MoveDistRR,
+		MoveDistRL,
 		DataType_end//<=0x00f=15 に制限（仕様上）
 	};
 };

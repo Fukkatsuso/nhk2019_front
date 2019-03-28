@@ -248,8 +248,9 @@ float ParallelLeg::limit_speed(float spd)
 //斜め方向に歩くとき
 float ParallelLeg::curve_adjust(float value)
 {
-	if((rl*direction)>0)	//その足の方に歩く->小股で
+	if((rl*direction)>0){	//その足の方に歩く->小股で
 		value *= (cos(2.0*direction));
+	}
 	return value;
 }
 
@@ -388,8 +389,10 @@ void ParallelLeg::calc_vel_recovery_cycloid(float timing_start, float Ty)
 void ParallelLeg::calc_position()
 {
 	float dt = timer_period->get_dt();
-	x.pos.dif = limit(x.pos.dif + x.vel*dt, x.pos.max-x.pos.init, x.pos.min-x.pos.init);
-	y.pos.dif = limit(y.pos.dif + y.vel*dt, y.pos.max-y.pos.init, y.pos.min-y.pos.init);
+	x.distance_move = x.vel * dt;
+	y.distance_move = y.vel * dt;
+	x.pos.dif = limit(x.pos.dif + x.distance_move, x.pos.max-x.pos.init, x.pos.min-x.pos.init);
+	y.pos.dif = limit(y.pos.dif + y.distance_move, y.pos.max-y.pos.init, y.pos.min-y.pos.init);
 	if(fabs(y.vel)==0)y.pos.dif = 0;
 	x.pos.next = x.pos.init + x.pos.dif;
 	y.pos.next = y.pos.init + y.pos.dif;
@@ -449,21 +452,24 @@ void ParallelLeg::walk_mode_stable()
 			else if(now<period_recover*((LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME)/(LEGUP_STABLE_TIME+LEGSLIDE_STABLE_TIME+LEGDOWN_STABLE_TIME)))
 				mode = StableSlide;
 			else mode = StableDown;
+			return;
 		}
-		else if(timing_stable[3]<=now && now<timing_stable[4])mode = StableMove;
-		else if(timing_stable[5]<=now && now<timing_stable[6])mode = StableMove;
-		else mode = StableWait;//他の脚の復帰を待機するなど
 		break;
 
 	case Recovery::Cycloid:
 		//timing[1]とtiming[2]を1:1に内分
-		if(timing_stable[1]<=now && now<(timing_stable[1]+timing_stable[2])/2.0)mode = Up;
-		else if(((timing_stable[1]+timing_stable[2])/2.0)<=now && now<timing_stable[2])mode = Down;
-		else if(timing_stable[3]<=now && now<timing_stable[4])mode = StableMove;
-		else if(timing_stable[5]<=now && now<timing_stable[6])mode = StableMove;
-		else mode = StableWait;//他の脚の復帰を待機するなど
+		if(timing_stable[1]<=now && now<timing_stable[2]){
+			if(now<(timing_stable[1]+timing_stable[2])/2.0)
+				mode = Up;
+			else if(((timing_stable[1]+timing_stable[2])/2.0)<=now)
+				mode = Down;
+			return;
+		}
 		break;
 	}
+	if(timing_stable[3]<=now && now<timing_stable[4])mode = StableMove;
+	else if(timing_stable[5]<=now && now<timing_stable[6])mode = StableMove;
+	else mode = StableWait;//他の脚の復帰を待機するなど
 }
 
 void ParallelLeg::check_flag_stable()
@@ -590,8 +596,10 @@ void ParallelLeg::calc_vel_recovery_quadrangle(float timing_start, float Ty)
 void ParallelLeg::calc_position_stable()
 {
 	float dt = timer_period->get_dt();
-	x.pos.dif += limit(x.vel*dt, x.pos.max-x.pos.now, x.pos.min-x.pos.now);
-	y.pos.dif += limit(y.vel*dt, y.pos.max-y.pos.now, y.pos.min-y.pos.now);
+	x.distance_move = x.vel * dt;
+	y.distance_move = y.vel * dt;
+	x.pos.dif += limit(x.distance_move, x.pos.max-x.pos.now, x.pos.min-x.pos.now);
+	y.pos.dif += limit(y.distance_move, y.pos.max-y.pos.now, y.pos.min-y.pos.now);
 	if(recovery_mode==Recovery::Quadrangle){
 		if(fabs(y.vel)==0 && mode!=StableSlide)y.pos.dif = 0;
 		if(fabs(x.vel)==0 && mode==StableDown)x.pos.dif = step - x.pos.init;
@@ -708,10 +716,24 @@ float ParallelLeg::get_x_vel()
 {
 	return x.vel;
 }
+
 float ParallelLeg::get_y_vel()
 {
 	return y.vel;
 }
+
+float ParallelLeg::get_x_distance_move()
+{
+	if(mode==Move)return x.distance_move;
+	if(mode==StableMove)return x.distance_move;
+	return 0;
+}
+
+float ParallelLeg::get_y_distance_move()
+{
+	return y.distance_move;
+}
+
 int ParallelLeg::get_mode()
 {
 	return mode;

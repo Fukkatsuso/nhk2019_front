@@ -25,5 +25,8 @@ extern float sqrt2(float a, float b);
 //余弦定理
 extern float cos_formula(float A1, float A2, float B);
 
+//毎ループごとに一定速度で増加させる
+extern float trapezoidal_control(float now, float initial, float target, float roop_period, float time_required);
+
 
 #endif /* FUNCTIONS_H_ */

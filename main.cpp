@@ -20,10 +20,10 @@ ClockTimer timer_FR;
 ClockTimer timer_FL;
 SingleLeg FRf(Front, Right, BASE_X, 0);
 SingleLeg FRr(Rear, Right, -BASE_X, 0);
-ParallelLeg FR(Front, Right, 200, 200);
+ParallelLeg FR(Front, Right, 225, 200);
 SingleLeg FLf(Front, Left, BASE_X, 0);
 SingleLeg FLr(Rear, Left, -BASE_X, 0);
-ParallelLeg FL(Front, Left, -200, 200);
+ParallelLeg FL(Front, Left, -225, 200);
 
 ForwardKinematics fw_FR(BASE_X, 0, &enc_FRf, -BASE_X, 0, &enc_FRr);
 ForwardKinematics fw_FL(BASE_X, 0, &enc_FLf, -BASE_X, 0, &enc_FLr);
@@ -37,6 +37,7 @@ CANSynchronizer can_synchronizer(&can, &CANsnd_TimerReset);
 MRMode MRmode(&can_receiver, &can_sender, MRMode::GobiArea, true);//実行の度に要確認
 
 void set_cycle(float *period, float *duty);
+void send_movedist(float dist, enum CANID::DataType type, enum CANID::From from);
 void CANrcv();
 
 
@@ -76,8 +77,6 @@ int main(){
 		mrmode = MRmode.get_now();
 
 		if(mrmode==MRMode::SandDuneFront || mrmode==MRMode::SandDuneRear){
-//			FR.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x1);
-//			FL.trigger_sanddune((int)can_receiver.get_data(CANID::LegUp)&0x4);
 			FR.trigger_sanddune(kouden_SandDuneFront.read());
 			FL.trigger_sanddune(kouden_SandDuneFront.read());
 			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
@@ -89,12 +88,10 @@ int main(){
 			}
 		}
 		else if(mrmode==MRMode::Tussock){
-//			FR.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x1);
-//			FL.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x4);
+			FR.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x1);
+			FL.trigger_tussock((int)can_receiver.get_data(CANID::LegUp)&0x4);
 //			FR.trigger_tussock(kouden_SandDuneFront.read());
 //			FL.trigger_tussock(kouden_SandDuneFront.read());
-			FR.trigger_tussock(1);
-			FL.trigger_tussock(1);
 			FR.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
 			FL.set_walkmode(Gait::NormalGait, Recovery::Cycloid, 0);
 		}
@@ -110,14 +107,17 @@ int main(){
 		//腰固定座標系での目標位置計算
 		FR.walk();
 		moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
+		send_movedist(FR.get_x_distance_move(), CANID::MoveDistFR, CANID::FromFR);
 		FL.walk();
 		moveLeg(&FLf, &FLr, FL.get_x(), FL.get_y());
+		send_movedist(FL.get_x_distance_move(), CANID::MoveDistFL, CANID::FromFL);
 
 		//DEBUG
 		if(pc.readable()){
-			pc.printf("kouden:%d  ", kouden_SandDuneFront.read());
+			pc.printf("[Front]");
+//			pc.printf("kouden:%d  ", kouden_SandDuneFront.read());
 			pc.printf("mode:%d  ", FR.get_mode());
-//			pc.printf("timer:%1.4f  ", timer_FR.read());
+			pc.printf("timer:%1.4f  ", timer_FR.read());
 //			pc.printf("speed:%3.4f  dir:%1.3f  ", can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction));
 //			pc.printf("x:%3.3f  y:%3.3f  ", FL.get_x(), FL.get_y());
 //			pc.printf("enc:%3.2f  ", enc_FLf.getAngle());
@@ -125,7 +125,7 @@ int main(){
 //
 //			pc.printf("vel[%3.2f][%3.2f]  ", FL.get_x_vel(), FL.get_y_vel());
 
-			orbit_log(&FR, &fw_FR);
+//			orbit_log(&FR, &fw_FR);
 //			orbit_log(&FL, &fw_FL);
 			pc.printf("\r\n");
 		}
@@ -142,45 +142,45 @@ void CANsnd_TimerReset(){
 
 
 void set_cycle(float *period, float *duty){
+	*duty = 0.5;
 	switch((int)MRmode.get_now()){
 	case MRMode::GobiArea:
 		*period = 1;
-		*duty = 0.5;
 		break;
 	case MRMode::SandDuneFront:
 		*period = 2;
-		*duty = 0.5;
 		break;
 	case MRMode::SandDuneRear:
 		*period = 2;
-		*duty = 0.5;
 		break;
 	case MRMode::Tussock:
 		*period = 1;
-		*duty = 0.5;
 		break;
 	case MRMode::Start2:
 		*period = 1;
-		*duty = 0.5;
 		break;
 	case MRMode::StartClimb1:
 		*period = 1;
-		*duty = 0.5;
 		break;
 	case MRMode::StartClimb2:
 		*period = 1;
-		*duty = 0.5;
+		break;
 	}
+}
+
+
+void send_movedist(float dist, enum CANID::DataType type, enum CANID::From from){
+	if(dist==0)return; //無駄な送信は却下
+	can_sender.send(CANID_generate(from, CANID::ToMaster, type), dist);
+	pc.printf("dist%d:%2.5f  ", type, dist);
 }
 
 
 void CANrcv(){
 	if(can.read(rcvMsg)){
 		unsigned int id = rcvMsg.id;
-		if(!CANID_is_from(id, CANID::FromMaster))return;
-		if(CANID_is_type(id, CANID::TimerReset))return;
+		//歩行パラメータ取得
 		if(CANID_is_to(id, CANID::ToSlaveAll)){
-			//歩行パラメータ取得
 			can_receiver.receive(id, rcvMsg.data);
 		}
 	}

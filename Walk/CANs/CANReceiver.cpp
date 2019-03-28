@@ -29,13 +29,17 @@ void CANReceiver::receive(unsigned int id_can, unsigned char data_can[])
 {
 	id_can = (id_can)&(0x00f);//下一桁のみ取り出す
 	if(id_can<0 || CANID::DataType_end<=id_can)return;
-	data[id_can] = decode_from_candata(data_can,
-			CANFormats[id_can][FormatType::Len_integer], CANFormats[id_can][FormatType::Len_fraction]);
+	int len_i = CANFormats[id_can][FormatType::Len_integer];
+	int len_f = CANFormats[id_can][FormatType::Len_fraction];
+	unsigned char data_copy[len_i+len_f+1] = {};
+	for(int i=0; i<len_i+len_f+1; i++)data_copy[i] = data_can[i];
+	data[id_can] = decode_from_candata(data_copy, len_i, len_f);
 }
 
 
 float CANReceiver::get_data(enum CANID::DataType type)
 {
+	type = (CANID::DataType)((int)type & (0x00f)); //念のため
 	return data[type];
 }
 

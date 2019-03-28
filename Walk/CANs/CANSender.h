@@ -19,11 +19,11 @@ public:
 	void send(int id_can, float value_f);
 
 protected:
-	void store_value_in_data(float value_f, int len_i, int len_f);
-	void copy_data_in_msg(CANMessage *msg, int len);
+	void store_value_in_data(enum CANID::DataType type, float value_f, int len_i, int len_f);
+	void copy_data_in_msg(CANMessage *msg, enum CANID::DataType type, int len);
 
 private:
-	int data[8];//データを送信用に変換して一時的に保存しておく配列
+	int data[CANID::DataType_end][8];//データを送信用に変換して一時的に保存しておく配列
 };
 
 

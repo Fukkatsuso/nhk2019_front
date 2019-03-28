@@ -56,13 +56,15 @@ public:
 	void walk(float spd, float dir);
 	void walk();
 
-	//DEBUG
+	//足先座標関連
 	float get_x();
 	float get_y();
 	float get_x_initial();
 	float get_y_initial();
 	float get_x_vel();
 	float get_y_vel();
+	float get_x_distance_move(); //微小時間の移動距離
+	float get_y_distance_move();
 	int get_mode();
 	bool is_recovery();
 	bool is_stay();
@@ -120,6 +122,7 @@ private:
 
 	struct{
 		float vel;
+		float distance_move; //微小変位
 		struct{
 			float init; //MRModeで設定しておく
 			float now;
