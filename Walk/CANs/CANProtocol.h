@@ -13,35 +13,30 @@
 
 struct CANID{
 	enum From{
-		FromMaster = 0x000,
-		FromSlave = 0x100,
-		FromFront = 0x200,
-		FromRear = 0x300,
-		FromFR = 0x400,
-		FromFL = 0x500,
-		FromRR = 0x600,
-		FromRL = 0x700
+		FromMaster 		= 0x000,
+		FromController 	= 0x100,
+		FromSlave 		= 0x200,
+		FromFront 		= 0x300,
+		FromRear 		= 0x400
 	};
 	enum To{
-		ToMaster = 0x000,
-		ToSlaveAll = 0x010,
-		ToFront = 0x020,
-		ToRear = 0x030,
-		ToFR = 0x040,
-		ToFL = 0x050,
-		ToRR = 0x060,
-		ToRL = 0x070
+		ToMaster 		= 0x000,
+		ToController 	= 0x010,
+		ToSlaveAll 		= 0x020,
+		ToFront 		= 0x030,
+		ToRear 			= 0x040
 	};
 	enum DataType{
-		Period=0,
-		Duty,
-		Speed,
-		Direction,
-		TimerReset,
-		Area,
-		LegUp,
-		AreaChange,	//Area変更の要請を送るためだけ
-		MoveDistFR,	//各脚歩いた量を送信
+		Period = 0,		//たぶん送らない
+		Duty,			//たぶん送らない
+		Speed,			//Controller->Slave
+		Direction,		//Master->Controller->Slave
+		TimerReset,		//Controller->Slave
+		Area,			//Master->Controller-中間処理->Slave
+		LegUp,			//Controller->Slave
+		AreaChange,		//Slave->Controller : Area変更の要請を送るためだけ
+		MoveDistAvg,	//Slave->Controller->Master : 各脚歩いた量を送信 : これで送信元識別
+		MoveDistFR,
 		MoveDistFL,
 		MoveDistRR,
 		MoveDistRL,

@@ -10,19 +10,20 @@
 
 
 const short CANProtocol::CANFormats[CANID::DataType_end][FormatType::FormatType_end] =
-{		//ID,				Len_integer,	Len_fraction
-		{CANID::Period,		1,	4},	//Period
-		{CANID::Duty,		1,	4},	//Duty
-		{CANID::Speed,		3,	4},	//Speed
-		{CANID::Direction,	2,	4},	//Direction
-		{CANID::TimerReset,	1,	0},	//TimerReset
-		{CANID::Area,		2,	0},	//Area
-		{CANID::LegUp,		2,	0},	//LegUp
-		{CANID::AreaChange,	2, 	0}, //AreaChange
-		{CANID::MoveDistFR,	2,	5},	//MoveDistFR
-		{CANID::MoveDistFL,	2,	5},	//MoveDistFR
-		{CANID::MoveDistRR,	2,	5},	//MoveDistFR
-		{CANID::MoveDistRL,	2,	5},	//MoveDistFR
+{		//ID,					Len_integer,	Len_fraction
+		{CANID::Period,			1,	4},	//Period
+		{CANID::Duty,			1,	4},	//Duty
+		{CANID::Speed,			3,	4},	//Speed
+		{CANID::Direction,		2,	4},	//Direction
+		{CANID::TimerReset,		1,	0},	//TimerReset
+		{CANID::Area,			2,	0},	//Area
+		{CANID::LegUp,			2,	0},	//LegUp
+		{CANID::AreaChange,		2, 	0}, //AreaChange
+		{CANID::MoveDistAvg, 	2,	5},	//MoveDistAvg
+		{CANID::MoveDistFR,		2,	5},	//MoveDistFR
+		{CANID::MoveDistFL,		2,	5},	//MoveDistFR
+		{CANID::MoveDistRR,		2,	5},	//MoveDistFR
+		{CANID::MoveDistRL,		2,	5},	//MoveDistFR
 };
 
 
