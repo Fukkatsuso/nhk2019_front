@@ -22,8 +22,6 @@ void CANSynchronizer::set_period(float period)
 	if(this->period == period)return;
 	this->period = period;
 	ticker.attach(fptr_timerreset, period);//変更があれば実行
-	//CAN送信
-	this->send(CANID_generate(CANID::FromMaster, CANID::ToRear, CANID::Period), period);
 }
 
 
@@ -31,15 +29,13 @@ void CANSynchronizer::set_duty(float duty)
 {
 	if(this->duty == duty)return;
 	this->duty = duty;
-	//CAN送信
-	this->send(CANID_generate(CANID::FromMaster, CANID::ToRear, CANID::Duty), duty);
 }
 
 
 void CANSynchronizer::timer_reset(bool allReset)
 {
 	//ToSlaveAllにして自分自身も受信・タイマーリセットする
-	send(CANID_generate(CANID::FromMaster, CANID::ToRear, CANID::TimerReset), 1);
+	send_timer_reset(CANID::generate(CANID::FromController, CANID::ToRear, CANID::TimerReset));
 	//歩き出しの瞬間など
 	if(allReset) ticker.attach(fptr_timerreset, period);//変更があれば実行
 }

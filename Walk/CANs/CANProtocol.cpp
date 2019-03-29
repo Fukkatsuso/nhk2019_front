@@ -9,43 +9,102 @@
 #include "CANProtocol.h"
 
 
-const short CANProtocol::CANFormats[CANID::DataType_end][FormatType::FormatType_end] =
-{		//ID,						Len_integer,	Len_fraction
-		{CANID::Period,				1,	4},	//Period
-		{CANID::Duty,				1,	4},	//Duty
-		{CANID::Speed,				3,	4},	//Speed
-		{CANID::Direction,			2,	4},	//Direction
-		{CANID::TimerReset,			1,	0},	//TimerReset
-		{CANID::Area,				2,	0},	//Area
-		{CANID::LegUp,				2,	0},	//LegUp
-		{CANID::AreaChange,			2, 	0}, //AreaChange
-		{CANID::MoveDistFront, 		6,	1},	//MoveDistAvg
-		{CANID::MoveDistRear,		6,	1},	//MoveDistFR
-		{CANID::MoveDistCentroid,	6,	1},	//MoveDistFR
-};
-
-
-int CANID_generate(CANID::From from, CANID::To to)
-{
-	return ((from&0xf00) | (to&0x0f0));
-}
-
-int CANID_generate(CANID::From from, CANID::To to, CANID::DataType type)
+/********
+ * CANID
+ ********/
+unsigned int CANID::generate(CANID::From from, CANID::To to, CANID::DataType type)
 {
 	return ((from&0xf00) | (to&0x0f0) | (type&0x00f));
 }
 
-bool CANID_is_from(int id, CANID::From from)
+bool CANID::is_from(unsigned int can_id, CANID::From from)
 {
-	return ((id&0xf00) == (from&0xf00));
+	return ((can_id&0xf00) == (from&0xf00));
 }
 
-bool CANID_is_to(int id, CANID::To to)
+bool CANID::is_to(unsigned int can_id, CANID::To to)
 {
-	return ((id&0x0f0) == (to&0x0f0));
+	return ((can_id&0x0f0) == (to&0x0f0));
 }
 
-bool CANID_is_type(int id, CANID::DataType type)
+bool CANID::is_type(unsigned int can_id, CANID::DataType type)
 {
-	return ((id&0x00f) == (type&0x00f));
+	return ((can_id&0x00f) == (type&0x00f));
+}
+
+
+/**************
+ * CANProtocol
+ **************/
+CANProtocol::CANProtocol(CAN *can)
+{
+	this->can = can;
+
+	data.direction.value 					= 0;
+	data.speed.value 						= 0;
+	data.velocity_vector.direction.value	= 0;
+	data.velocity_vector.speed.value 		= 0;
+	data.timer_reset.value 					= 0;
+	data.leg_up.FR 							= 0;
+	data.leg_up.FL 							= 0;
+	data.leg_up.RR 							= 0;
+	data.leg_up.RL 							= 0;
+	data.move_dist_front.value 				= 0;
+	data.move_dist_rear.value 				= 0;
+}
+
+
+float CANProtocol::get_direction()
+{
+	return data.direction.value;
+}
+
+float CANProtocol::get_speed()
+{
+	return data.speed.value;
+}
+
+unsigned short CANProtocol::get_timer_reset()
+{
+	return (unsigned short)data.timer_reset.value;
+}
+
+unsigned char CANProtocol::get_area()
+{
+	return data.area.value;
+}
+
+unsigned short CANProtocol::get_area_change()
+{
+	return (unsigned short)data.area_change.value;
+}
+
+bool CANProtocol::get_leg_up_FR()
+{
+	return (bool)data.leg_up.FR;
+}
+
+bool CANProtocol::get_leg_up_FL()
+{
+	return (bool)data.leg_up.FL;
+}
+
+bool CANProtocol::get_leg_up_RR()
+{
+	return (bool)data.leg_up.RR;
+}
+
+bool CANProtocol::get_leg_up_RL()
+{
+	return (bool)data.leg_up.RL;
+}
+
+short CANProtocol::get_move_dist_front()
+{
+	return data.move_dist_front.value;
+}
+
+short CANProtocol::get_move_dist_rear()
+{
+	return data.move_dist_rear.value;
 }

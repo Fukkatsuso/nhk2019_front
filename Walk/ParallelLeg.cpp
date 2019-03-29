@@ -231,7 +231,7 @@ void ParallelLeg::walk(float spd, float dir)
 void ParallelLeg::walk()
 {
 //	set_period(CANcmd->get(CANID::Period)); set_duty(CANcmd->get(CANID::Duty));
-	walk(can_receiver->get_data(CANID::Speed), can_receiver->get_data(CANID::Direction));
+	walk(can_receiver->get_speed(), can_receiver->get_direction());
 }
 
 

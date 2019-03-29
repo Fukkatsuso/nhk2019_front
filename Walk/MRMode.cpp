@@ -115,7 +115,7 @@ bool MRMode::is_changing_area()
 
 void MRMode::request_to_change_area(enum Area area_req, CANID::From can_from)
 {
-	can_sender->send(CANID_generate(can_from, CANID::ToMaster, CANID::AreaChange), area_req);
+	can_sender->send_area_change(CANID::generate(can_from, CANID::ToController, CANID::AreaChange), area_req);
 }
 
 

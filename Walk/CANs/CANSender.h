@@ -16,14 +16,18 @@ class CANSender : public CANProtocol
 {
 public:
 	CANSender(CAN *can);
-	void send(int id_can, float value_f);
+
+	void send_direction(unsigned int can_id, float direction);
+	void send_speed(unsigned int can_id, float speed);
+	void send_velocity_vector(unsigned int can_id, float direction, float speed);
+	void send_timer_reset(unsigned int can_id);
+	void send_area(unsigned int can_id, unsigned char area);
+	void send_area_change(unsigned int can_id, unsigned char area);
+	void send_leg_up(unsigned int can_id, unsigned char leg_up);
+	void send_move_dist(unsigned int can_id, float dist);
 
 protected:
-	void store_value_in_data(enum CANID::DataType type, float value_f, int len_i, int len_f);
-	void copy_data_in_msg(CANMessage *msg, enum CANID::DataType type, int len);
-
-private:
-	int data[CANID::DataType_end][8];//データを送信用に変換して一時的に保存しておく配列
+	void send(unsigned int can_id, unsigned char *data, unsigned short byte);
 };
 
 

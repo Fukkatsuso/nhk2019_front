@@ -15,16 +15,10 @@ class CANReceiver : public CANProtocol
 {
 public:
 	CANReceiver(CAN *can);
-	void receive(unsigned int id_can, unsigned char data_can[]);
-	float get_data(enum CANID::DataType type);
-
-	int get_area();
+	void receive(CANMessage msg);
 
 protected:
-	float decode_from_candata(unsigned char data_can[], int len_i, int len_f);
-
-private:
-	float data[CANID::DataType_end];//DataTypeごとの値
+	void copy_data(CANMessage msg, unsigned char data[], short byte);
 };
 
 
