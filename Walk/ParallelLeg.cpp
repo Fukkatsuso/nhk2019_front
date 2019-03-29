@@ -722,10 +722,11 @@ float ParallelLeg::get_y_vel()
 	return y.vel;
 }
 
+//進行方向に機体をどれだけ進めたかみたいな数字を返す
 float ParallelLeg::get_x_distance_move()
 {
-	if(mode==Move)return x.distance_move;
-	if(mode==StableMove)return x.distance_move;
+	if(mode==Move)return -x.distance_move;
+	if(mode==StableMove)return -x.distance_move;
 	return 0;
 }
 

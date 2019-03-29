@@ -37,7 +37,7 @@ CANSynchronizer can_synchronizer(&can, &CANsnd_TimerReset);
 MRMode MRmode(&can_receiver, &can_sender, MRMode::GobiArea, true);//実行の度に要確認
 
 void set_cycle(float *period, float *duty);
-void send_movedist(float dist, enum CANID::DataType type, enum CANID::From from);
+void send_walkdist(float dist, enum CANID::DataType type, enum CANID::From from);
 void CANrcv();
 
 
@@ -47,7 +47,11 @@ void CANrcv();
 int main(){
 	float walk_period = 1;
 	float walk_duty = 0.5;
+	float walk_dist_right = 0;
+	float walk_dist_left = 0;
+	float walk_dist_front = 0;
 	int mrmode = (int)MRmode.get_now();
+
 	can.frequency(1000000);
 	can.attach(&CANrcv, CAN::RxIrq);
 	wait_ms(300); //全ての基板の電源が入るまで待つ
@@ -107,23 +111,29 @@ int main(){
 		//腰固定座標系での目標位置計算
 		FR.walk();
 		moveLeg(&FRf, &FRr, FR.get_x(), FR.get_y());
-		send_movedist(FR.get_x_distance_move(), CANID::MoveDistFR, CANID::FromFront);
 		FL.walk();
 		moveLeg(&FLf, &FLr, FL.get_x(), FL.get_y());
-		send_movedist(FL.get_x_distance_move(), CANID::MoveDistFL, CANID::FromFront);
+
+		//歩行量計算+送信
+		walk_dist_right += FR.get_x_distance_move();
+		walk_dist_left += FL.get_x_distance_move();
+		walk_dist_front = (walk_dist_right + walk_dist_left) / 2.0;
+		send_walkdist(walk_dist_front, CANID::MoveDistFront, CANID::FromFront);
 
 		//DEBUG
 		if(pc.readable()){
 			pc.printf("[Front]");
 //			pc.printf("kouden:%d  ", kouden_SandDuneFront.read());
-			pc.printf("mode:%d  ", FR.get_mode());
-			pc.printf("timer:%1.4f  ", timer_FR.read());
+//			pc.printf("mode:%d  ", FR.get_mode());
+//			pc.printf("timer:%1.4f  ", timer_FR.read());
 //			pc.printf("speed:%3.4f  dir:%1.3f  ", can_receiver.get_data(CANID::Speed), can_receiver.get_data(CANID::Direction));
 //			pc.printf("x:%3.3f  y:%3.3f  ", FL.get_x(), FL.get_y());
 //			pc.printf("enc:%3.2f  ", enc_FLf.getAngle());
 //			pc.printf("angle:%3.2f  duty:%1.4f  ", FLf.get_angle(), FLf.get_duty());
 //
 //			pc.printf("vel[%3.2f][%3.2f]  ", FL.get_x_vel(), FL.get_y_vel());
+
+			pc.printf("dist[%f][%f][%f]  ", walk_dist_right, walk_dist_left, walk_dist_front);
 
 //			orbit_log(&FR, &fw_FR);
 //			orbit_log(&FL, &fw_FL);
@@ -169,10 +179,9 @@ void set_cycle(float *period, float *duty){
 }
 
 
-void send_movedist(float dist, enum CANID::DataType type, enum CANID::From from){
-	if(dist==0)return; //無駄な送信は却下
+void send_walkdist(float dist, enum CANID::DataType type, enum CANID::From from){
 	can_sender.send(CANID_generate(from, CANID::ToController, type), dist);
-	pc.printf("dist%d:%2.5f  ", type, dist);
+//	pc.printf("dist%d:%2.5f  ", type, dist);
 }
 
 
