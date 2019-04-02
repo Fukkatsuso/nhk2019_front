@@ -24,7 +24,7 @@ public:
 	void send_area(unsigned int can_id, unsigned char area);
 	void send_area_change(unsigned int can_id, unsigned char area);
 	void send_leg_up(unsigned int can_id, unsigned char leg_up);
-	void send_move_dist(unsigned int can_id, float dist);
+	void send_move_position(unsigned int can_id, float dist, unsigned char kouden_sanddune);
 
 protected:
 	void send(unsigned int can_id, unsigned char *data, unsigned short byte);

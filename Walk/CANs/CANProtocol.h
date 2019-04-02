@@ -14,6 +14,8 @@
 /***************
  * CAN通信のID管理
  ***************/
+//Master->Controller : angle, status 					: 0x013
+//Master<-Controller : dist, kouden_front, kouden_rear	: 0x102
 class CANID{
 public:
 	enum From{
@@ -31,20 +33,21 @@ public:
 		ToRear 			= 0x040
 	};
 	enum DataType{
-		Direction,			//Master->Controller->Slave
-		Area,				//Master->Controller-中間処理->Slave
-		MoveDistCentroid,	//Master<-Controller : 重心の移動量を送信
+		Direction,				//Controller->Slave
+		Area,					//Controller-中間処理->Slave
+		MovePosition,			//Master<-Controller : 重心の移動量, 光電センサの値を送信
+		Navi,					//Master->Controller
 
-		Speed,				//Controller->Slave
-		VelocityVector,		//Controller->Slave
-		TimerReset,			//Controller->Slave
-		LegUp,				//Controller->Slave
+		Speed,					//Controller->Slave
+		VelocityVector,			//Controller->Slave
+		TimerReset,				//Controller->Slave
+		LegUp,					//Controller->Slave
 
-		AreaChange,			//Controller<-Slave : Area変更の要請を送るためだけ
-		MoveDistFront,		//Controller<-Slave
-		MoveDistRear,		//Controller<-Slave
+		AreaChange,				//Controller<-Slave : Area変更の要請を送るためだけ
+		MovePositionFront,		//Controller<-Slave
+		MovePositionRear,		//Controller<-Slave
 
-		DataType_end		//<=0x00f=15 に制限
+		DataType_end			//<=0x00f=15 に制限
 	};
 
 	static unsigned int generate(CANID::From from, CANID::To to, CANID::DataType type);
@@ -62,7 +65,7 @@ public:
 //TimerReset 	: unsigned char(1B)
 //Area 			: unsigned char(1B)
 //LegUp 		: unsigned char(1B)
-//MoveDist 		: short(2B)
+//MovePosition	: short(2B), unsigned char(1B)
 
 #define BYTE_DIRECTION 4
 union can_Direction{
@@ -108,10 +111,13 @@ union can_LegUp{
 	};
 };
 
-#define BYTE_DIST 2
-union can_MoveDist{
-	unsigned char byte[BYTE_DIST];
-	signed short value;
+#define BYTE_MOVEPOSITION 3
+union can_MovePosition{
+	unsigned char byte[BYTE_MOVEPOSITION];
+	struct{
+		signed short dist;
+		unsigned char kouden_sanddune;
+	};
 };
 
 
@@ -132,10 +138,13 @@ public:
 	bool get_leg_up_FL();
 	bool get_leg_up_RR();
 	bool get_leg_up_RL();
-	short get_move_dist_front();
-	short get_move_dist_rear();
+	short get_move_position_front_dist();
+	unsigned char get_move_position_front_kouden_sanddune();
+	short get_move_position_rear_dist();
+	unsigned char get_move_position_rear_kouden_sanddune();
 
 protected:
+	void reset();
 	CAN *can;
 	struct CANData{
 		union can_Direction 		direction;			//方向
@@ -145,8 +154,8 @@ protected:
 		union can_Area 				area;				//現在のArea
 		union can_Area 				area_change; 		//エリア変更要請
 		union can_LegUp 			leg_up;				//足上げフラグ
-		union can_MoveDist 			move_dist_front;	//前脚移動平均
-		union can_MoveDist 			move_dist_rear;		//後脚移動平均
+		union can_MovePosition		move_position_front;//前脚移動平均
+		union can_MovePosition		move_position_rear;	//後脚移動平均
 	}data;
 };
 

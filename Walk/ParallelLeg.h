@@ -48,7 +48,7 @@ public:
 
 	void set_walkmode(Gait::Mode gait, Recovery::Mode recovery, float time_stablemove_rate);
 
-	void trigger_sanddune(int trigger);
+	void trigger_sanddune(int trigger, int walk_on_dune);
 	void trigger_tussock(int trigger);
 	void over_obstacle();
 
@@ -65,6 +65,7 @@ public:
 	float get_y_vel();
 	float get_x_distance_move(); //微小時間の移動距離
 	float get_y_distance_move();
+	float get_distance_move();
 	int get_mode();
 	bool is_recovery();
 	bool is_stay();

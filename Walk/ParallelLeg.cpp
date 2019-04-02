@@ -10,7 +10,7 @@
 
 #define FACTOR_Y (4.0*M_PI*(-height)/(Ty*(4.0+M_PI)))
 
-//extern Serial pc;
+extern Serial pc;
 
 
 ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
@@ -19,8 +19,8 @@ ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
 	//適当に初期化
 	gait_mode = Gait::NormalGait;
 	recovery_mode = Recovery::Cycloid;
-	area = MRMode::PrepareWalking;
-	area_prv = MRMode::Area_end;
+	area = MRMode::WaitGobiUrtuu;
+	area_prv = MRMode::WaitGobiUrtuu;
 	speed = 0;
 	timing[0] = 0;//時刻ゼロ
 	timing_stable[0] = 0;
@@ -85,8 +85,15 @@ void ParallelLeg::set_y_initial(float y_initial){
 void ParallelLeg::set_initial(float x_initial, float y_initial)
 {
 	if(MRmode->is_changing_area()){
-		x_initial = x.pos.init + MRmode->get_x_dif_change_init();
-		y_initial = y.pos.init + MRmode->get_y_dif_change_init();
+//		Orbits *orbit = MRmode->get_orbits(area);
+//		if(x.pos.init == orbit->init_x)
+//			x_initial = x.pos.init;
+//		else
+			x_initial = x.pos.init + MRmode->get_x_dif_change_init();
+//		if(y.pos.init == orbit->init_y)
+//			y_initial = y.pos.init;
+//		else
+			y_initial = y.pos.init + MRmode->get_y_dif_change_init();
 	}
 	x.pos.init = x_initial;
 	y.pos.init = y_initial;
@@ -135,18 +142,19 @@ void ParallelLeg::set_walkmode(Gait::Mode gait, Recovery::Mode recovery, float t
 	this->time_stablemove = period*time_stablemove_rate/2.0; //１度の４足移動にかける時間
 }
 
-void ParallelLeg::trigger_sanddune(int trigger)
+
+void ParallelLeg::trigger_sanddune(int trigger, int walk_on_dune)
 {
 	if(!(area==MRMode::SandDuneFront || area==MRMode::SandDuneRear)){
 		flag.sanddune = false;
 		return;
 	}
 	if(mode==StableDown){
-//		if(counter.walk_on_dune>2){//3歩目の着地動作はSandDuneを越えているとする
-//			flag.sanddune = false;
+		if(counter.walk_on_dune > walk_on_dune){//{walk_on_dune}歩目の着地動作はSandDuneを越えているとする
+			flag.sanddune = false;
 //			counter.walk_on_dune = 0;
-//			return;
-//		}
+			return;
+		}
 		if(flag.sanddune && mode_prv==StableSlide)counter.walk_on_dune++; //復帰着地の瞬間、1歩カウント
 	}
 //	if(!trigger)return; //そのまま
@@ -155,9 +163,9 @@ void ParallelLeg::trigger_sanddune(int trigger)
 	if(!trigger && mode==StableDown)flag.sanddune = false;
 	if(trigger && mode==StableSlide)flag.sanddune = true; //復帰スライド中にy初期位置を設定
 	//Cycloid
-//	if(mode==Down)flag.sanddune = (bool)trigger;
-	if(!trigger && mode==Down)flag.sanddune = false;
-	if(trigger && mode==Down)flag.sanddune = true;
+	//if(mode==Down)flag.sanddune = (bool)trigger;
+//	if(!trigger && mode==Down)flag.sanddune = false;
+//	if(trigger && mode==Down)flag.sanddune = true;
 
 	if(MRmode->is_switched()){
 		if(MRmode->get_now()==MRMode::SandDuneFront)counter.walk_on_dune = 0;
@@ -389,10 +397,10 @@ void ParallelLeg::calc_vel_recovery_cycloid(float timing_start, float Ty)
 void ParallelLeg::calc_position()
 {
 	float dt = timer_period->get_dt();
-	x.distance_move = x.vel * dt;
-	y.distance_move = y.vel * dt;
-	x.pos.dif = limit(x.pos.dif + x.distance_move, x.pos.max-x.pos.init, x.pos.min-x.pos.init);
-	y.pos.dif = limit(y.pos.dif + y.distance_move, y.pos.max-y.pos.init, y.pos.min-y.pos.init);
+	x.distance_move = limit(x.vel * dt, x.pos.max-x.pos.now, x.pos.min-x.pos.now);
+	y.distance_move = limit(y.vel * dt, y.pos.max-y.pos.now, y.pos.min-y.pos.now);
+	x.pos.dif += x.distance_move;
+	y.pos.dif += y.distance_move;
 	if(fabs(y.vel)==0)y.pos.dif = 0;
 	x.pos.next = x.pos.init + x.pos.dif;
 	y.pos.next = y.pos.init + y.pos.dif;
@@ -596,10 +604,10 @@ void ParallelLeg::calc_vel_recovery_quadrangle(float timing_start, float Ty)
 void ParallelLeg::calc_position_stable()
 {
 	float dt = timer_period->get_dt();
-	x.distance_move = x.vel * dt;
-	y.distance_move = y.vel * dt;
-	x.pos.dif += limit(x.distance_move, x.pos.max-x.pos.now, x.pos.min-x.pos.now);
-	y.pos.dif += limit(y.distance_move, y.pos.max-y.pos.now, y.pos.min-y.pos.now);
+	x.distance_move = limit(x.vel * dt, x.pos.max-x.pos.now, x.pos.min-x.pos.now);
+	y.distance_move = limit(y.vel * dt, y.pos.max-y.pos.now, y.pos.min-y.pos.now);
+	x.pos.dif += x.distance_move;
+	y.pos.dif += y.distance_move;
 	if(recovery_mode==Recovery::Quadrangle){
 		if(fabs(y.vel)==0 && mode!=StableSlide)y.pos.dif = 0;
 		if(fabs(x.vel)==0 && mode==StableDown)x.pos.dif = step - x.pos.init;
@@ -723,6 +731,8 @@ float ParallelLeg::get_y_vel()
 }
 
 //進行方向に機体をどれだけ進めたかみたいな数字を返す
+//前方向:+
+//後方向:-
 float ParallelLeg::get_x_distance_move()
 {
 	if(mode==Move)return -x.distance_move;
@@ -730,9 +740,22 @@ float ParallelLeg::get_x_distance_move()
 	return 0;
 }
 
+//機体自体の鉛直方向の移動はy.velの符号と同じ
+//上方向に動かした:-
+//下方向に動かした:+
 float ParallelLeg::get_y_distance_move()
 {
-	return y.distance_move;
+	if(mode==Move)return y.distance_move;
+	if(mode==StableMove)return y.distance_move;
+	return 0;
+}
+
+float ParallelLeg::get_distance_move()
+{
+	float dist = sqrt2(get_x_distance_move(), get_y_distance_move());
+	if(get_x_distance_move() > 0)return dist;
+	else if(get_x_distance_move() < 0)return -dist;
+	return 0; //ただの上下運動はゼロとする
 }
 
 int ParallelLeg::get_mode()

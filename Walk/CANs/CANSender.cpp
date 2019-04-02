@@ -7,9 +7,11 @@
 
 #include "CANSender.h"
 
-
+extern Serial pc;
 CANSender::CANSender(CAN *can) : CANProtocol(can)
-{}
+{
+	reset();
+}
 
 
 void CANSender::send_direction(unsigned int can_id, float direction)
@@ -63,17 +65,19 @@ void CANSender::send_leg_up(unsigned int can_id, unsigned char leg_up)
 }
 
 
-void CANSender::send_move_dist(unsigned int can_id, float dist)
+void CANSender::send_move_position(unsigned int can_id, float dist, unsigned char kouden_sanddune)
 {
 	unsigned int type = can_id & 0x00f;
 	switch(type){
-	case CANID::MoveDistFront:
-		data.move_dist_front.value = (signed short)dist;
-		send(can_id, data.move_dist_front.byte, BYTE_DIST);
+	case CANID::MovePositionFront:
+		data.move_position_front.dist = (signed short)dist;
+		data.move_position_front.kouden_sanddune = kouden_sanddune;
+		send(can_id, data.move_position_front.byte, BYTE_MOVEPOSITION);
 		break;
-	case CANID::MoveDistRear:
-		data.move_dist_rear.value = (signed short)dist;
-		send(can_id, data.move_dist_rear.byte, BYTE_DIST);
+	case CANID::MovePositionRear:
+		data.move_position_rear.dist = (signed short)dist;
+		data.move_position_rear.kouden_sanddune = kouden_sanddune;
+		send(can_id, data.move_position_rear.byte, BYTE_MOVEPOSITION);
 		break;
 	default:
 		break;
@@ -86,5 +90,6 @@ void CANSender::send(unsigned int can_id, unsigned char *data, unsigned short by
 	CANMessage msg(can_id, (const char*)data, byte);
 	if(can->write(msg));
 	else if(can->write(msg));
-	else (can->write(msg));
+	else if(can->write(msg));
+	else pc.printf("err:%d  ", can_id&0xf);
 }

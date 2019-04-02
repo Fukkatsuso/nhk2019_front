@@ -9,7 +9,9 @@
 
 
 CANReceiver::CANReceiver(CAN *can) : CANProtocol(can)
-{}
+{
+	reset();
+}
 
 
 /*
@@ -48,11 +50,11 @@ void CANReceiver::receive(CANMessage msg)
 	case CANID::LegUp:
 		copy_data(msg, data.leg_up.byte, BYTE_LEGUP);
 		break;
-	case CANID::MoveDistFront:
-		copy_data(msg, data.move_dist_front.byte, BYTE_DIST);
+	case CANID::MovePositionFront:
+		copy_data(msg, data.move_position_front.byte, BYTE_MOVEPOSITION);
 		break;
-	case CANID::MoveDistRear:
-		copy_data(msg, data.move_dist_rear.byte, BYTE_DIST);
+	case CANID::MovePositionRear:
+		copy_data(msg, data.move_position_rear.byte, BYTE_MOVEPOSITION);
 		break;
 	default:
 		break;

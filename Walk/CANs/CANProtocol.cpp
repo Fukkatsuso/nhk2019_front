@@ -39,18 +39,7 @@ bool CANID::is_type(unsigned int can_id, CANID::DataType type)
 CANProtocol::CANProtocol(CAN *can)
 {
 	this->can = can;
-
-	data.direction.value 					= 0;
-	data.speed.value 						= 0;
-	data.velocity_vector.direction.value	= 0;
-	data.velocity_vector.speed.value 		= 0;
-	data.timer_reset.value 					= 0;
-	data.leg_up.FR 							= 0;
-	data.leg_up.FL 							= 0;
-	data.leg_up.RR 							= 0;
-	data.leg_up.RL 							= 0;
-	data.move_dist_front.value 				= 0;
-	data.move_dist_rear.value 				= 0;
+	reset();
 }
 
 
@@ -99,12 +88,40 @@ bool CANProtocol::get_leg_up_RL()
 	return (bool)data.leg_up.RL;
 }
 
-short CANProtocol::get_move_dist_front()
+short CANProtocol::get_move_position_front_dist()
 {
-	return data.move_dist_front.value;
+	return data.move_position_front.dist;
 }
 
-short CANProtocol::get_move_dist_rear()
+unsigned char CANProtocol::get_move_position_front_kouden_sanddune()
 {
-	return data.move_dist_rear.value;
+	return data.move_position_front.kouden_sanddune;
+}
+
+short CANProtocol::get_move_position_rear_dist()
+{
+	return data.move_position_rear.dist;
+}
+
+unsigned char CANProtocol::get_move_position_rear_kouden_sanddune()
+{
+	return data.move_position_rear.kouden_sanddune;
+}
+
+
+void CANProtocol::reset()
+{
+	data.direction.value 					= 0;
+	data.speed.value 						= 0;
+	data.velocity_vector.direction.value	= 0;
+	data.velocity_vector.speed.value 		= 0;
+	data.timer_reset.value 					= 0;
+	data.leg_up.FR 							= 0;
+	data.leg_up.FL 							= 0;
+	data.leg_up.RR 							= 0;
+	data.leg_up.RL 							= 0;
+	data.move_position_front.dist 			= 0;
+	data.move_position_front.kouden_sanddune = 0;
+	data.move_position_rear.dist 			= 0;
+	data.move_position_rear.kouden_sanddune = 0;
 }

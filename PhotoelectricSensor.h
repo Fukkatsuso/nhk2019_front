@@ -27,12 +27,13 @@ public:
 	void sensing();
 	int read();
 	bool is_rising();
-	float get_ontime();
+	unsigned int get_counter(unsigned int filter=0);
+	void reset_counter();
 private:
 	DigitalIn *Input;
-	Timer tm_kouden;
 	short now;
 	short prev;
+	unsigned int counter; //onとして読んだ回数
 };
 
 

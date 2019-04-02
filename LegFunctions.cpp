@@ -51,8 +51,8 @@ void moveLeg(SingleLeg *front, SingleLeg *rear, float x, float y){
 }
 
 
-#define INITIAL_SET_X 0
-#define INITIAL_SET_Y 260
+#define INITIAL_SET_X MRmode.get_orbits(MRmode.get_now())->init_x //0
+#define INITIAL_SET_Y MRmode.get_orbits(MRmode.get_now())->init_y //240
 void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 		  	  SingleLeg *leg_r, InitLegInfo *info_r,
 			  ForwardKinematics *fw){

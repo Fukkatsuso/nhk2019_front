@@ -15,52 +15,53 @@
 Limits limits[MRMode::Area_end] =
 		{	//----------ParallelLeg----------   ----------SingleLeg----------
 			//{{x.max, 			x.min}, 			{y.max, y.min}, {angle.max, angle.min}, {duty.max, duty.min}}
-			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//WaitGobiUrtuu
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//GetGerege
-			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//PrepareWalking
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Start1
-			  {{90, -90}, 							{280, 	200}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//GobiArea
-			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//SandDuneFront
-			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//SandDuneRear
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//ReadyForTussock
-			  {{90, -90}, 							{280, 	80}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//Tussock
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Finish1
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//WaitMountainUrtuu
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//GetSign
-			  {{90,  	-90},					 	{260, 	150}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//Start2
-			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{260, 	100}, 	{110, 		-20}, 		{0.75, 	   0.25}},//StartClimb1//Front開始
-			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{260, 	100}, 	{110, 		-20}, 		{0.75, 	   0.25}},//StartClimb2
-			  {{X_CLIMB_MAX,	X_CLIMB_MIN},		{260, 	100}, 	{110, 		-20}, 		{0.75, 	   0.25}},	//MountainArea
-			  {{100, 			-100}, 				{260, 	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//UukhaiZone
-			  {{100, 			-100}, 				{260,	150}, 	{110, 		-20}, 		{0.7, 	   0.3}},	//Uukhai
-			  {{100,			-100}, 				{260,	150}, 	{110, 		-20}, 		{0.7, 	   0.3}}	//Finish2
+			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//WaitGobiUrtuu
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GetGerege
+			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//PrepareWalking
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Start1
+			  {{90, -90}, 							{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GobiArea
+			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//SandDuneFront
+			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//SandDuneRear
+			  {{90, -90}, 							{280, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//ReadyForTussock
+			  {{90, -90}, 							{280, 	80}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Tussock
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Finish1
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//WaitMountainUrtuu
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GetSign
+			  {{90, -90},						 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Start2
+			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{260, 	100}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//StartClimb1//Front開始
+			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{260, 	100}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//StartClimb2
+			  {{X_CLIMB_MAX,	X_CLIMB_MIN},		{260, 	100}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//MountainArea
+			  {{100, 			-100}, 				{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//UukhaiZone
+			  {{100, 			-100}, 				{260,	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Uukhai
+			  {{100,			-100}, 				{260,	150}, 	{110, 		-20}, 		{0.8, 	   0.2}}	//Finish2
 		};
 
+#define HEIGHT_NORMAL 40
 #define GRAD_SLOPE 14.9
-#define X_CLIMB_INIT -50//-60//-53 // = init_y * tan(gradient)
-#define X_DUNE_INIT 70
+#define X_CLIMB_INIT -50//-53 // = init_y * tan(gradient)
+#define X_NORMAL_INIT -20
 
 Orbits orbits[MRMode::Area_end] =
-		{		//gradient, 	init_x,			init_y, height,	time_change
-				{0,				0, 				240, 	30,		1},		//WaitGobiUrtuu
-				{0, 			0,				240, 	30,		1},		//GetGerege
-				{0, 			0,				260, 	30,		1},		//PrepareWalking
-				{0, 			0,				260, 	30,		1},		//Start1
-				{0, 			0,				260, 	30,		1},		//GobiArea
-				{0, 			0,				260,	140,	1},		//SandDuneFront
-				{0,				0,				260,	20,		1},		//SandDuneRear
-				{0, 			0,				250, 	50,		1},		//ReadyForTussock
-				{0, 			-10,			260, 	30,		1},		//Tussock
-				{0, 			0,				260, 	30,		1},		//Finish1
-				{0, 			0,				200, 	50,		1},		//WaitMountainUrtuu
-				{0, 			0,				200, 	50,		1},		//GetSign
-				{0, 			0,				260, 	30,		1},		//Start2
-				{GRAD_SLOPE,	0, 				200, 	50,		1},		//StartClimb1//Front開始
-				{0,				X_CLIMB_INIT,	200, 	40,		1},		//StartClimb2
-				{0, 			X_CLIMB_INIT,	200, 	40,		1},		//MountainArea
-				{0, 			0,				250, 	80,		1},		//UukhaiZone
-				{0, 			0,				250, 	80,		1},		//Uukhai
-				{0, 			0,				250, 	50,		1}		//Finish2
+		{		//gradient, 	init_x,			init_y, height,				time_change
+				{0,				0, 				240, 	HEIGHT_NORMAL,		1},		//WaitGobiUrtuu
+				{0, 			0,				240, 	HEIGHT_NORMAL,		1},		//GetGerege
+				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		0.5},		//PrepareWalking
+				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//Start1
+				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//GobiArea
+				{0, 			0,				260,	140,				1},		//SandDuneFront
+				{0,				0,				260,	30,					0},		//SandDuneRear
+				{0, 			0,				260, 	HEIGHT_NORMAL,		1},		//ReadyForTussock
+				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//Tussock
+				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//Finish1
+				{0, 			0,				260, 	HEIGHT_NORMAL,		1},		//WaitMountainUrtuu
+				{0, 			0,				200, 	HEIGHT_NORMAL,		0.5},		//GetSign
+				{0, 			0,				200, 	HEIGHT_NORMAL,		1},		//Start2
+				{GRAD_SLOPE,	0, 				200, 	50,					1},		//StartClimb1//Front開始
+				{0,				X_CLIMB_INIT,	200, 	40,					1},		//StartClimb2
+				{0, 			X_CLIMB_INIT,	200, 	40,					1},		//MountainArea
+				{0, 			0,				260, 	80,					0.5},		//UukhaiZone
+				{0, 			0,				260, 	80,					0.5},		//Uukhai
+				{0, 			0,				260, 	50,					0.5}		//Finish2
 		};
 
 
@@ -70,6 +71,7 @@ MRMode::MRMode(CANReceiver *rcv, CANSender *snd, enum Area init_area, bool opera
 	this->can_sender = snd;
 	area[Now] = area[Initial] = init_area;
 	flag.operate = operate;
+	roop_prev = init_area;
 }
 
 
@@ -79,6 +81,7 @@ void MRMode::update()
 	area[Now] = (Area)(can_receiver->get_area());//今のArea
 	roop_prev = roop_now;	roop_now = area[Now];
 	flag.switched = (roop_now!=roop_prev);//Area指令切り替わりの判断
+	//エリア切り替わりに関して
 	if(flag.switched){
 		area[Prev] = roop_prev;//1つ前のArea
 		area[Next] = (Area)((int)area[Now] + (((int)area[Now]<(int)Finish2)? 1:0));//次のArea（予定）
