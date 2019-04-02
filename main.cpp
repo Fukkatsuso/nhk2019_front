@@ -52,6 +52,7 @@ int main(){
 	float walk_dist_right = 0;
 	float walk_dist_left = 0;
 	float walk_dist_front = 0;
+	unsigned int kouden_SandDuneFront_max = 0;
 	int mrmode = (int)MRmode.get_now();
 
 	can.frequency(1000000);
@@ -85,15 +86,20 @@ int main(){
 		kouden_SandDuneFront.sensing();
 		mrmode = MRmode.get_now();
 
+		//
+		FR.trigger_sanddune(kouden_SandDuneFront.get_counter(100), 3);
+		FL.trigger_sanddune(kouden_SandDuneFront.get_counter(100), 3);
+
 		if(mrmode==MRMode::SandDuneFront || mrmode==MRMode::SandDuneRear){
-			FR.trigger_sanddune(kouden_SandDuneFront.get_counter(100), 3);
-			FL.trigger_sanddune(kouden_SandDuneFront.get_counter(100), 3);
 			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
 			FL.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
 			//trigger_sanddune実行後にこれを行う
 			if(mrmode==MRMode::SandDuneFront){
-				if(FR.get_count_walk_on_dune() + FL.get_count_walk_on_dune() > 5){ //合計5歩以上歩いた
-//					if(!kouden_SandDuneFront.get_counter(700))
+				//最大値更新
+				if(kouden_SandDuneFront_max < kouden_SandDuneFront.get_counter(0))
+					kouden_SandDuneFront_max = kouden_SandDuneFront.get_counter(0);
+				if(FR.get_count_walk_on_dune() + FL.get_count_walk_on_dune() >= 5){ //合計5歩以上歩いた
+					if(kouden_SandDuneFront.get_counter(0) < (kouden_SandDuneFront_max - 350))
 						MRmode.request_to_change_area(MRMode::SandDuneRear, CANID::FromFront);
 				}
 			}
