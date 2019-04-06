@@ -19,12 +19,12 @@ Limits limits[MRMode::Area_end] =
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GetGerege
 			  {{X_NORMAL_WIDTH,	-X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//PrepareWalking
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Start1
-			  {{90, -90}, 							{280, 	200}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GobiArea
+			  {{100, -100},							{260, 	180}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GobiArea
 			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//SandDuneFront
 			  {{100, -100}, 						{260, 	120}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//SandDuneRear
-			  {{90, -90}, 							{280, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//ReadyForTussock
-			  {{90, -90}, 							{280, 	80}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Tussock
-			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{280, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Finish1
+			  {{90, -90}, 							{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//ReadyForTussock
+			  {{90, -90}, 							{260, 	80}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Tussock
+			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Finish1
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//WaitMountainUrtuu
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GetSign
 			  {{90, -90},						 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Start2
@@ -38,21 +38,21 @@ Limits limits[MRMode::Area_end] =
 
 #define HEIGHT_NORMAL 40
 #define GRAD_SLOPE 14.9
-#define X_CLIMB_INIT -50//-53 // = init_y * tan(gradient)
+#define X_CLIMB_INIT -40//-50//-53 // = init_y * tan(gradient)
 #define X_NORMAL_INIT -20
 
 Orbits orbits[MRMode::Area_end] =
 		{		//gradient, 	init_x,			init_y, height,				time_change
 				{0,				0, 				240, 	HEIGHT_NORMAL,		1},		//WaitGobiUrtuu
 				{0, 			0,				240, 	HEIGHT_NORMAL,		1},		//GetGerege
-				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		0.5},		//PrepareWalking
-				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//Start1
-				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//GobiArea
-				{0, 			0,				260,	140,				1},		//SandDuneFront
+				{0, 			0/*X_NORMAL_INIT*/,	250, 	HEIGHT_NORMAL,		0.5},		//PrepareWalking
+				{0, 			0/*X_NORMAL_INIT*/,	250, 	HEIGHT_NORMAL,		1},		//Start1
+				{0, 			0/*X_NORMAL_INIT*/,	250, 	HEIGHT_NORMAL,		1},		//GobiArea
+				{0, 			0,				260,	140,				0.5},		//SandDuneFront
 				{0,				0,				260,	30,					0},		//SandDuneRear
-				{0, 			0,				260, 	HEIGHT_NORMAL,		1},		//ReadyForTussock
-				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//Tussock
-				{0, 			X_NORMAL_INIT,	260, 	HEIGHT_NORMAL,		1},		//Finish1
+				{0, 			0,				/*260*/255, 	HEIGHT_NORMAL,		1},		//ReadyForTussock
+				{0, 			X_NORMAL_INIT,	/*260*/255, 	HEIGHT_NORMAL,		1},		//Tussock
+				{0, 			X_NORMAL_INIT,	/*260*/255, 	HEIGHT_NORMAL,		1},		//Finish1
 				{0, 			0,				260, 	HEIGHT_NORMAL,		1},		//WaitMountainUrtuu
 				{0, 			0,				200, 	HEIGHT_NORMAL,		0.5},		//GetSign //ここで姿勢変更
 				{0, 			0,				200, 	HEIGHT_NORMAL,		1},		//Start2

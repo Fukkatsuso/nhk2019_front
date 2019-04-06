@@ -57,7 +57,7 @@ void SingleLeg::mrmode_update()
 
 
 //目標x,y->PIDでduty計算
-/* rotation(angle+に対するブラシレスモータの回転方向)
+/* rotation(angle+に対するモータの回転方向)
  *|-------------------------|
  *| 		Front	Rear	|
  *| Right	CW		CCW		|

@@ -43,12 +43,12 @@ public:
 	void set_gradient(float grad);
 	void set_orbits();
 
-	void set_period(float period);
-	void set_duty(float duty);
+	void set_period_duty(float period, float duty);
 
 	void set_walkmode(Gait::Mode gait, Recovery::Mode recovery, float time_stablemove_rate);
 
-	void trigger_sanddune(int trigger, int walk_on_dune);
+	void trigger_sanddune(unsigned int cnt_kouden_now, unsigned int cnt_kouden_max, unsigned int cnt_begin, unsigned int cnt_end,
+			int walk_on_dune, enum MRMode::Area area_dune);
 	void trigger_tussock(int trigger);
 	void over_obstacle();
 
@@ -69,6 +69,7 @@ public:
 	int get_mode();
 	bool is_recovery();
 	bool is_stay();
+	bool is_on_dune();
 	bool is_climb();
 	int get_count_walk_on_dune();
 

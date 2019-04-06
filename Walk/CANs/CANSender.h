@@ -17,14 +17,11 @@ class CANSender : public CANProtocol
 public:
 	CANSender(CAN *can);
 
-	void send_direction(unsigned int can_id, float direction);
-	void send_speed(unsigned int can_id, float speed);
-	void send_velocity_vector(unsigned int can_id, float direction, float speed);
+	void send_walk_command(unsigned int can_id,
+			unsigned char area, short speed, short direction, short pitch, unsigned char leg_up);
 	void send_timer_reset(unsigned int can_id);
-	void send_area(unsigned int can_id, unsigned char area);
+	void send_leg_info(unsigned int can_id, short dist, unsigned char state, unsigned char kouden);
 	void send_area_change(unsigned int can_id, unsigned char area);
-	void send_leg_up(unsigned int can_id, unsigned char leg_up);
-	void send_move_position(unsigned int can_id, float dist, unsigned char kouden_sanddune);
 
 protected:
 	void send(unsigned int can_id, unsigned char *data, unsigned short byte);

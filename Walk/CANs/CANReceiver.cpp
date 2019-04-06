@@ -10,54 +10,43 @@
 
 CANReceiver::CANReceiver(CAN *can) : CANProtocol(can)
 {
+//	this->can = can;
 	reset();
 }
 
 
-/*
- * example:
- * CANReceiver canrcv(&can);
- * void can_receive(){
- * 		if(can.read(rcvMsg)){
- * 			if((rcvMsg.id&0xff0)==(CANID::From::Master | CANID::To::SlaveAll)){
- * 				canrcv.recerive(rcvMsg.id, rcvMsg.data);
- * 			}
- * 		}
- * }
- */
 void CANReceiver::receive(CANMessage msg)
 {
 	unsigned int type = msg.id & 0x00f;
 
 	switch(type){
-	case CANID::Direction:
-		copy_data(msg, data.direction.byte, BYTE_DIRECTION);
-		break;
-	case CANID::Speed:
-		copy_data(msg, data.speed.byte, BYTE_SPEED);
-		break;
-	case CANID::VelocityVector:
-		copy_data(msg, data.velocity_vector.byte, BYTE_VELOCITYVECTOR);
-		data.direction.value = data.velocity_vector.direction.value;
-		data.speed.value = data.velocity_vector.speed.value;
-		break;
-	case CANID::Area:
-		copy_data(msg, data.area.byte, BYTE_AREA);
-		break;
+	case CANID::WalkCommand:
+		walk_command.semaphore = false;
+		copy_data(msg, walk_command.data.byte, BYTE_WALK_COMMAND);
+		walk_command.semaphore = true;
+		return;
+
+	case CANID::LegInfo:
+		if(CANID::is_from(msg.id, CANID::FromFront)){
+			leg_info_front.semaphore = false;
+			copy_data(msg, leg_info_front.data.byte, BYTE_LEG_INFO);
+			leg_info_front.semaphore = true;
+		}
+		else if(CANID::is_from(msg.id, CANID::FromRear)){
+			leg_info_rear.semaphore = false;
+			copy_data(msg, leg_info_rear.data.byte, BYTE_LEG_INFO);
+			leg_info_rear.semaphore = true;
+		}
+		return;
+
 	case CANID::AreaChange:
-		copy_data(msg, data.area_change.byte, BYTE_AREA);
-		break;
-	case CANID::LegUp:
-		copy_data(msg, data.leg_up.byte, BYTE_LEGUP);
-		break;
-	case CANID::MovePositionFront:
-		copy_data(msg, data.move_position_front.byte, BYTE_MOVEPOSITION);
-		break;
-	case CANID::MovePositionRear:
-		copy_data(msg, data.move_position_rear.byte, BYTE_MOVEPOSITION);
-		break;
+		area_change.semaphore = false;
+		copy_data(msg, area_change.data.byte, BYTE_AREA);
+		area_change.semaphore = true;
+		return;
+
 	default:
-		break;
+		return;
 	}
 }
 
@@ -67,4 +56,146 @@ void CANReceiver::copy_data(CANMessage msg, unsigned char data[], short byte)
 	for(int i=0; i<byte; i++){
 		data[i] = msg.data[i];
 	}
+}
+
+
+/****************
+ * walk_command
+ ****************/
+unsigned char CANReceiver::get_area()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.area;
+}
+
+signed short CANReceiver::get_speed()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.speed;
+}
+
+signed short CANReceiver::get_direction()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.direction;
+}
+
+signed short CANReceiver::get_pitch()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.pitch;
+}
+
+unsigned char CANReceiver::get_leg_up_FR()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.leg_up.FR;
+}
+
+unsigned char CANReceiver::get_leg_up_FL()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.leg_up.FL;
+}
+
+unsigned char CANReceiver::get_leg_up_RR()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.leg_up.RR;
+}
+
+unsigned char CANReceiver::get_leg_up_RL()
+{
+	while(!walk_command.semaphore);
+	return walk_command.data.leg_up.RL;
+}
+
+
+/******************
+ * leg_info_front
+ ******************/
+signed short CANReceiver::get_dist_front()
+{
+	while(!leg_info_front.semaphore);
+	return leg_info_front.data.dist;
+}
+
+unsigned char CANReceiver::get_state_fr()
+{
+	while(!leg_info_front.semaphore);
+	return leg_info_front.data.state.right;
+}
+
+unsigned char CANReceiver::get_state_fl()
+{
+	while(!leg_info_front.semaphore);
+	return leg_info_front.data.state.left;
+}
+
+unsigned char CANReceiver::get_kouden_sanddune_front()
+{
+	while(!leg_info_front.semaphore);
+	return leg_info_front.data.kouden.sand_dune;
+}
+
+//leg_info_rear
+signed short CANReceiver::get_dist_rear()
+{
+	while(!leg_info_rear.semaphore);
+	return leg_info_rear.data.dist;
+}
+
+unsigned char CANReceiver::get_state_rr()
+{
+	while(!leg_info_rear.semaphore);
+	return leg_info_rear.data.state.right;
+}
+
+unsigned char CANReceiver::get_state_rl()
+{
+	while(!leg_info_rear.semaphore);
+	return leg_info_rear.data.state.left;
+}
+
+unsigned char CANReceiver::get_kouden_sanddune_rear()
+{
+	while(!leg_info_rear.semaphore);
+	return leg_info_rear.data.kouden.sand_dune;
+}
+
+
+/***************
+ * area_change
+ ***************/
+unsigned short CANReceiver::get_area_change()
+{
+	while(!area_change.semaphore);
+	return area_change.data.area;
+}
+
+
+/*************
+ * protected
+ *************/
+void CANReceiver::reset()
+{
+	for(int i=0; i<BYTE_WALK_COMMAND; i++){
+		walk_command.data.byte[i] = 0;;
+	}
+	walk_command.semaphore = true;
+
+	for(int i=0; i<BYTE_LEG_INFO; i++){
+		leg_info_front.data.byte[i] = 0;
+	}
+	leg_info_front.semaphore = true;
+
+	for(int i=0; i<BYTE_LEG_INFO; i++){
+		leg_info_rear.data.byte[i] = 0;
+	}
+	leg_info_rear.semaphore = true;
+
+	for(int i=0; i<BYTE_AREA; i++){
+		area_change.data.byte[i] = 0;
+	}
+	area_change.semaphore = true;
 }

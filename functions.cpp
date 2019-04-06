@@ -21,6 +21,12 @@ double limit(double value, double max, double min){
 }
 
 
+unsigned int limit_uint(unsigned int value, unsigned int max){
+	if(value > max)return max;
+	else return value;
+}
+
+
 float sqrt2(float a, float b){
 	return sqrt(a*a + b*b);
 }
@@ -44,4 +50,18 @@ unsigned int counter_update(unsigned int counter, unsigned char flag)
 	if(flag)counter++;
 	else if(counter > 0)counter--;
 	return counter;
+}
+
+
+unsigned int max_uint(unsigned int a, unsigned int b)
+{
+	if(a >= b)return a;
+	else return b;
+}
+
+
+unsigned int uint_cut(unsigned int value, unsigned int cut)
+{
+	if(value < cut)return 0;
+	else return value - cut;
 }

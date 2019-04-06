@@ -22,6 +22,7 @@ ParallelLeg::ParallelLeg(int fr, int rl, float pos_x, float pos_y):
 	area = MRMode::WaitGobiUrtuu;
 	area_prv = MRMode::WaitGobiUrtuu;
 	speed = 0;
+	period = 0;
 	timing[0] = 0;//時刻ゼロ
 	timing_stable[0] = 0;
 
@@ -118,19 +119,24 @@ void ParallelLeg::set_orbits()
 	set_gradient(orbits->gradient);
 }
 
-void ParallelLeg::set_period(float period)
-{
-	if(this->period==period)return;
-	if(period < 0)period = 0;
-	this->period = period;
-}
 
-void ParallelLeg::set_duty(float duty)
+void ParallelLeg::set_period_duty(float period, float duty)
 {
-	if(this->duty==duty)return;
-	if(duty < 0.5)duty = 0.5;
-	else if(duty > 1.0)duty = 1.0;
-	this->duty = duty;
+	if(this->period==period && this->duty==duty) return;
+	if(this->period!=period) this->period = period;
+	if(this->duty!=duty) this->duty = duty;
+
+	switch(gait_mode){
+	case Gait::NormalGait:
+		set_timing();
+		break;
+	case Gait::StableGait:
+		set_timing_stable();
+		break;
+	case Gait::ActiveStableGait:
+		set_timing_activestable();
+		break;
+	}
 }
 
 
@@ -143,29 +149,28 @@ void ParallelLeg::set_walkmode(Gait::Mode gait, Recovery::Mode recovery, float t
 }
 
 
-void ParallelLeg::trigger_sanddune(int trigger, int walk_on_dune)
+void ParallelLeg::trigger_sanddune(unsigned int cnt_kouden_now, unsigned int cnt_kouden_max, unsigned int cnt_begin, unsigned int cnt_end,
+		int walk_on_dune, enum MRMode::Area area_dune)
 {
-	if(!(area==MRMode::SandDuneFront || area==MRMode::SandDuneRear)){
+	if(!(area==area_dune)){
 		flag.sanddune = false;
 		return;
 	}
-	if(mode==StableDown){
-		if(counter.walk_on_dune > walk_on_dune){//{walk_on_dune}歩目の着地動作はSandDuneを越えているとする
-			flag.sanddune = false;
-//			counter.walk_on_dune = 0;
-			return;
-		}
-		if(flag.sanddune && mode_prv==StableSlide)counter.walk_on_dune++; //復帰着地の瞬間、1歩カウント
+	if(mode!=StableDown)return;
+
+	if(counter.walk_on_dune > walk_on_dune){//{walk_on_dune}歩目の着地動作はSandDuneを越えているとする
+		flag.sanddune = false;
+		return;
 	}
-//	if(!trigger)return; //そのまま
-	//Quadrangle
-//	if(mode==StableDown)flag.sanddune = (bool)trigger;
-	if(!trigger && mode==StableDown)flag.sanddune = false;
-	if(trigger && mode==StableSlide)flag.sanddune = true; //復帰スライド中にy初期位置を設定
-	//Cycloid
-	//if(mode==Down)flag.sanddune = (bool)trigger;
-//	if(!trigger && mode==Down)flag.sanddune = false;
-//	if(trigger && mode==Down)flag.sanddune = true;
+
+	if(!flag.sanddune){ //乗り上げ開始
+		if(cnt_kouden_now > cnt_begin && counter.walk_on_dune==0)flag.sanddune = true;
+	}
+	else{ //段差終了
+		if(cnt_kouden_now < cnt_end)flag.sanddune = false;
+	}
+
+	if(flag.sanddune && mode_prv==StableSlide)counter.walk_on_dune++; //復帰着地の瞬間、1歩カウント
 
 	if(MRmode->is_switched()){
 		if(MRmode->get_now()==MRMode::SandDuneFront)counter.walk_on_dune = 0;
@@ -185,10 +190,17 @@ void ParallelLeg::trigger_tussock(int trigger)
 void ParallelLeg::over_obstacle()
 {
 	if(flag.sanddune){
-		set_y_initial(260-100);
+		set_y_initial(260-100 +10);//なんか沈むので
 		set_height(y.pos.init-y.pos.min);
-//		set_x_initial(20);
-		set_x_initial(30);
+		//1歩目のStableSlide~2歩目のUpまでx_initialを前に出す
+		if(counter.walk_on_dune < 2){
+			if(mode==StableSlide || mode==Down)
+				set_x_initial(30);
+		}
+		else if(counter.walk_on_dune < 3){
+			if(mode==StableSlide || mode==Up)
+				set_x_initial(30);
+		}
 		return;
 	}
 	if(flag.tussock){
@@ -213,21 +225,18 @@ void ParallelLeg::walk(float spd, float dir)
 
 	switch(gait_mode){
 	case Gait::NormalGait:
-		set_timing();//足上げタイミング等計算
 		walk_mode();//足のモード
 		check_flag();
 		calc_velocity();//vel計算
 		calc_position();//pos計算
 		break;
 	case Gait::StableGait:
-		set_timing_stable();//
 		walk_mode_stable();//
 		check_flag_stable();//
 		calc_velocity_stable();//
 		calc_position_stable();//
 		break;
 	case Gait::ActiveStableGait:
-		set_timing_activestable();//
 		walk_mode_activestable();//
 		check_flag_stable();//
 		calc_velocity_activestable();//
@@ -768,8 +777,14 @@ bool ParallelLeg::is_recovery()
 	return flag.recovery;
 }
 
-bool ParallelLeg::is_stay(){
+bool ParallelLeg::is_stay()
+{
 	return flag.stay;
+}
+
+bool ParallelLeg::is_on_dune()
+{
+	return flag.sanddune;
 }
 
 bool ParallelLeg::is_climb()
