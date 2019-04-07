@@ -37,6 +37,8 @@ void initLegs(SingleLeg *leg_f, InitLegInfo *info_f,
 void autoInit();
 void orbit_log(ParallelLeg *invLeg, ForwardKinematics *fwLeg);
 
+float adjust_walk_direction(float direction);
+
 
 extern Serial pc;
 

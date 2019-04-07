@@ -27,7 +27,7 @@ Limits limits[MRMode::Area_end] =
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Finish1
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//WaitMountainUrtuu
 			  {{X_NORMAL_WIDTH, -X_NORMAL_WIDTH}, 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//GetSign
-			  {{90, -90},						 	{260, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Start2
+			  {{90, -90},						 	{200, 	150}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//Start2
 			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{260, 	100}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//StartClimb1//Front開始
 			  {{X_CLIMB_MAX,  	X_CLIMB_MIN}, 		{260, 	100}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//StartClimb2
 			  {{X_CLIMB_MAX,	X_CLIMB_MIN},		{260, 	100}, 	{110, 		-20}, 		{0.8, 	   0.2}},	//MountainArea
@@ -55,10 +55,10 @@ Orbits orbits[MRMode::Area_end] =
 				{0, 			X_NORMAL_INIT,	/*260*/255, 	HEIGHT_NORMAL,		1},		//Finish1
 				{0, 			0,				260, 	HEIGHT_NORMAL,		1},		//WaitMountainUrtuu
 				{0, 			0,				200, 	HEIGHT_NORMAL,		0.5},		//GetSign //ここで姿勢変更
-				{0, 			0,				200, 	HEIGHT_NORMAL,		1},		//Start2
+				{0, 			0,				200, 	50,		1},		//Start2
 				{GRAD_SLOPE,	0, 				200, 	50,					1},		//StartClimb1//Front開始
-				{0,				X_CLIMB_INIT,	200, 	40,					1},		//StartClimb2
-				{0, 			X_CLIMB_INIT,	200, 	40,					1},		//MountainArea
+				{0,				X_CLIMB_INIT,	200, 	50,					1},		//StartClimb2
+				{0, 			X_CLIMB_INIT,	200, 	50,					1},		//MountainArea
 				{0, 			0,				260, 	50,					0.5},		//UukhaiZone
 				{0, 			0,				260, 	50,					0.5},		//Uukhai
 				{0, 			0,				260, 	50,					0.5}		//Finish2

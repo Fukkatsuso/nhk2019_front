@@ -146,7 +146,9 @@ int main(){
 		walk_direction = - ((float)can_receiver.get_direction()) * M_PI / 180.0; //変換
 		walk_pitch = ((float)can_receiver.get_pitch()) * M_PI / 180.0;
 
-		if(mrmode==MRMode::ReadyForTussock)walk_direction *= 2.0;
+		//ちゃんと補正したかったが一旦断念
+//		if(mrmode==MRMode::ReadyForTussock)
+//			walk_direction = adjust_walk_direction(walk_direction);
 
 		//腰固定座標系での目標位置計算+動作
 		FR.walk(walk_speed, walk_direction);
@@ -203,16 +205,13 @@ void set_cycle(float *period, float *duty){
 	int mrmode = (int)MRmode.get_now();
 	switch(mrmode){
 	case MRMode::GobiArea:
-//		*period = 200.0/240.0;
 		*period = 320.0/350.0;
 		break;
 
 	case MRMode::SandDuneFront:
-//		*period = 1.6;
 		*period = 1.2;
 		break;
 	case MRMode::SandDuneRear:
-//		*period = 1.6;
 		*period = 1.2;
 		break;
 
@@ -227,20 +226,20 @@ void set_cycle(float *period, float *duty){
 		*period = 1;
 		break;
 	case MRMode::StartClimb1:
-//		*period = 1;
-		*period = 0.88;
+//		*period = 0.88;
+		*period = 240.0/270.0;
 		break;
 	case MRMode::StartClimb2:
-//		*period = 1;
-		*period = 0.88;
+//		*period = 0.88;
+		*period = 240.0/270.0;
 		break;
 	case MRMode::MountainArea:
-//		*period = 1;
-		*period = 0.88;
+//		*period = 0.88;
+		*period = 240.0/270.0;
 		break;
 	case MRMode::UukhaiZone:
-//		*period = 1;
-		*period = 0.88;
+//		*period = 0.88;
+		*period = 240.0/270.0;
 		break;
 	}
 }

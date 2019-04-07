@@ -173,7 +173,7 @@ void ParallelLeg::trigger_sanddune(unsigned int cnt_kouden_now, unsigned int cnt
 	if(flag.sanddune && mode_prv==StableSlide)counter.walk_on_dune++; //復帰着地の瞬間、1歩カウント
 
 	if(MRmode->is_switched()){
-		if(MRmode->get_now()==MRMode::SandDuneFront)counter.walk_on_dune = 0;
+		if(MRmode->get_now()==area_dune)counter.walk_on_dune = 0;
 	}
 }
 

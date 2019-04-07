@@ -31,6 +31,7 @@ SingleLeg::SingleLeg(LegPosition arg_fr, LegPosition arg_rl, float hrz_base, flo
 	status.duty = 0.5;
 	area = MRMode::PrepareWalking;
 	area_prv = MRMode::Area_end;
+	enc_reset = true;
 }
 
 
@@ -96,11 +97,12 @@ void SingleLeg::move_to_angle(float target_degree)
 	motor->write(status.duty);
 }
 
-//センサー更新	//スイッチONでエンコーダーリセットの機能だけでも可?
+//センサー更新
+//スイッチONでエンコーダーリセットの機能だけでも可?
 void SingleLeg::state_update()
 {
 	status.sw = sw->read();
-	if(status.sw)enc->reset();
+	if(status.sw && enc_reset)enc->reset();
 //	status.enc = enc->getAngle();//[degree]	//不要な気がする
 //	motor->write(status.duty);	//move_to()で実行
 }
@@ -199,4 +201,11 @@ void SingleLeg::reset_duty(float reset)
 {
 	legPID.reset_duty();
 	status.duty = reset;
+}
+
+//スイッチonでエンコーダーリセットするならtrue
+//しないならfalse
+void SingleLeg::reset_mode(bool reset)
+{
+	enc_reset = reset;
 }

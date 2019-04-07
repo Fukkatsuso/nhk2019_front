@@ -70,6 +70,8 @@ public:
 	void reset_duty();
 	void reset_duty(float reset);
 
+	void reset_mode(bool reset);
+
 private:
 	const short fr;
 	const short rl;
@@ -85,6 +87,8 @@ private:
 	InitSwitch *sw;
 	MRMode *MRmode;
 	LegPID legPID;
+
+	bool enc_reset; //スイッチonでエンコーダーをリセットするかどうか
 
 	MRMode::Area area;
 	MRMode::Area area_prv;
