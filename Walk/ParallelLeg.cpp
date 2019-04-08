@@ -265,7 +265,7 @@ float ParallelLeg::limit_speed(float spd)
 //斜め方向に歩くとき
 float ParallelLeg::curve_adjust(float value)
 {
-	if((rl*direction)>0){	//その足の方に歩く->小股で
+	if((rl*sin(direction))>0){	//その足の方に歩く->小股で
 		value *= (cos(2.0*direction));
 	}
 	return value;
