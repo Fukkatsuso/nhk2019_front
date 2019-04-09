@@ -96,13 +96,13 @@ int main(){
 				uint_cut(kouden_SandDuneFront_max,
 						250
 						),
-				3, MRMode::SandDuneFront);
+				3+1, MRMode::SandDuneFront);
 		FL.trigger_sanddune(kouden_SandDuneFront.get_counter(0), kouden_SandDuneFront_max,
 				140,//120,
 				uint_cut(kouden_SandDuneFront_max,
 						250
 						),
-				3, MRMode::SandDuneFront);
+				3+1, MRMode::SandDuneFront);
 
 		if(mrmode==MRMode::SandDuneFront || mrmode==MRMode::SandDuneRear){
 			FR.set_walkmode(Gait::ActiveStableGait, Recovery::Quadrangle, 0);
@@ -225,7 +225,8 @@ void set_cycle(float *period, float *duty){
 		break;
 
 	case MRMode::ReadyForTussock:
-		*period = 200.0/240.0;
+//		*period = 200.0/240.0;
+		*period = 320.0/350.0;
 		break;
 	case MRMode::Tussock:
 		*period = 1;
